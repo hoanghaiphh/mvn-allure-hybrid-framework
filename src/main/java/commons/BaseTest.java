@@ -77,7 +77,6 @@ public class BaseTest {
 
     @BeforeSuite
     protected void clearReport() {
-        deleteAllFilesInFolder(GlobalConstants.SCREENSHOTS_FOLDER_PATH);
         deleteAllFilesInFolder(GlobalConstants.ALLURE_RESULTS_FOLDER_PATH);
     }
 
