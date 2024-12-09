@@ -13,7 +13,7 @@ public class CustomerInfoPageObject extends MyAccountPageObject {
         this.driver = driver;
     }
 
-    @Step("Gender Male radio button selected")
+    @Step("Verify that Gender Male radio button was selected")
     public boolean isGenderMaleSelected() {
         waitForElementSelected(driver, CustomerInfoPageUI.GENDER_MALE_RADIO);
         return isElementSelected(driver, CustomerInfoPageUI.GENDER_MALE_RADIO);

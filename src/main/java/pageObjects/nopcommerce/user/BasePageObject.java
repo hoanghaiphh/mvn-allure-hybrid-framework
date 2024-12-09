@@ -20,7 +20,7 @@ public class BasePageObject extends BasePage {
         return PageGenerator.getRegisterPage(driver);
     }
 
-    @Step("My Account link displayed in header")
+    @Step("Verify that My Account link was displayed in header")
     public boolean isMyAccountLinkDisplayed() {
         waitForElementVisible(driver, BasePageUI.MY_ACCOUNT_LINK);
         return isElementDisplayed(driver, BasePageUI.MY_ACCOUNT_LINK);

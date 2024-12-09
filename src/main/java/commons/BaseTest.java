@@ -97,7 +97,7 @@ public class BaseTest {
         boolean status = true;
         try {
             Assert.assertTrue(condition);
-            verificationPassed("TRUE");
+            verificationPassed("");
         } catch (Throwable e) {
             status = false;
             VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(), e);
@@ -111,7 +111,7 @@ public class BaseTest {
         boolean status = true;
         try {
             Assert.assertFalse(condition);
-            verificationPassed("FALSE");
+            verificationPassed("");
         } catch (Throwable e) {
             status = false;
             VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(), e);
@@ -125,7 +125,7 @@ public class BaseTest {
         boolean status = true;
         try {
             Assert.assertEquals(actual, expected);
-            verificationPassed(expected);
+            verificationPassed(": value = " + expected);
         } catch (Throwable e) {
             status = false;
             VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(), e);
@@ -135,11 +135,11 @@ public class BaseTest {
         return status;
     }
 
-    @Step("verification passed with value = {0}")
+    @Step("=== VERIFICATION PASSED{0}")
     private void verificationPassed(Object value) {
     }
 
-    @Step("verification FAILED: {0}")
+    @Step("=== VERIFICATION FAILED: {0}")
     private void verificationFailed(String failureMessage) {
         allureAttachScreenshot();
     }
