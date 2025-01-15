@@ -1,6 +1,7 @@
 package nopcommerce.user;
 
 import commons.BaseTest;
+import commons.DataGenerator;
 import commons.GlobalConstants;
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
@@ -14,29 +15,34 @@ import pageObjects.nopcommerce.user.HomePageObject;
 import pageObjects.nopcommerce.user.LoginPageObject;
 import pageObjects.nopcommerce.user.RegisterPageObject;
 import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
+import testData.UserInfo;
 
 @Feature("User")
-public class Level_16_Allure_2 extends BaseTest {
-
+public class Manage_Test_Data_POJO extends BaseTest {
     private CustomerInfoPageObject customerInfoPage;
     private HomePageObject homePage;
     private RegisterPageObject registerPage;
     private LoginPageObject loginPage;
 
-    private String firstName = "Automation";
-    private String lastName = "Testing";
-    private String dayOfBirth = "15";
-    private String monthOfBirth = "October";
-    private String yearOfBirth = "1989";
-    private String companyName = "Online 29";
-    private String emailAddress = firstName + lastName + getRandomNumber() + "@gmail.com";
-    private String password = "Abcd@1234";
+    private UserInfo userInfo;
 
     @Parameters("browser")
     @BeforeClass
     public void beforeClass(String browserName) {
         driver = openBrowserWithUrl(browserName, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
+        userInfo = UserInfo.getUserInfo();
+
+        DataGenerator fakerVi = DataGenerator.getData("vi");
+        String firstName = fakerVi.getFirstname();
+        String lastName = fakerVi.getLastname();
+        userInfo.setFirstName(firstName);
+        userInfo.setLastName(lastName);
+        userInfo.setEmailAddress(DataGenerator.getRandomEmailByTimestamp(firstName + lastName));
+
+        DataGenerator fakerDefault = DataGenerator.getData();
+        userInfo.setCompanyName(fakerDefault.getCompanyName());
+        userInfo.setPassword(fakerDefault.getPassword());
     }
 
     @Description("User_01_Register")
@@ -44,31 +50,23 @@ public class Level_16_Allure_2 extends BaseTest {
     @Test
     public void User_01_Register() {
         registerPage = (RegisterPageObject) homePage.clickOnHeaderLink("Register");
-        
-        registerPage.clickOnGenderMaleRadio();
-        registerPage.sendKeyToFirstnameTextbox(firstName);
-        registerPage.sendKeyToLastnameTextbox(lastName);
-//        registerPage.selectItemInDayDropdown(dayOfBirth);
-//        registerPage.selectItemInMonthDropdown(monthOfBirth);
-//        registerPage.selectItemInYearDropdown(yearOfBirth);
-        registerPage.sendKeyToEmailTextbox(emailAddress);
-        registerPage.sendKeyToCompanyTextbox(companyName);
-        registerPage.sendKeyToPasswordTextbox(password);
-        registerPage.sendKeyToConfirmPasswordTextbox(password);
+
+        registerPage.addUserInfo(userInfo);
+
         registerPage.clickOnRegisterButton();
-        
+
         verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
-        
-        homePage = (HomePageObject) registerPage.clickOnHeaderLink("Log out");
     }
 
     @Description("User_02_Login")
     @Severity(SeverityLevel.CRITICAL)
     @Test
     public void User_02_Login() {
+        homePage = (HomePageObject) registerPage.clickOnHeaderLink("Log out");
+
         loginPage = (LoginPageObject) homePage.clickOnHeaderLink("Log in");
 
-        homePage = loginPage.loginToSystem(emailAddress, password);
+        homePage = loginPage.loginToSystem(userInfo);
 
         verifyTrue(homePage.isMyAccountLinkDisplayed());
     }
@@ -80,12 +78,9 @@ public class Level_16_Allure_2 extends BaseTest {
         customerInfoPage = (CustomerInfoPageObject) homePage.clickOnHeaderLink("My account");
 
         verifyTrue(customerInfoPage.isGenderMaleSelected());
-        verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), firstName);
-        verifyEquals(customerInfoPage.getValueInLastnameTextbox(), "Testing");
-//        verifyEquals(customerInfoPage.getValueInDayDropdown(), dayOfBirth);
-//        verifyEquals(customerInfoPage.getValueInMonthDropdown(), monthOfBirth);
-//        verifyEquals(customerInfoPage.getValueInYearDropdown(), yearOfBirth);
-        verifyEquals(customerInfoPage.getValueInCompanyTextbox(), companyName);
+        verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getFirstName());
+        verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
+        verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.getCompanyName());
     }
 
 }

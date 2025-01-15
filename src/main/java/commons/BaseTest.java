@@ -18,8 +18,9 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
 import java.io.File;
-import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
@@ -71,18 +72,10 @@ public class BaseTest {
         return driver;
     }
 
-    protected static long getRandomNumber() {
-        return new Random().nextInt(999999);
-    }
-
     @BeforeSuite
     protected void clearReport() {
-        deleteAllFilesInFolder(GlobalConstants.ALLURE_RESULTS_FOLDER_PATH);
-    }
-
-    private void deleteAllFilesInFolder(String folder) {
         try {
-            File[] listOfFiles = new File(folder).listFiles();
+            File[] listOfFiles = new File(GlobalConstants.ALLURE_RESULTS_FOLDER_PATH).listFiles();
             for (File file : listOfFiles) {
                 if (file.isFile() && !file.getName().equals("environment.properties")) {
                     file.delete();
@@ -92,6 +85,63 @@ public class BaseTest {
             System.out.print(e.getMessage());
         }
     }
+
+    @AfterClass(alwaysRun = true)
+    protected void closeBrowserDriver() {
+        String driverInstanceName = driver.toString();
+        String browserDriverName = null;
+        if (driverInstanceName.contains("Chrome")) {
+            browserDriverName = "chromedriver";
+        } else if (driverInstanceName.contains("Firefox")) {
+            browserDriverName = "geckodriver";
+        } else if (driverInstanceName.contains("Edge")) {
+            browserDriverName = "msedgedriver";
+        } else if (driverInstanceName.contains("Opera")) {
+            browserDriverName = "operadriver";
+        } else if (driverInstanceName.contains("Safari")) {
+            browserDriverName = "safaridriver";
+        }
+
+        String cmd = null;
+        if (GlobalConstants.OS_NAME.contains("Window")) {
+            cmd = "taskkill /F /FI \"IMAGENAME eq " + browserDriverName + "*\"";
+        } else {
+            cmd = "pkill " + browserDriverName;
+        }
+
+        if (driver != null) {
+            driver.manage().deleteAllCookies();
+            driver.quit();
+        }
+
+        try {
+            Process process = Runtime.getRuntime().exec(cmd);
+            process.waitFor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // @AfterSuite
+    protected void killAllBrowserDrivers() {
+        String[] browserDrivers = {"chromedriver", "geckodriver", "msedgedriver", "safaridriver"};
+        for (String browserDriver : browserDrivers) {
+            String cmd = null;
+            if (GlobalConstants.OS_NAME.contains("Window")) {
+                cmd = "taskkill /F /FI \"IMAGENAME eq " + browserDriver + "*\"";
+            } else {
+                cmd = "pkill " + browserDriver;
+            }
+            try {
+                Process process = Runtime.getRuntime().exec(cmd);
+                process.waitFor();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println(new Date() + " - All browser drivers was killed.");
+    }
+
 
     protected boolean verifyTrue(boolean condition) {
         boolean status = true;
@@ -147,62 +197,6 @@ public class BaseTest {
     @Attachment(value = "verification failure screenshot", type = "image/png")
     private byte[] allureAttachScreenshot() {
         return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-    }
-
-    @AfterClass(alwaysRun = true)
-    protected void closeBrowserDriver() {
-        String driverInstanceName = driver.toString();
-        String browserDriverName = null;
-        if (driverInstanceName.contains("Chrome")) {
-            browserDriverName = "chromedriver";
-        } else if (driverInstanceName.contains("Firefox")) {
-            browserDriverName = "geckodriver";
-        } else if (driverInstanceName.contains("Edge")) {
-            browserDriverName = "msedgedriver";
-        } else if (driverInstanceName.contains("Opera")) {
-            browserDriverName = "operadriver";
-        } else if (driverInstanceName.contains("Safari")) {
-            browserDriverName = "safaridriver";
-        }
-
-        String cmd = null;
-        if (GlobalConstants.OS_NAME.contains("Window")) {
-            cmd = "taskkill /F /FI \"IMAGENAME eq " + browserDriverName + "*\"";
-        } else {
-            cmd = "pkill " + browserDriverName;
-        }
-
-        if (driver != null) {
-            driver.manage().deleteAllCookies();
-            driver.quit();
-        }
-
-        try {
-            Process process = Runtime.getRuntime().exec(cmd);
-            process.waitFor();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @AfterSuite
-    protected void killAllBrowserDrivers() {
-        String[] browserDrivers = {"chromedriver", "geckodriver", "msedgedriver", "safaridriver"};
-        for (String browserDriver : browserDrivers) {
-            String cmd = null;
-            if (GlobalConstants.OS_NAME.contains("Window")) {
-                cmd = "taskkill /F /FI \"IMAGENAME eq " + browserDriver + "*\"";
-            } else {
-                cmd = "pkill " + browserDriver;
-            }
-            try {
-                Process process = Runtime.getRuntime().exec(cmd);
-                process.waitFor();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println(new Date() + " - All browser drivers was killed.");
     }
 
 }

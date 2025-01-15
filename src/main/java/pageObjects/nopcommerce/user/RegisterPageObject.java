@@ -3,6 +3,7 @@ package pageObjects.nopcommerce.user;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import pageUIs.nopcommerce.user.RegisterPageUI;
+import testData.UserInfo;
 
 public class RegisterPageObject extends BasePageObject {
     private WebDriver driver;
@@ -70,6 +71,16 @@ public class RegisterPageObject extends BasePageObject {
     public void sendKeyToConfirmPasswordTextbox(String password) {
         waitForElementVisible(driver, RegisterPageUI.CONFIRM_PASSWORD_TEXTBOX);
         sendKeysToElement(driver, RegisterPageUI.CONFIRM_PASSWORD_TEXTBOX, password);
+    }
+
+    public void addUserInfo(UserInfo userInfo) {
+        clickOnGenderMaleRadio();
+        sendKeyToFirstnameTextbox(userInfo.getFirstName());
+        sendKeyToLastnameTextbox(userInfo.getLastName());
+        sendKeyToEmailTextbox(userInfo.getEmailAddress());
+        sendKeyToCompanyTextbox(userInfo.getCompanyName());
+        sendKeyToPasswordTextbox(userInfo.getPassword());
+        sendKeyToConfirmPasswordTextbox(userInfo.getPassword());
     }
 
     @Step("Click on Register button")

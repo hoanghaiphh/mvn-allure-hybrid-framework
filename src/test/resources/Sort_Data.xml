@@ -4,7 +4,7 @@
 
     <listeners>
         <listener class-name="commons.MethodListener"/>
-        <listener class-name="reportConfig.AllureListener"/>
+        <listener class-name="commons.AllureListener"/>
     </listeners>
 
     <test name="Run on Firefox browser">

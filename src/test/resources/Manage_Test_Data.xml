@@ -4,27 +4,27 @@
 
     <listeners>
         <listener class-name="commons.MethodListener"/>
-        <listener class-name="reportConfig.AllureListener"/>
+        <listener class-name="commons.AllureListener"/>
     </listeners>
 
     <test name="Run on Firefox browser">
         <parameter name="browser" value="Firefox"/>
         <classes>
-            <class name="nopcommerce.user.Level_16_Allure"/>
+            <class name="nopcommerce.user.Manage_Test_Data_POJO"/>
         </classes>
     </test>
 
     <test name="Run on Chrome browser">
         <parameter name="browser" value="Chrome"/>
         <classes>
-            <class name="nopcommerce.user.Level_16_Allure"/>
+            <class name="nopcommerce.user.Manage_Test_Data_POJO"/>
         </classes>
     </test>
 
     <test name="Run on Edge browser">
         <parameter name="browser" value="Edge"/>
         <classes>
-            <class name="nopcommerce.user.Level_16_Allure"/>
+            <class name="nopcommerce.user.Manage_Test_Data_POJO"/>
         </classes>
     </test>
 
