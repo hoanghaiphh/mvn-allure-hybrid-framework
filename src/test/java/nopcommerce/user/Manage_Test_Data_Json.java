@@ -15,34 +15,30 @@ import pageObjects.nopcommerce.user.HomePageObject;
 import pageObjects.nopcommerce.user.LoginPageObject;
 import pageObjects.nopcommerce.user.RegisterPageObject;
 import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
+import testData.UserInfoJson;
 import testData.UserInfoPOJO;
 
+import java.util.Arrays;
+
 @Feature("User")
-public class Manage_Test_Data_POJO extends BaseTest {
+public class Manage_Test_Data_Json extends BaseTest {
     private CustomerInfoPageObject customerInfoPage;
     private HomePageObject homePage;
     private RegisterPageObject registerPage;
     private LoginPageObject loginPage;
 
-    private UserInfoPOJO userInfo;
+    private UserInfoJson userInfo;
 
     @Parameters("browser")
     @BeforeClass
     public void beforeClass(String browserName) {
         driver = openBrowserWithUrl(browserName, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
-        userInfo = UserInfoPOJO.getUserInfo();
-
-        DataGenerator fakerVi = DataGenerator.getData("vi");
-        String firstName = fakerVi.getFirstname();
-        String lastName = fakerVi.getLastname();
-        userInfo.setFirstName(firstName);
-        userInfo.setLastName(lastName);
-        userInfo.setEmailAddress(DataGenerator.getRandomEmailByTimestamp(firstName + lastName));
-
-        DataGenerator fakerDefault = DataGenerator.getData();
-        userInfo.setCompanyName(fakerDefault.getCompanyName());
-        userInfo.setPassword(fakerDefault.getPassword());
+        userInfo = UserInfoJson.getUserInfo();
+        if (userInfo != null) {
+            userInfo.setRandomEmail(DataGenerator.getRandomEmailByTimestamp("test.email"));
+            System.out.println(Arrays.toString(userInfo.getSkills()));
+        }
     }
 
     @Description("User_01_Register")
@@ -78,9 +74,9 @@ public class Manage_Test_Data_POJO extends BaseTest {
         customerInfoPage = (CustomerInfoPageObject) homePage.clickOnHeaderLink("My account");
 
         verifyTrue(customerInfoPage.isGenderMaleSelected());
-        verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getFirstName());
-        verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
-        verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.getCompanyName());
+        verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getName().getFirstName());
+        verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getName().getLastName());
+        verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.getCompany());
     }
 
 }

@@ -8,6 +8,8 @@ public class InventoryPUI {
     public static final String SORT_DROPDOWN_PARENT = "xpath=//span[text()='Sort by:']";
     public static final String SORT_DROPDOWN_CHILD
             = "xpath=//div[contains(@id,'a-popover') and @aria-hidden='false']//a[@class='a-dropdown-link']";
-    public static final String BOOK_PUBLICATION_DATE = "css=span.a-size-base.a-color-secondary.a-text-normal";
+
+    public static final String BOOK_PUBLICATION_DATE
+            = "css=div[class='a-row']>span.a-size-base.a-color-secondary.a-text-normal";
 
 }

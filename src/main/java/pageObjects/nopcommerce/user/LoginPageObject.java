@@ -4,7 +4,8 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import pageObjects.nopcommerce.PageGenerator;
 import pageUIs.nopcommerce.user.LoginPageUI;
-import testData.UserInfo;
+import testData.UserInfoJson;
+import testData.UserInfoPOJO;
 
 public class LoginPageObject extends BasePageObject {
     private WebDriver driver;
@@ -32,9 +33,23 @@ public class LoginPageObject extends BasePageObject {
         clickOnElement(driver, LoginPageUI.LOGIN_BUTTON);
     }
 
-    public HomePageObject loginToSystem(UserInfo userInfo) {
+    public HomePageObject loginToSystem(String emailAddress, String password) {
+        sendKeyToEmailTextbox(emailAddress);
+        sendKeyToPasswordTextbox(password);
+        clickOnLoginButton();
+        return PageGenerator.getHomePage(driver);
+    }
+
+    public HomePageObject loginToSystem(UserInfoPOJO userInfo) {
         sendKeyToEmailTextbox(userInfo.getEmailAddress());
         sendKeyToPasswordTextbox(userInfo.getPassword());
+        clickOnLoginButton();
+        return PageGenerator.getHomePage(driver);
+    }
+
+    public HomePageObject loginToSystem(UserInfoJson userInfo) {
+        sendKeyToEmailTextbox(userInfo.getRandomEmail());
+        sendKeyToPasswordTextbox(userInfo.getLogin().getPassword());
         clickOnLoginButton();
         return PageGenerator.getHomePage(driver);
     }

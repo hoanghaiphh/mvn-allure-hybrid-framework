@@ -53,6 +53,7 @@ public class InventoryPO extends BasePage {
     @Step("Select criteria for sorting: {0}")
     public void selectSortingCriteria_2(String criteria) {
         waitForElementClickable(driver, InventoryPUI.SORT_DROPDOWN_PARENT);
+        sleepInSeconds(1);
         selectOptionInCustomDropdown(driver, InventoryPUI.SORT_DROPDOWN_PARENT, InventoryPUI.SORT_DROPDOWN_CHILD, criteria);
         sleepInSeconds(1);
     }

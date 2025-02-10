@@ -8,11 +8,11 @@ import java.util.regex.Pattern;
 
 @Getter
 @Setter
-public class UserInfo {
+public class UserInfoPOJO {
     private String firstName, lastName, companyName, emailAddress, password;
 
-    public static UserInfo getUserInfo() {
-        return new UserInfo();
+    public static UserInfoPOJO getUserInfo() {
+        return new UserInfoPOJO();
     }
 
     public void setEmailAddress(String emailAddress) {

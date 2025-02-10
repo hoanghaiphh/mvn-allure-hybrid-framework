@@ -1,6 +1,5 @@
 package saucedemo;
 
-import commons.BasePage;
 import commons.BaseTest;
 import commons.GlobalConstants;
 import org.testng.annotations.Parameters;

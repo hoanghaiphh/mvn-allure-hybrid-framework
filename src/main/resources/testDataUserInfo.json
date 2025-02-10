@@ -1,0 +1,18 @@
+{
+  "name": {
+    "firstname": "Automation",
+    "lastname": "Testing"
+  },
+  "company": "Automation FC",
+  "login": {
+    "email": "automation.testing_20250210_19_01@gmail.com",
+    "password": "Abcd@1234"
+  },
+  "skills": [
+    "Java",
+    "Javascript",
+    "Python",
+    "C#",
+    "Others"
+  ]
+}
