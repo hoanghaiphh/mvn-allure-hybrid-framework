@@ -1,6 +1,7 @@
 package commons;
 
 import net.datafaker.Faker;
+import org.openqa.selenium.WebDriver;
 
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
@@ -55,10 +56,11 @@ public class DataGenerator {
         return Calendar.getInstance().getTimeInMillis(); // Unix Epoch
     }
 
-    public static String getRandomEmailByTimestamp(String prefix) {
-        SimpleDateFormat sdf = new SimpleDateFormat("_yyyyMMdd_HHmmssSSS");
+    public static String getRandomEmailByTimestamp(String prefix, WebDriver driver) {
+        SimpleDateFormat sdf = new SimpleDateFormat("_yyyyMMdd_HHmmss_");
         String timestamp = sdf.format(new Date());
-        return removeDiacritics(prefix) + timestamp + "@gmail.com";
+        return removeDiacritics(prefix) + timestamp
+                + BasePage.getCurrentBrowserName(driver).toLowerCase() + "@gmail.com";
     }
 
     private static String removeDiacritics(String str) {
@@ -67,5 +69,4 @@ public class DataGenerator {
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(normalized).replaceAll("").toLowerCase();
     }
-
 }

@@ -1,5 +1,6 @@
 package nopcommerce.user;
 
+import commons.BasePage;
 import commons.BaseTest;
 import commons.DataGenerator;
 import commons.GlobalConstants;
@@ -15,10 +16,12 @@ import pageObjects.nopcommerce.user.HomePageObject;
 import pageObjects.nopcommerce.user.LoginPageObject;
 import pageObjects.nopcommerce.user.RegisterPageObject;
 import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
+import testData.MockarooJson;
 import testData.UserInfoJson;
 import testData.UserInfoPOJO;
 
 import java.util.Arrays;
+import java.util.Random;
 
 @Feature("User")
 public class Manage_Test_Data_Json extends BaseTest {
@@ -34,10 +37,28 @@ public class Manage_Test_Data_Json extends BaseTest {
     public void beforeClass(String browserName) {
         driver = openBrowserWithUrl(browserName, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
+
         userInfo = UserInfoJson.getUserInfo();
         if (userInfo != null) {
-            userInfo.setRandomEmail(DataGenerator.getRandomEmailByTimestamp("test.email"));
-            System.out.println(Arrays.toString(userInfo.getSkills()));
+            userInfo.setRandomEmail(DataGenerator.getRandomEmailByTimestamp("test", driver));
+
+            // testJsonReader
+            System.out.println(Arrays.toString(userInfo.getLanguages()));
+            System.out.println(userInfo.getBuildTools());
+        }
+
+        // testJsonReader
+        MockarooJson mockaroo = MockarooJson.getUserInfo();
+        if (mockaroo != null) {
+            mockaroo.getUsers().forEach(userInfo -> System.out.println(
+                    "Full Name: " + userInfo.getFirstName() + " " + userInfo.getLastName()
+                            + "\nCompany Nane: " + userInfo.getCompany() + "\n"));
+
+            int randomIndex = new Random().nextInt(mockaroo.getUsers().size());
+            MockarooJson.User randomUser = mockaroo.getUsers().get(randomIndex);
+            System.out.println("User " + randomIndex
+                    + ":\nFull Name: " + randomUser.getFirstName() + " " + randomUser.getLastName()
+                    + "\tCompany Name: " + randomUser.getCompany() + "\n");
         }
     }
 

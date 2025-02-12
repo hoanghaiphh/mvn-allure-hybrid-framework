@@ -1,12 +1,12 @@
 package testData;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.net.URL;
+import java.util.List;
 
 public class UserInfoJson {
 
@@ -24,39 +24,33 @@ public class UserInfoJson {
         }
     }
 
+    // if json key <> variable --> add annotation @JsonProperty(jsonKey) to map value, else --> not necessary
     @Getter
     public static class Name {
-        @JsonProperty("firstname")
         private String firstName;
-
-        @JsonProperty("lastname")
         private String lastName;
     }
 
     @Getter
     public static class Login {
-        @JsonProperty("email")
         private String email;
-
-        @JsonProperty("password")
         private String password;
     }
 
     @Getter
-    @JsonProperty("name")
     private Name name;
 
     @Getter
-    @JsonProperty("login")
     private Login login;
 
     @Getter
-    @JsonProperty("company")
     private String company;
 
     @Getter
-    @JsonProperty("skills")
-    private String[] skills;
+    private String[] languages;
+
+    @Getter
+    private List<String> buildTools;
 
     @Getter
     @Setter
