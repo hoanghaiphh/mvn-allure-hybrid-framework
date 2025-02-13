@@ -7,6 +7,8 @@ import pageUIs.nopcommerce.user.LoginPageUI;
 import testData.UserInfoJson;
 import testData.UserInfoPOJO;
 
+import java.util.Map;
+
 public class LoginPageObject extends BasePageObject {
     private WebDriver driver;
 
@@ -50,6 +52,13 @@ public class LoginPageObject extends BasePageObject {
     public HomePageObject loginToSystem(UserInfoJson userInfo) {
         sendKeyToEmailTextbox(userInfo.getRandomEmail());
         sendKeyToPasswordTextbox(userInfo.getLogin().getPassword());
+        clickOnLoginButton();
+        return PageGenerator.getHomePage(driver);
+    }
+
+    public HomePageObject loginToSystem(Map<String, String> userInfo) {
+        sendKeyToEmailTextbox(userInfo.get("email"));
+        sendKeyToPasswordTextbox(userInfo.get("password"));
         clickOnLoginButton();
         return PageGenerator.getHomePage(driver);
     }

@@ -1,8 +1,6 @@
 package nopcommerce.user;
 
-import commons.BasePage;
 import commons.BaseTest;
-import commons.DataGenerator;
 import commons.GlobalConstants;
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
@@ -17,10 +15,11 @@ import pageObjects.nopcommerce.user.LoginPageObject;
 import pageObjects.nopcommerce.user.RegisterPageObject;
 import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
 import testData.MockarooJson;
+import testData.MockarooJson1;
 import testData.UserInfoJson;
-import testData.UserInfoPOJO;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 @Feature("User")
@@ -40,7 +39,7 @@ public class Manage_Test_Data_Json extends BaseTest {
 
         userInfo = UserInfoJson.getUserInfo();
         if (userInfo != null) {
-            userInfo.setRandomEmail(DataGenerator.getRandomEmailByTimestamp("test", driver));
+            userInfo.setRandomEmail(getRandomEmailByTimestamp("test", driver));
 
             // testJsonReader
             System.out.println(Arrays.toString(userInfo.getLanguages()));
@@ -56,6 +55,20 @@ public class Manage_Test_Data_Json extends BaseTest {
 
             int randomIndex = new Random().nextInt(mockaroo.getUsers().size());
             MockarooJson.User randomUser = mockaroo.getUsers().get(randomIndex);
+            System.out.println("User " + randomIndex
+                    + ":\nFull Name: " + randomUser.getFirstName() + " " + randomUser.getLastName()
+                    + "\tCompany Name: " + randomUser.getCompany() + "\n");
+        }
+
+        // testJsonReader
+        List<MockarooJson1.User> mockaroo1 = MockarooJson1.getUserInfo();
+        if (mockaroo1 != null) {
+            mockaroo1.forEach(userInfo -> System.out.println(
+                    "Full Name: " + userInfo.getFirstName() + " " + userInfo.getLastName()
+                            + "\nCompany Nane: " + userInfo.getCompany() + "\n"));
+
+            int randomIndex = new Random().nextInt(mockaroo1.size());
+            MockarooJson1.User randomUser = mockaroo1.get(randomIndex);
             System.out.println("User " + randomIndex
                     + ":\nFull Name: " + randomUser.getFirstName() + " " + randomUser.getLastName()
                     + "\tCompany Name: " + randomUser.getCompany() + "\n");

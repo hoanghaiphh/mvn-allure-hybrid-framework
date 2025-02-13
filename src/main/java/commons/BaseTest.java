@@ -18,11 +18,13 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
 import java.io.File;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 public class BaseTest {
 
@@ -197,6 +199,30 @@ public class BaseTest {
     @Attachment(value = "verification failure screenshot", type = "image/png")
     private byte[] allureAttachScreenshot() {
         return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+    }
+
+
+    protected long getRandomNumber(int min, int max) {
+        Random rnd = new Random();
+        return min + rnd.nextInt(max - min);
+    }
+
+    protected long getRandomNumberByDateTime() {
+        return Calendar.getInstance().getTimeInMillis(); // Unix Epoch
+    }
+
+    protected String getRandomEmailByTimestamp(String prefix, WebDriver driver) {
+        SimpleDateFormat sdf = new SimpleDateFormat("_yyyyMMdd_HHmmss_");
+        String timestamp = sdf.format(new Date());
+        return removeDiacritics(prefix) + timestamp
+                + BasePage.getCurrentBrowserName(driver).toLowerCase() + "@gmail.com";
+    }
+
+    private String removeDiacritics(String str) {
+        str = str.replace("Đ", "D").replace("đ", "d");
+        String normalized = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(normalized).replaceAll("").toLowerCase();
     }
 
 }
