@@ -46,21 +46,19 @@ public class ExcelConfig {
     }
 
     private String getCellDataAsString(Workbook workbook, Cell cell) {
-        return switch (cell.getCellType()) {
-            case STRING -> cell.getStringCellValue();
-            case NUMERIC -> String.valueOf(cell.getNumericCellValue());
-            case FORMULA -> {
-                FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
-                CellValue cellValue = evaluator.evaluate(cell);
-                yield switch (cellValue.getCellType()) {
-                    case STRING -> cellValue.getStringValue();
-                    case NUMERIC -> String.valueOf(cellValue.getNumberValue());
-                    case BOOLEAN -> String.valueOf(cellValue.getBooleanValue());
-                    default -> "";
-                };
-            }
-            default -> "";
-        };
+        if (cell.getCellType() == CellType.FORMULA) {
+            FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+            CellValue cellValue = evaluator.evaluate(cell);
+            return switch (cellValue.getCellType()) {
+                case STRING -> cellValue.getStringValue();
+                case NUMERIC -> String.valueOf(cellValue.getNumberValue());
+                case BOOLEAN -> String.valueOf(cellValue.getBooleanValue());
+                default -> "";
+            };
+        } else {
+            DataFormatter dataFormatter = new DataFormatter();
+            return dataFormatter.formatCellValue(cell);
+        }
     }
 
 }
