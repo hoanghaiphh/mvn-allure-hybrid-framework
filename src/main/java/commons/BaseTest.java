@@ -2,6 +2,9 @@ package commons;
 
 import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
+import lombok.Getter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -14,7 +17,6 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
 import java.io.File;
@@ -27,12 +29,17 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 public class BaseTest {
-
+    @Getter
     protected WebDriver driver;
 
-    public WebDriver getDriver() {
-        return driver;
+    protected final Logger log;
+
+    protected BaseTest() {
+        log = LogManager.getLogger(getClass());
     }
+
+
+    /*** Init browser and navigate to URL ***/
 
     protected WebDriver getBrowserDriver(String browserName) {
         BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
@@ -74,6 +81,9 @@ public class BaseTest {
         return driver;
     }
 
+
+    /*** Before & After running ***/
+
     @BeforeSuite
     protected void clearReport() {
         try {
@@ -84,13 +94,16 @@ public class BaseTest {
                 }
             }
         } catch (Exception e) {
-            System.out.print(e.getMessage());
+            log.error("An error occurred while clearing the report", e);
         }
     }
 
     @AfterClass(alwaysRun = true)
     protected void closeBrowserDriver() {
         String driverInstanceName = driver.toString();
+        log.info("OS name = {}", GlobalConstants.OS_NAME);
+        log.info("Driver instance name = {}", driverInstanceName);
+
         String browserDriverName = null;
         if (driverInstanceName.contains("Chrome")) {
             browserDriverName = "chromedriver";
@@ -120,41 +133,23 @@ public class BaseTest {
             Process process = Runtime.getRuntime().exec(cmd);
             process.waitFor();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("An error occurred while closing the browser driver", e);
         }
     }
 
-    // @AfterSuite
-    protected void killAllBrowserDrivers() {
-        String[] browserDrivers = {"chromedriver", "geckodriver", "msedgedriver", "safaridriver"};
-        for (String browserDriver : browserDrivers) {
-            String cmd = null;
-            if (GlobalConstants.OS_NAME.contains("Window")) {
-                cmd = "taskkill /F /FI \"IMAGENAME eq " + browserDriver + "*\"";
-            } else {
-                cmd = "pkill " + browserDriver;
-            }
-            try {
-                Process process = Runtime.getRuntime().exec(cmd);
-                process.waitFor();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println(new Date() + " - All browser drivers was killed.");
-    }
 
+    /*** Modify verification methods ***/
 
     protected boolean verifyTrue(boolean condition) {
         boolean status = true;
         try {
             Assert.assertTrue(condition);
             verificationPassed("");
-        } catch (Throwable e) {
+        } catch (Throwable t) {
             status = false;
-            VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(), e);
-            Reporter.getCurrentTestResult().setThrowable(e);
-            verificationFailed(e.getMessage());
+            VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(), t);
+            Reporter.getCurrentTestResult().setThrowable(t);
+            verificationFailed(t.getMessage());
         }
         return status;
     }
@@ -164,11 +159,11 @@ public class BaseTest {
         try {
             Assert.assertFalse(condition);
             verificationPassed("");
-        } catch (Throwable e) {
+        } catch (Throwable t) {
             status = false;
-            VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(), e);
-            Reporter.getCurrentTestResult().setThrowable(e);
-            verificationFailed(e.getMessage());
+            VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(), t);
+            Reporter.getCurrentTestResult().setThrowable(t);
+            verificationFailed(t.getMessage());
         }
         return status;
     }
@@ -178,11 +173,11 @@ public class BaseTest {
         try {
             Assert.assertEquals(actual, expected);
             verificationPassed(": value = " + expected);
-        } catch (Throwable e) {
+        } catch (Throwable t) {
             status = false;
-            VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(), e);
-            Reporter.getCurrentTestResult().setThrowable(e);
-            verificationFailed(e.getMessage());
+            VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(), t);
+            Reporter.getCurrentTestResult().setThrowable(t);
+            verificationFailed(t.getMessage());
         }
         return status;
     }
@@ -201,6 +196,8 @@ public class BaseTest {
         return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
     }
 
+
+    /*** Generate random test data ***/
 
     protected long getRandomNumber(int min, int max) {
         Random rnd = new Random();

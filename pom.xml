@@ -15,7 +15,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <aspectj.version>1.9.22.1</aspectj.version>
-        <xml.fileName>manageTestData_Excel.xml</xml.fileName>
+        <xml.fileName>multipleEnvironment-Properties.xml</xml.fileName>
     </properties>
 
     <dependencies>
@@ -103,7 +103,7 @@
                 <version>3.5.2</version>
                 <configuration>
                     <suiteXmlFiles>
-                        <suiteXmlFile>src/test/resources/${xml.fileName}</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/testSuites/${xml.fileName}</suiteXmlFile>
                     </suiteXmlFiles>
 
                     <argLine>

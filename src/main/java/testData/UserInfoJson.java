@@ -15,7 +15,7 @@ public class UserInfoJson {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-            URL jsonFile = UserInfoJson.class.getClassLoader().getResource("testDataUserInfo.json");
+            URL jsonFile = UserInfoJson.class.getClassLoader().getResource("testData/testDataUserInfo.json");
             return objectMapper.readValue(jsonFile, UserInfoJson.class);
 
         } catch (Exception e) {

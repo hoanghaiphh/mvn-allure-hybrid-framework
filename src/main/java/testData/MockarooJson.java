@@ -14,7 +14,7 @@ public class MockarooJson {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-            URL jsonFile = MockarooJson.class.getClassLoader().getResource("mockaroo.json");
+            URL jsonFile = MockarooJson.class.getClassLoader().getResource("testData/mockaroo.json");
             return objectMapper.readValue(jsonFile, MockarooJson.class);
 
         } catch (Exception e) {
