@@ -15,7 +15,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <aspectj.version>1.9.22.1</aspectj.version>
-        <xml.fileName>multipleEnvironment-Properties.xml</xml.fileName>
+        <xml.fileName>multipleEnvironment-Owner.xml</xml.fileName>
     </properties>
 
     <dependencies>
@@ -82,6 +82,13 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>5.4.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.aeonbits.owner/owner -->
+        <dependency>
+            <groupId>org.aeonbits.owner</groupId>
+            <artifactId>owner</artifactId>
+            <version>1.0.12</version>
         </dependency>
     </dependencies>
 

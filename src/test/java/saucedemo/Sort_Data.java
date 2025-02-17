@@ -15,7 +15,7 @@ public class Sort_Data extends BaseTest {
     @Parameters("browser")
     @Test
     public void TC_01_Sort_By_Name_And_Price(String browserName) {
-        driver = openBrowserWithUrl(browserName, GlobalConstants.SAUCE_DEMO);
+        driver = openBrowserAndNavigateToUrl(browserName, GlobalConstants.SAUCE_DEMO);
         loginPage = PageGenerator.getLoginPage(driver);
 
         inventoryPage = loginPage.loginToSystem("standard_user", "secret_sauce");

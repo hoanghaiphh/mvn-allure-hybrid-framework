@@ -38,51 +38,25 @@ public class BaseTest {
         log = LogManager.getLogger(getClass());
     }
 
-
-    /*** Init browser and navigate to URL ***/
-
-    protected WebDriver getBrowserDriver(String browserName) {
+    protected WebDriver openBrowserAndNavigateToUrl(String browserName, String url) {
         BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
         switch (browserList) {
-            case FIREFOX:
-                driver = new FirefoxDriver();
-                break;
-            case CHROME:
-                driver = new ChromeDriver();
-                break;
-            case EDGE:
-                driver = new EdgeDriver();
-                break;
-            case FIREFOX_HEADLESS:
-                driver = new FirefoxDriver(new FirefoxOptions().addArguments("--headless"));
-                break;
-            case CHROME_HEADLESS:
-                driver = new ChromeDriver(new ChromeOptions().addArguments("--headless=new"));
-                break;
-            case EDGE_HEADLESS:
-                driver = new EdgeDriver(new EdgeOptions().addArguments("--headless=new"));
-                break;
-            case CHROME_PROFILE:
-                driver = new ChromeDriver(new ChromeOptions()
-                        .addArguments("--user-data-dir=C:\\Users\\HAIPH\\AppData\\Local\\Google\\Chrome\\User Data\\")
-                        .addArguments("--profile-directory=Default"));
-                break;
-            default:
-                throw new RuntimeException("Browser is not valid");
+            case FIREFOX -> driver = new FirefoxDriver();
+            case CHROME -> driver = new ChromeDriver();
+            case EDGE -> driver = new EdgeDriver();
+            case FIREFOX_HEADLESS -> driver = new FirefoxDriver(new FirefoxOptions().addArguments("--headless"));
+            case CHROME_HEADLESS -> driver = new ChromeDriver(new ChromeOptions().addArguments("--headless=new"));
+            case EDGE_HEADLESS -> driver = new EdgeDriver(new EdgeOptions().addArguments("--headless=new"));
+            case CHROME_PROFILE -> driver = new ChromeDriver(new ChromeOptions()
+                    .addArguments("--user-data-dir=C:\\Users\\HAIPH\\AppData\\Local\\Google\\Chrome\\User Data\\")
+                    .addArguments("--profile-directory=Default"));
+            default -> throw new RuntimeException("Browser is not valid");
         }
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT));
-        return driver;
-    }
-
-    protected WebDriver openBrowserWithUrl(String browserName, String url) {
-        driver = getBrowserDriver(browserName);
         driver.get(url);
         return driver;
     }
-
-
-    /*** Before & After running ***/
 
     @BeforeSuite
     protected void clearReport() {

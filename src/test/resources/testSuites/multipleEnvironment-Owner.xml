@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="NopCommerce Automation Testing">
+
+    <listeners>
+        <listener class-name="commons.MethodListener"/>
+        <listener class-name="commons.AllureListener"/>
+    </listeners>
+
+    <test name="Run on Firefox browser">
+        <parameter name="browser" value="Firefox"/>
+        <parameter name="environment" value="dev"/>
+        <classes>
+            <class name="nopcommerce.user.Multiple_Environment_Owner"/>
+        </classes>
+    </test>
+
+    <test name="Run on Chrome browser">
+        <parameter name="browser" value="Chrome"/>
+        <parameter name="environment" value="test"/>
+        <classes>
+            <class name="nopcommerce.user.Multiple_Environment_Owner"/>
+        </classes>
+    </test>
+
+    <test name="Run on Edge browser">
+        <parameter name="browser" value="Edge"/>
+        <parameter name="environment" value="staging"/>
+        <classes>
+            <class name="nopcommerce.user.Multiple_Environment_Owner"/>
+        </classes>
+    </test>
+
+</suite>

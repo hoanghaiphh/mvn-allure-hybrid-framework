@@ -13,7 +13,7 @@ public class Multiple_Environment_Properties extends BaseTest {
     public void beforeClass(String browserName) {
         PropertiesConfig propertiesConfig = PropertiesConfig.getProperties("test");
 
-        driver = openBrowserWithUrl(browserName, propertiesConfig.getPropertyValue("App.Url"));
+        driver = openBrowserAndNavigateToUrl(browserName, propertiesConfig.getPropertyValue("App.Url"));
 
         log.info("App.Url = {}", propertiesConfig.getPropertyValue("App.Url"));
         log.info("App.User = {}", propertiesConfig.getPropertyValue("App.User"));

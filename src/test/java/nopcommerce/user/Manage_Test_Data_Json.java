@@ -34,7 +34,7 @@ public class Manage_Test_Data_Json extends BaseTest {
     @Parameters("browser")
     @BeforeClass
     public void beforeClass(String browserName) {
-        driver = openBrowserWithUrl(browserName, GlobalConstants.NOPCOMMERCE_LOCAL);
+        driver = openBrowserAndNavigateToUrl(browserName, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
 
         userInfo = UserInfoJson.getUserInfo();
