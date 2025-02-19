@@ -3,6 +3,7 @@ package commons;
 import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
 import lombok.Getter;
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
@@ -18,6 +19,8 @@ import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeSuite;
+import utilities.EnvironmentConfig;
+import utilities.PropertiesConfig;
 
 import java.io.File;
 import java.text.Normalizer;
@@ -56,6 +59,17 @@ public class BaseTest {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT));
         driver.get(url);
         return driver;
+    }
+
+    protected PropertiesConfig getEnvironment() {
+        String env = System.getProperty("env", "test").toLowerCase();
+        return PropertiesConfig.getProperties(env);
+    }
+
+    protected EnvironmentConfig getEnvironmentOwner() {
+        String env = System.getProperty("env", "test").toLowerCase();
+        ConfigFactory.setProperty("environment", env);
+        return ConfigFactory.create(EnvironmentConfig.class);
     }
 
     @BeforeSuite
