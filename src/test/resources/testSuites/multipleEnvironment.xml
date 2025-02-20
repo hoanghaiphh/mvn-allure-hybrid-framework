@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="NopCommerce Automation Testing" parallel="tests" thread-count="3">
+
+    <listeners>
+        <listener class-name="commons.MethodListener"/>
+        <listener class-name="commons.AllureListener"/>
+    </listeners>
+
+    <test name="Multiple_Environment_Properties - Run on Firefox browser">
+        <parameter name="browser" value="Firefox"/>
+        <classes>
+            <class name="nopcommerce.user.Multiple_Environment_Properties"/>
+        </classes>
+    </test>
+
+    <test name="Multiple_Environment_Properties - Run on Chrome browser">
+        <parameter name="browser" value="Chrome"/>
+        <classes>
+            <class name="nopcommerce.user.Multiple_Environment_Properties"/>
+        </classes>
+    </test>
+
+    <test name="Multiple_Environment_Properties - Run on Edge browser">
+        <parameter name="browser" value="Edge"/>
+        <classes>
+            <class name="nopcommerce.user.Multiple_Environment_Properties"/>
+        </classes>
+    </test>
+
+    <test name="Multiple_Environment_Owner - Run on Firefox browser">
+        <parameter name="browser" value="Firefox"/>
+        <classes>
+            <class name="nopcommerce.user.Multiple_Environment_Owner"/>
+        </classes>
+    </test>
+
+    <test name="Multiple_Environment_Owner - Run on Chrome browser">
+        <parameter name="browser" value="Chrome"/>
+        <classes>
+            <class name="nopcommerce.user.Multiple_Environment_Owner"/>
+        </classes>
+    </test>
+
+    <test name="Multiple_Environment_Owner - Run on Edge browser">
+        <parameter name="browser" value="Edge"/>
+        <classes>
+            <class name="nopcommerce.user.Multiple_Environment_Owner"/>
+        </classes>
+    </test>
+
+</suite>
