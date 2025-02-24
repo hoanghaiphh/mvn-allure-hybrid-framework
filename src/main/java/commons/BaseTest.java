@@ -18,11 +18,15 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import utilities.EnvironmentConfig;
 import utilities.PropertiesConfig;
 
-import java.io.File;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -42,23 +46,27 @@ public class BaseTest {
     }
 
     protected WebDriver openBrowserAndNavigateToUrl(String browserName, String url) {
-        BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
-        switch (browserList) {
-            case FIREFOX -> driver = new FirefoxDriver();
-            case CHROME -> driver = new ChromeDriver();
-            case EDGE -> driver = new EdgeDriver();
-            case FIREFOX_HEADLESS -> driver = new FirefoxDriver(new FirefoxOptions().addArguments("--headless"));
-            case CHROME_HEADLESS -> driver = new ChromeDriver(new ChromeOptions().addArguments("--headless=new"));
-            case EDGE_HEADLESS -> driver = new EdgeDriver(new EdgeOptions().addArguments("--headless=new"));
-            case CHROME_PROFILE -> driver = new ChromeDriver(new ChromeOptions()
-                    .addArguments("--user-data-dir=C:\\Users\\HAIPH\\AppData\\Local\\Google\\Chrome\\User Data\\")
-                    .addArguments("--profile-directory=Default"));
-            default -> throw new RuntimeException("Browser is not valid");
-        }
+        driver = createDriver(browserName);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT));
         driver.get(url);
         return driver;
+    }
+
+    private WebDriver createDriver(String browserName) {
+        BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
+        return switch (browserList) {
+            case FIREFOX -> new FirefoxDriver();
+            case CHROME -> new ChromeDriver();
+            case EDGE -> new EdgeDriver();
+            case FIREFOX_HEADLESS -> new FirefoxDriver(new FirefoxOptions().addArguments("--headless"));
+            case CHROME_HEADLESS -> new ChromeDriver(new ChromeOptions().addArguments("--headless=new"));
+            case EDGE_HEADLESS -> new EdgeDriver(new EdgeOptions().addArguments("--headless=new"));
+            case CHROME_PROFILE -> new ChromeDriver(new ChromeOptions()
+                    .addArguments("--user-data-dir=C:\\Users\\HAIPH\\AppData\\Local\\Google\\Chrome\\User Data\\")
+                    .addArguments("--profile-directory=Default"));
+            default -> throw new RuntimeException("Browser is not valid");
+        };
     }
 
     protected PropertiesConfig getEnvironment() {
@@ -73,12 +81,13 @@ public class BaseTest {
     }
 
     @BeforeSuite
-    protected void clearReport() {
+    protected void clearReports() {
         try {
-            File[] listOfFiles = new File(GlobalConstants.ALLURE_RESULTS_FOLDER_PATH).listFiles();
-            for (File file : listOfFiles) {
-                if (file.isFile() && !file.getName().equals("environment.properties")) {
-                    file.delete();
+            Path folderPath = Paths.get(GlobalConstants.ALLURE_RESULTS_FOLDER_PATH);
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath, entry ->
+                    Files.isRegularFile(entry) && !entry.getFileName().toString().equals("environment.properties"))) {
+                for (Path entry : stream) {
+                    Files.delete(entry);
                 }
             }
         } catch (Exception e) {
@@ -87,7 +96,33 @@ public class BaseTest {
     }
 
     @AfterClass(alwaysRun = true)
-    protected void closeBrowserDriver() {
+    protected void quitDriver() {
+        if (driver != null) {
+            String driverInstanceName = driver.toString();
+            driver.manage().deleteAllCookies();
+            driver.quit();
+            log.info("{} was quited.", driverInstanceName);
+        }
+    }
+
+    @AfterSuite
+    protected void killAllDrivers() {
+        String[] browserDrivers = {"chromedriver", "geckodriver", "msedgedriver", "safaridriver"};
+        for (String browserDriver : browserDrivers) {
+            String cmd = GlobalConstants.OS_NAME.contains("Window") ?
+                    "taskkill /F /FI \"IMAGENAME eq " + browserDriver + "*\"" :
+                    "pkill " + browserDriver;
+            try {
+                Process process = Runtime.getRuntime().exec(cmd);
+                process.waitFor();
+            } catch (Exception e) {
+                log.error("An error occurred while killing browser drivers", e);
+            }
+        }
+        log.info("All browser drivers were killed.");
+    }
+
+    /*protected void closeBrowserDriver() {
         String driverInstanceName = driver.toString();
         log.info("OS name = {}", GlobalConstants.OS_NAME);
         log.info("Driver instance name = {}", driverInstanceName);
@@ -123,10 +158,7 @@ public class BaseTest {
         } catch (Exception e) {
             log.error("An error occurred while closing the browser driver", e);
         }
-    }
-
-
-    /*** Modify verification methods ***/
+    }*/
 
     protected boolean verifyTrue(boolean condition) {
         boolean status = true;
@@ -184,30 +216,30 @@ public class BaseTest {
         return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
     }
 
+    protected static class DataGeneration {
 
-    /*** Generate random test data ***/
+        public static long getRandomNumber(int min, int max) {
+            Random rnd = new Random();
+            return min + rnd.nextInt(max - min);
+        }
 
-    protected long getRandomNumber(int min, int max) {
-        Random rnd = new Random();
-        return min + rnd.nextInt(max - min);
-    }
+        public static long getRandomNumberByDateTime() {
+            return Calendar.getInstance().getTimeInMillis(); // Unix Epoch
+        }
 
-    protected long getRandomNumberByDateTime() {
-        return Calendar.getInstance().getTimeInMillis(); // Unix Epoch
-    }
+        public static String getRandomEmailByTimestamp(String prefix, WebDriver driver) {
+            SimpleDateFormat sdf = new SimpleDateFormat("_yyyyMMdd_HHmmss_");
+            String timestamp = sdf.format(new Date());
+            return removeDiacritics(prefix) + timestamp
+                    + BasePage.getCurrentBrowserName(driver).toLowerCase() + "@gmail.com";
+        }
 
-    protected String getRandomEmailByTimestamp(String prefix, WebDriver driver) {
-        SimpleDateFormat sdf = new SimpleDateFormat("_yyyyMMdd_HHmmss_");
-        String timestamp = sdf.format(new Date());
-        return removeDiacritics(prefix) + timestamp
-                + BasePage.getCurrentBrowserName(driver).toLowerCase() + "@gmail.com";
-    }
-
-    private String removeDiacritics(String str) {
-        str = str.replace("Đ", "D").replace("đ", "d");
-        String normalized = Normalizer.normalize(str, Normalizer.Form.NFD);
-        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(normalized).replaceAll("").toLowerCase();
+        private static String removeDiacritics(String str) {
+            str = str.replace("Đ", "D").replace("đ", "d");
+            String normalized = Normalizer.normalize(str, Normalizer.Form.NFD);
+            Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+            return pattern.matcher(normalized).replaceAll("").toLowerCase();
+        }
     }
 
 }

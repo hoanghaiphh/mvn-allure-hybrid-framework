@@ -38,7 +38,7 @@ public class Manage_Test_Data_POJO extends BaseTest {
         String lastName = fakerVi.getLastname();
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
-        userInfo.setEmailAddress(getRandomEmailByTimestamp(firstName + lastName, driver));
+        userInfo.setEmailAddress(DataGeneration.getRandomEmailByTimestamp(firstName + lastName, driver));
 
         FakerConfig fakerDefault = FakerConfig.getData();
         userInfo.setCompanyName(fakerDefault.getCompanyName());

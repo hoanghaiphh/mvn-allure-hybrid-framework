@@ -39,7 +39,7 @@ public class Manage_Test_Data_Json extends BaseTest {
 
         userInfo = UserInfoJson.getUserInfo();
         if (userInfo != null) {
-            userInfo.setRandomEmail(getRandomEmailByTimestamp("test", driver));
+            userInfo.setRandomEmail(DataGeneration.getRandomEmailByTimestamp("test", driver));
 
             // testJsonReader
             System.out.println(Arrays.toString(userInfo.getLanguages()));
