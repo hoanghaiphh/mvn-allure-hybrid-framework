@@ -14,8 +14,8 @@ import pageObjects.nopcommerce.user.HomePageObject;
 import pageObjects.nopcommerce.user.LoginPageObject;
 import pageObjects.nopcommerce.user.RegisterPageObject;
 import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
-import testData.MockarooJson;
-import testData.MockarooJson1;
+import testData.UserInfoJson1;
+import testData.UserInfoJson2;
 import testData.UserInfoJson;
 
 import java.util.Arrays;
@@ -38,37 +38,35 @@ public class Manage_Test_Data_Json extends BaseTest {
         homePage = PageGenerator.getHomePage(driver);
 
         userInfo = UserInfoJson.getUserInfo();
-        if (userInfo != null) {
-            userInfo.setRandomEmail(DataGeneration.getRandomEmailByTimestamp("test", driver));
+        if (userInfo != null) userInfo.setRandomEmail(DataGeneration.getRandomEmailByTimestamp("test", driver));
+    }
 
-            // testJsonReader
-            System.out.println(Arrays.toString(userInfo.getLanguages()));
-            System.out.println(userInfo.getBuildTools());
-        }
+    @Test /*test Json Reader*/
+    public void User_00_Test_Json_Reader() {
+        System.out.println(Arrays.toString(userInfo.getLanguages()));
+        System.out.println(userInfo.getBuildTools());
 
-        // testJsonReader
-        MockarooJson mockaroo = MockarooJson.getUserInfo();
-        if (mockaroo != null) {
-            mockaroo.getUsers().forEach(userInfo -> System.out.println(
+        UserInfoJson1 json1 = UserInfoJson1.getUserInfo();
+        if (json1 != null) {
+            json1.getUsers().forEach(userInfo -> System.out.println(
                     "Full Name: " + userInfo.getFirstName() + " " + userInfo.getLastName()
                             + "\nCompany Nane: " + userInfo.getCompany() + "\n"));
 
-            int randomIndex = new Random().nextInt(mockaroo.getUsers().size());
-            MockarooJson.User randomUser = mockaroo.getUsers().get(randomIndex);
+            int randomIndex = new Random().nextInt(json1.getUsers().size());
+            UserInfoJson1.User randomUser = json1.getUsers().get(randomIndex);
             System.out.println("User " + randomIndex
                     + ":\nFull Name: " + randomUser.getFirstName() + " " + randomUser.getLastName()
                     + "\tCompany Name: " + randomUser.getCompany() + "\n");
         }
 
-        // testJsonReader
-        List<MockarooJson1.User> mockaroo1 = MockarooJson1.getUserInfo();
-        if (mockaroo1 != null) {
-            mockaroo1.forEach(userInfo -> System.out.println(
+        List<UserInfoJson2.User> json2 = UserInfoJson2.getUserInfo();
+        if (json2 != null) {
+            json2.forEach(userInfo -> System.out.println(
                     "Full Name: " + userInfo.getFirstName() + " " + userInfo.getLastName()
                             + "\nCompany Nane: " + userInfo.getCompany() + "\n"));
 
-            int randomIndex = new Random().nextInt(mockaroo1.size());
-            MockarooJson1.User randomUser = mockaroo1.get(randomIndex);
+            int randomIndex = new Random().nextInt(json2.size());
+            UserInfoJson2.User randomUser = json2.get(randomIndex);
             System.out.println("User " + randomIndex
                     + ":\nFull Name: " + randomUser.getFirstName() + " " + randomUser.getLastName()
                     + "\tCompany Name: " + randomUser.getCompany() + "\n");

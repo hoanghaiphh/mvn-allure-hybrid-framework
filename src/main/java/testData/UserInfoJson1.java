@@ -4,22 +4,23 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 
-import java.net.URL;
+import java.io.InputStream;
 import java.util.List;
 
-public class MockarooJson {
+public class UserInfoJson1 {
 
-    public static MockarooJson getUserInfo() {
-        try {
+    public static UserInfoJson1 getUserInfo() {
+        try (InputStream inputStream = UserInfoJson1.class.getClassLoader()
+                .getResourceAsStream("testData/testDataUserInfo1.json")) {
+            if (inputStream == null) throw new RuntimeException("Không tìm thấy file!");
+
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-            URL jsonFile = MockarooJson.class.getClassLoader().getResource("testData/mockaroo.json");
-            return objectMapper.readValue(jsonFile, MockarooJson.class);
+            return objectMapper.readValue(inputStream, UserInfoJson1.class);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 

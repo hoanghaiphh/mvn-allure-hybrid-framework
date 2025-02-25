@@ -5,22 +5,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.net.URL;
+import java.io.InputStream;
 import java.util.List;
 
 public class UserInfoJson {
 
     public static UserInfoJson getUserInfo() {
-        try {
+        try (InputStream inputStream = UserInfoJson.class.getClassLoader()
+                .getResourceAsStream("testData/testDataUserInfo.json")) {
+            if (inputStream == null) throw new RuntimeException("Không tìm thấy file!");
+
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-            URL jsonFile = UserInfoJson.class.getClassLoader().getResource("testData/testDataUserInfo.json");
-            return objectMapper.readValue(jsonFile, UserInfoJson.class);
+            return objectMapper.readValue(inputStream, UserInfoJson.class);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
