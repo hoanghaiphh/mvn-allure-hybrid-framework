@@ -10,21 +10,21 @@
     <test name="Run on Firefox browser">
         <parameter name="browser" value="Firefox"/>
         <classes>
-            <class name="saucedemo.Sort_Data"/>
+            <class name="sortData.Sort_Data"/>
         </classes>
     </test>
 
     <test name="Run on Chrome browser">
         <parameter name="browser" value="Chrome"/>
         <classes>
-            <class name="saucedemo.Sort_Data"/>
+            <class name="sortData.Sort_Data"/>
         </classes>
     </test>
 
     <test name="Run on Edge browser">
         <parameter name="browser" value="Edge"/>
         <classes>
-            <class name="saucedemo.Sort_Data"/>
+            <class name="sortData.Sort_Data"/>
         </classes>
     </test>
 

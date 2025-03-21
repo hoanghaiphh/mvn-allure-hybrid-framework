@@ -1,4 +1,4 @@
-package nopcommerce.user;
+package manageTestData;
 
 import commons.BaseTest;
 import commons.GlobalConstants;

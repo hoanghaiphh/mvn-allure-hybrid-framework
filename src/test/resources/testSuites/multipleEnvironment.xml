@@ -10,42 +10,42 @@
     <test name="Multiple_Environment_Properties - Run on Firefox browser">
         <parameter name="browser" value="Firefox"/>
         <classes>
-            <class name="nopcommerce.user.Multiple_Environment_Properties"/>
+            <class name="multipleEnvironment.Multiple_Environment_Properties"/>
         </classes>
     </test>
 
     <test name="Multiple_Environment_Properties - Run on Chrome browser">
         <parameter name="browser" value="Chrome"/>
         <classes>
-            <class name="nopcommerce.user.Multiple_Environment_Properties"/>
+            <class name="multipleEnvironment.Multiple_Environment_Properties"/>
         </classes>
     </test>
 
     <test name="Multiple_Environment_Properties - Run on Edge browser">
         <parameter name="browser" value="Edge"/>
         <classes>
-            <class name="nopcommerce.user.Multiple_Environment_Properties"/>
+            <class name="multipleEnvironment.Multiple_Environment_Properties"/>
         </classes>
     </test>
 
     <test name="Multiple_Environment_Owner - Run on Firefox browser">
         <parameter name="browser" value="Firefox"/>
         <classes>
-            <class name="nopcommerce.user.Multiple_Environment_Owner"/>
+            <class name="multipleEnvironment.Multiple_Environment_Owner"/>
         </classes>
     </test>
 
     <test name="Multiple_Environment_Owner - Run on Chrome browser">
         <parameter name="browser" value="Chrome"/>
         <classes>
-            <class name="nopcommerce.user.Multiple_Environment_Owner"/>
+            <class name="multipleEnvironment.Multiple_Environment_Owner"/>
         </classes>
     </test>
 
     <test name="Multiple_Environment_Owner - Run on Edge browser">
         <parameter name="browser" value="Edge"/>
         <classes>
-            <class name="nopcommerce.user.Multiple_Environment_Owner"/>
+            <class name="multipleEnvironment.Multiple_Environment_Owner"/>
         </classes>
     </test>
 

@@ -1,7 +1,6 @@
-package nopcommerce.user;
+package manageTestData;
 
 import commons.BaseTest;
-import utilities.FakerConfig;
 import commons.GlobalConstants;
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
@@ -15,34 +14,26 @@ import pageObjects.nopcommerce.user.HomePageObject;
 import pageObjects.nopcommerce.user.LoginPageObject;
 import pageObjects.nopcommerce.user.RegisterPageObject;
 import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
-import testData.UserInfoPOJO;
+import utilities.ExcelConfig;
+
+import java.util.Map;
 
 @Feature("User")
-public class Manage_Test_Data_POJO extends BaseTest {
+public class Manage_Test_Data_Excel extends BaseTest {
     private CustomerInfoPageObject customerInfoPage;
     private HomePageObject homePage;
     private RegisterPageObject registerPage;
     private LoginPageObject loginPage;
 
-    private UserInfoPOJO userInfo;
+    private Map<String, String> userInfo;
 
     @Parameters("browser")
     @BeforeClass
     public void beforeClass(String browserName) {
         driver = initDriverAndOpenUrl(browserName, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
-        userInfo = UserInfoPOJO.getUserInfo();
-
-        FakerConfig fakerVi = FakerConfig.getData("vi");
-        String firstName = fakerVi.getFirstname();
-        String lastName = fakerVi.getLastname();
-        userInfo.setFirstName(firstName);
-        userInfo.setLastName(lastName);
-        userInfo.setEmailAddress(DataGeneration.getRandomEmailByTimestamp(firstName + lastName, driver));
-
-        FakerConfig fakerDefault = FakerConfig.getData();
-        userInfo.setCompanyName(fakerDefault.getCompanyName());
-        userInfo.setPassword(fakerDefault.getPassword());
+        userInfo = ExcelConfig.getExcelData()
+                .getRowData("testDataUserInfo.xlsx", "Sheet1", 1);
     }
 
     @Description("User_01_Register")
@@ -78,9 +69,9 @@ public class Manage_Test_Data_POJO extends BaseTest {
         customerInfoPage = (CustomerInfoPageObject) homePage.clickOnHeaderLink("My account");
 
         verifyTrue(customerInfoPage.isGenderMaleSelected());
-        verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getFirstName());
-        verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
-        verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.getCompanyName());
+        verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.get("firstName"));
+        verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.get("lastName"));
+        verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.get("company"));
     }
 
 }

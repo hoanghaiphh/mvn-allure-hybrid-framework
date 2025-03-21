@@ -1,4 +1,4 @@
-package saucedemo;
+package sortData;
 
 import commons.BaseTest;
 import commons.GlobalConstants;

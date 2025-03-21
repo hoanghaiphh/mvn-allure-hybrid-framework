@@ -1,4 +1,4 @@
-package nopcommerce.user;
+package multipleEnvironment;
 
 import commons.BaseTest;
 import org.testng.annotations.BeforeClass;
