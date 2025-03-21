@@ -10,7 +10,9 @@ public class Multiple_Environment_Owner extends BaseTest {
     @Parameters("browser")
     @BeforeClass
     public void beforeClass(String browserName) {
-        driver = openBrowserAndNavigateToUrl(browserName, getEnvironmentOwner().getUrl());
+        driver = initDriverAndOpenUrl(
+                browserName,
+                getEnvironmentOwner().getUrl());
     }
 
     @Test

@@ -6,15 +6,17 @@ import lombok.Getter;
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
@@ -23,6 +25,8 @@ import org.testng.annotations.BeforeSuite;
 import utilities.EnvironmentConfig;
 import utilities.PropertiesConfig;
 
+import java.net.InetAddress;
+import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,28 +49,75 @@ public class BaseTest {
         log = LogManager.getLogger(getClass());
     }
 
-    protected WebDriver openBrowserAndNavigateToUrl(String browserName, String url) {
-        driver = createDriver(browserName);
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT));
-        driver.get(url);
-        return driver;
-    }
-
-    private WebDriver createDriver(String browserName) {
+    protected WebDriver initDriverAndOpenUrl(String browserName, String url) {
         BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
-        return switch (browserList) {
+        WebDriver driver = switch (browserList) {
             case FIREFOX -> new FirefoxDriver();
             case CHROME -> new ChromeDriver();
             case EDGE -> new EdgeDriver();
+            case SAFARI -> new SafariDriver();
             case FIREFOX_HEADLESS -> new FirefoxDriver(new FirefoxOptions().addArguments("--headless"));
             case CHROME_HEADLESS -> new ChromeDriver(new ChromeOptions().addArguments("--headless=new"));
             case EDGE_HEADLESS -> new EdgeDriver(new EdgeOptions().addArguments("--headless=new"));
-            case CHROME_PROFILE -> new ChromeDriver(new ChromeOptions()
-                    .addArguments("--user-data-dir=C:\\Users\\HAIPH\\AppData\\Local\\Google\\Chrome\\User Data\\")
-                    .addArguments("--profile-directory=Default"));
             default -> throw new RuntimeException("Browser is not valid");
         };
+
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT));
+        driver.get(url);
+
+        return driver;
+    }
+
+    protected WebDriver initDriverAndOpenUrl(String browserName, String osName, String url) {
+        OSList osList = OSList.valueOf(osName.toUpperCase());
+        Platform platform = switch (osList) {
+            case WINDOWS -> Platform.WINDOWS;
+            case MAC -> Platform.MAC;
+            case LINUX -> Platform.LINUX;
+        };
+
+        Capabilities capabilities;
+        BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
+        switch (browserList) {
+            case FIREFOX:
+                FirefoxOptions fOptions = new FirefoxOptions();
+                fOptions.setCapability(CapabilityType.PLATFORM_NAME, platform);
+                capabilities = fOptions;
+                break;
+            case CHROME:
+                ChromeOptions cOptions = new ChromeOptions();
+                cOptions.setCapability(CapabilityType.PLATFORM_NAME, platform);
+                capabilities = cOptions;
+                break;
+            case EDGE:
+                EdgeOptions eOptions = new EdgeOptions();
+                eOptions.setCapability(CapabilityType.PLATFORM_NAME, platform);
+                capabilities = eOptions;
+                break;
+            case SAFARI:
+                SafariOptions sOptions = new SafariOptions();
+                sOptions.setCapability(CapabilityType.PLATFORM_NAME, platform);
+                capabilities = sOptions;
+                break;
+            default:
+                throw new IllegalArgumentException("Browser is not valid!");
+        }
+
+        WebDriver driver;
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+            URL gridUrl = new URL("http://" + ip.getHostAddress() + ":4444");
+            driver = new RemoteWebDriver(gridUrl, capabilities);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT));
+        driver.get(url);
+
+        return driver;
     }
 
     protected PropertiesConfig getEnvironment() {

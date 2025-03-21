@@ -11,4 +11,5 @@ public class GlobalConstants {
     public static final long LONG_TIMEOUT = 30;
 
     public static final String ALLURE_RESULTS_FOLDER_PATH = PROJECT_PATH + "/allure-results/";
+    public static final String BROWSER_LOGS_FOLDER_PATH = PROJECT_PATH + "/browserLogs/";
 }

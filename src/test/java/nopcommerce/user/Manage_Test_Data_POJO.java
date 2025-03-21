@@ -29,7 +29,7 @@ public class Manage_Test_Data_POJO extends BaseTest {
     @Parameters("browser")
     @BeforeClass
     public void beforeClass(String browserName) {
-        driver = openBrowserAndNavigateToUrl(browserName, GlobalConstants.NOPCOMMERCE_LOCAL);
+        driver = initDriverAndOpenUrl(browserName, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
         userInfo = UserInfoPOJO.getUserInfo();
 

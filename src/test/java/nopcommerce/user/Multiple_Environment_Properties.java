@@ -10,7 +10,9 @@ public class Multiple_Environment_Properties extends BaseTest {
     @Parameters("browser")
     @BeforeClass
     public void beforeClass(String browserName) {
-        driver = openBrowserAndNavigateToUrl(browserName, getEnvironment().getPropertyValue("App.Url"));
+        driver = initDriverAndOpenUrl(
+                browserName,
+                getEnvironment().getPropertyValue("App.Url"));
     }
 
     @Test

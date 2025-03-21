@@ -13,6 +13,7 @@ target/
 *.ipr
 allure-results/*.json
 allure-results/*-attachment
+browserLogs/
 
 ### Eclipse ###
 .apt_generated

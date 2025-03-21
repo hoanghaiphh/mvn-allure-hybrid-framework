@@ -1,0 +1,2 @@
+java -jar selenium-server-4.29.0.jar hub
+pause
