@@ -3,8 +3,8 @@
 <suite name="NopCommerce Automation Testing" parallel="tests" thread-count="3">
 
     <listeners>
-        <listener class-name="commons.MethodListener"/>
-        <listener class-name="commons.AllureListener"/>
+        <listener class-name="reportConfigs.MethodListener"/>
+        <listener class-name="reportConfigs.AllureListener"/>
     </listeners>
 
     <test name="Manage_Test_Data_POJO - Run on Firefox browser">

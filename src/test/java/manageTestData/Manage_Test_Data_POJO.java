@@ -1,6 +1,8 @@
 package manageTestData;
 
 import commons.BaseTest;
+import org.openqa.selenium.WebDriver;
+import reportConfigs.SoftVerification;
 import utilities.FakerConfig;
 import commons.GlobalConstants;
 import io.qameta.allure.Description;
@@ -16,6 +18,7 @@ import pageObjects.nopcommerce.user.LoginPageObject;
 import pageObjects.nopcommerce.user.RegisterPageObject;
 import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
 import testData.UserInfoPOJO;
+import utilities.RandomData;
 
 @Feature("User")
 public class Manage_Test_Data_POJO extends BaseTest {
@@ -24,13 +27,19 @@ public class Manage_Test_Data_POJO extends BaseTest {
     private RegisterPageObject registerPage;
     private LoginPageObject loginPage;
 
+    private WebDriver driver;
+    private SoftVerification soft;
     private UserInfoPOJO userInfo;
 
     @Parameters("browser")
     @BeforeClass
     public void beforeClass(String browserName) {
-        driver = initDriverAndOpenUrl(browserName, GlobalConstants.NOPCOMMERCE_LOCAL);
+        driver = initDriver(browserName);
+        openUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
+
+        soft = SoftVerification.getSoftVerification();
+
         userInfo = UserInfoPOJO.getUserInfo();
 
         FakerConfig fakerVi = FakerConfig.getData("vi");
@@ -38,7 +47,8 @@ public class Manage_Test_Data_POJO extends BaseTest {
         String lastName = fakerVi.getLastname();
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
-        userInfo.setEmailAddress(DataGeneration.getRandomEmailByTimestamp(firstName + lastName, driver));
+        userInfo.setEmailAddress(
+                RandomData.getRandomData().getRandomEmailByTimestamp(firstName + lastName, driver));
 
         FakerConfig fakerDefault = FakerConfig.getData();
         userInfo.setCompanyName(fakerDefault.getCompanyName());
@@ -55,7 +65,7 @@ public class Manage_Test_Data_POJO extends BaseTest {
 
         registerPage.clickOnRegisterButton();
 
-        verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
+        soft.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
     }
 
     @Description("User_02_Login")
@@ -68,7 +78,7 @@ public class Manage_Test_Data_POJO extends BaseTest {
 
         homePage = loginPage.loginToSystem(userInfo);
 
-        verifyTrue(homePage.isMyAccountLinkDisplayed());
+        soft.verifyTrue(homePage.isMyAccountLinkDisplayed());
     }
 
     @Description("User_03_MyAccount")
@@ -77,10 +87,10 @@ public class Manage_Test_Data_POJO extends BaseTest {
     public void User_03_MyAccount() {
         customerInfoPage = (CustomerInfoPageObject) homePage.clickOnHeaderLink("My account");
 
-        verifyTrue(customerInfoPage.isGenderMaleSelected());
-        verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getFirstName());
-        verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
-        verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.getCompanyName());
+        soft.verifyTrue(customerInfoPage.isGenderMaleSelected());
+        soft.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getFirstName());
+        soft.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
+        soft.verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.getCompanyName());
     }
 
 }

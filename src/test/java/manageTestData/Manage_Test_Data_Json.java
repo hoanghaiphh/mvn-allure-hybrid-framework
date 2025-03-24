@@ -6,6 +6,7 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
+import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
@@ -14,9 +15,11 @@ import pageObjects.nopcommerce.user.HomePageObject;
 import pageObjects.nopcommerce.user.LoginPageObject;
 import pageObjects.nopcommerce.user.RegisterPageObject;
 import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
+import reportConfigs.SoftVerification;
 import testData.UserInfoJson1;
 import testData.UserInfoJson2;
 import testData.UserInfoJson;
+import utilities.RandomData;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,16 +32,22 @@ public class Manage_Test_Data_Json extends BaseTest {
     private RegisterPageObject registerPage;
     private LoginPageObject loginPage;
 
+    private WebDriver driver;
+    private SoftVerification soft;
     private UserInfoJson userInfo;
 
     @Parameters("browser")
     @BeforeClass
     public void beforeClass(String browserName) {
-        driver = initDriverAndOpenUrl(browserName, GlobalConstants.NOPCOMMERCE_LOCAL);
+        driver = initDriver(browserName);
+        openUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
 
+        soft = SoftVerification.getSoftVerification();
+
         userInfo = UserInfoJson.getUserInfo();
-        if (userInfo != null) userInfo.setRandomEmail(DataGeneration.getRandomEmailByTimestamp("test", driver));
+        if (userInfo != null) userInfo.setRandomEmail(
+                RandomData.getRandomData().getRandomEmailByTimestamp("test", driver));
     }
 
     @Test /*test Json Reader*/
@@ -83,7 +92,7 @@ public class Manage_Test_Data_Json extends BaseTest {
 
         registerPage.clickOnRegisterButton();
 
-        verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
+        soft.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
     }
 
     @Description("User_02_Login")
@@ -96,7 +105,7 @@ public class Manage_Test_Data_Json extends BaseTest {
 
         homePage = loginPage.loginToSystem(userInfo);
 
-        verifyTrue(homePage.isMyAccountLinkDisplayed());
+        soft.verifyTrue(homePage.isMyAccountLinkDisplayed());
     }
 
     @Description("User_03_MyAccount")
@@ -105,10 +114,10 @@ public class Manage_Test_Data_Json extends BaseTest {
     public void User_03_MyAccount() {
         customerInfoPage = (CustomerInfoPageObject) homePage.clickOnHeaderLink("My account");
 
-        verifyTrue(customerInfoPage.isGenderMaleSelected());
-        verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getName().getFirstName());
-        verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getName().getLastName());
-        verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.getCompany());
+        soft.verifyTrue(customerInfoPage.isGenderMaleSelected());
+        soft.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getName().getFirstName());
+        soft.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getName().getLastName());
+        soft.verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.getCompany());
     }
 
 }

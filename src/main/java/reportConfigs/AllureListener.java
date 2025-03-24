@@ -1,5 +1,6 @@
-package commons;
+package reportConfigs;
 
+import commons.BaseTest;
 import io.qameta.allure.Attachment;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -33,7 +34,7 @@ public class AllureListener extends BaseTest implements ITestListener {
         String testThrowable = iTestResult.getThrowable().toString();
         attachTextLog(iTestResult.getName() + " FAILED", testThrowable);
         if (!testThrowable.contains("Verification failures") && !testThrowable.contains("Verification failure")) {
-            WebDriver driver = ((BaseTest) iTestResult.getInstance()).getDriver();
+            WebDriver driver = BaseTest.getDriverThreadLocal().get();
             attachScreenshot(iTestResult.getName(), driver);
         }
     }

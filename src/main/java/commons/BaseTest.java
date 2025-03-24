@@ -1,7 +1,5 @@
 package commons;
 
-import io.qameta.allure.Attachment;
-import io.qameta.allure.Step;
 import lombok.Getter;
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
@@ -17,12 +15,10 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.safari.SafariOptions;
-import org.testng.Assert;
-import org.testng.Reporter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
-import utilities.EnvironmentConfig;
+import utilities.OwnerConfig;
 import utilities.PropertiesConfig;
 
 import java.net.InetAddress;
@@ -31,25 +27,13 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.Normalizer;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Random;
-import java.util.regex.Pattern;
 
 public class BaseTest {
     @Getter
-    protected WebDriver driver;
+    private static ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
 
-    protected final Logger log;
-
-    protected BaseTest() {
-        log = LogManager.getLogger(getClass());
-    }
-
-    protected WebDriver initDriverAndOpenUrl(String browserName, String url) {
+    protected WebDriver initDriver(String browserName) {
         BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
         WebDriver driver = switch (browserList) {
             case FIREFOX -> new FirefoxDriver();
@@ -59,17 +43,12 @@ public class BaseTest {
             case FIREFOX_HEADLESS -> new FirefoxDriver(new FirefoxOptions().addArguments("--headless"));
             case CHROME_HEADLESS -> new ChromeDriver(new ChromeOptions().addArguments("--headless=new"));
             case EDGE_HEADLESS -> new EdgeDriver(new EdgeOptions().addArguments("--headless=new"));
-            default -> throw new RuntimeException("Browser is not valid");
         };
-
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT));
-        driver.get(url);
-
-        return driver;
+        driverThreadLocal.set(driver);
+        return driverThreadLocal.get();
     }
 
-    protected WebDriver initDriverAndOpenUrl(String browserName, String osName, String url) {
+    protected WebDriver initDriver(String browserName, String osName) {
         OSList osList = OSList.valueOf(osName.toUpperCase());
         Platform platform = switch (osList) {
             case WINDOWS -> Platform.WINDOWS;
@@ -113,22 +92,14 @@ public class BaseTest {
             throw new RuntimeException(e);
         }
 
+        driverThreadLocal.set(driver);
+        return driverThreadLocal.get();
+    }
+
+    protected void openUrl(WebDriver driver, String url) {
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT));
         driver.get(url);
-
-        return driver;
-    }
-
-    protected PropertiesConfig getEnvironment() {
-        String env = System.getProperty("env", "test").toLowerCase();
-        return PropertiesConfig.getProperties(env);
-    }
-
-    protected EnvironmentConfig getEnvironmentOwner() {
-        String env = System.getProperty("env", "test").toLowerCase();
-        ConfigFactory.setProperty("environment", env);
-        return ConfigFactory.create(EnvironmentConfig.class);
     }
 
     @BeforeSuite
@@ -148,11 +119,13 @@ public class BaseTest {
 
     @AfterClass(alwaysRun = true)
     protected void quitDriver() {
+        WebDriver driver = driverThreadLocal.get();
         if (driver != null) {
             String driverInstanceName = driver.toString();
             driver.manage().deleteAllCookies();
             driver.quit();
             log.info("{} was quited.", driverInstanceName);
+            driverThreadLocal.remove();
         }
     }
 
@@ -173,124 +146,21 @@ public class BaseTest {
         log.info("All browser drivers were killed.");
     }
 
-    /*protected void closeBrowserDriver() {
-        String driverInstanceName = driver.toString();
-        log.info("OS name = {}", GlobalConstants.OS_NAME);
-        log.info("Driver instance name = {}", driverInstanceName);
-
-        String browserDriverName = null;
-        if (driverInstanceName.contains("Chrome")) {
-            browserDriverName = "chromedriver";
-        } else if (driverInstanceName.contains("Firefox")) {
-            browserDriverName = "geckodriver";
-        } else if (driverInstanceName.contains("Edge")) {
-            browserDriverName = "msedgedriver";
-        } else if (driverInstanceName.contains("Opera")) {
-            browserDriverName = "operadriver";
-        } else if (driverInstanceName.contains("Safari")) {
-            browserDriverName = "safaridriver";
-        }
-
-        String cmd = null;
-        if (GlobalConstants.OS_NAME.contains("Window")) {
-            cmd = "taskkill /F /FI \"IMAGENAME eq " + browserDriverName + "*\"";
-        } else {
-            cmd = "pkill " + browserDriverName;
-        }
-
-        if (driver != null) {
-            driver.manage().deleteAllCookies();
-            driver.quit();
-        }
-
-        try {
-            Process process = Runtime.getRuntime().exec(cmd);
-            process.waitFor();
-        } catch (Exception e) {
-            log.error("An error occurred while closing the browser driver", e);
-        }
-    }*/
-
-    protected boolean verifyTrue(boolean condition) {
-        boolean status = true;
-        try {
-            Assert.assertTrue(condition);
-            verificationPassed("");
-        } catch (Throwable t) {
-            status = false;
-            VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(), t);
-            Reporter.getCurrentTestResult().setThrowable(t);
-            verificationFailed(t.getMessage());
-        }
-        return status;
+    protected PropertiesConfig getEnvironmentProperties() {
+        String env = System.getProperty("env", "test").toLowerCase();
+        return PropertiesConfig.getProperties(env);
     }
 
-    protected boolean verifyFalse(boolean condition) {
-        boolean status = true;
-        try {
-            Assert.assertFalse(condition);
-            verificationPassed("");
-        } catch (Throwable t) {
-            status = false;
-            VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(), t);
-            Reporter.getCurrentTestResult().setThrowable(t);
-            verificationFailed(t.getMessage());
-        }
-        return status;
+    protected OwnerConfig getEnvironmentOwner() {
+        String env = System.getProperty("env", "test").toLowerCase();
+        ConfigFactory.setProperty("environment", env);
+        return ConfigFactory.create(OwnerConfig.class);
     }
 
-    protected boolean verifyEquals(Object actual, Object expected) {
-        boolean status = true;
-        try {
-            Assert.assertEquals(actual, expected);
-            verificationPassed(": value = " + expected);
-        } catch (Throwable t) {
-            status = false;
-            VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(), t);
-            Reporter.getCurrentTestResult().setThrowable(t);
-            verificationFailed(t.getMessage());
-        }
-        return status;
-    }
+    protected final Logger log;
 
-    @Step("=== VERIFICATION PASSED{0}")
-    private void verificationPassed(Object value) {
-    }
-
-    @Step("=== VERIFICATION FAILED: {0}")
-    private void verificationFailed(String failureMessage) {
-        allureAttachScreenshot();
-    }
-
-    @Attachment(value = "verification failure screenshot", type = "image/png")
-    private byte[] allureAttachScreenshot() {
-        return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-    }
-
-    protected static class DataGeneration {
-
-        public static long getRandomNumber(int min, int max) {
-            Random rnd = new Random();
-            return min + rnd.nextInt(max - min);
-        }
-
-        public static long getRandomNumberByDateTime() {
-            return Calendar.getInstance().getTimeInMillis(); // Unix Epoch
-        }
-
-        public static String getRandomEmailByTimestamp(String prefix, WebDriver driver) {
-            SimpleDateFormat sdf = new SimpleDateFormat("_yyyyMMdd_HHmmss_");
-            String timestamp = sdf.format(new Date());
-            return removeDiacritics(prefix) + timestamp
-                    + BasePage.getCurrentBrowserName(driver).toLowerCase() + "@gmail.com";
-        }
-
-        private static String removeDiacritics(String str) {
-            str = str.replace("Đ", "D").replace("đ", "d");
-            String normalized = Normalizer.normalize(str, Normalizer.Form.NFD);
-            Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-            return pattern.matcher(normalized).replaceAll("").toLowerCase();
-        }
+    protected BaseTest() {
+        log = LogManager.getLogger(getClass());
     }
 
 }

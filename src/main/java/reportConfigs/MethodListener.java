@@ -1,4 +1,4 @@
-package commons;
+package reportConfigs;
 
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
