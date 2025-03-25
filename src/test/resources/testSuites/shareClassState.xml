@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="NopCommerce Automation Testing" parallel="tests" thread-count="3">
+
+    <listeners>
+        <listener class-name="reportConfigs.MethodListener"/>
+        <listener class-name="reportConfigs.AllureListener"/>
+    </listeners>
+
+    <test name="Run on Firefox browser" preserve-order="true">
+        <parameter name="browser" value="Firefox"/>
+        <classes>
+            <class name="shareClassState.Register_And_Login"/>
+            <class name="shareClassState.My_Account"/>
+        </classes>
+    </test>
+
+    <test name="Run on Chrome browser">
+        <parameter name="browser" value="Chrome"/>
+        <classes>
+            <class name="shareClassState.Register_And_Login"/>
+            <class name="shareClassState.My_Account"/>
+        </classes>
+    </test>
+
+    <test name="Run on Edge browser">
+        <parameter name="browser" value="Edge"/>
+        <classes>
+            <class name="shareClassState.Register_And_Login"/>
+            <class name="shareClassState.My_Account"/>
+        </classes>
+    </test>
+
+</suite>
