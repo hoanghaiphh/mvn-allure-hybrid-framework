@@ -11,6 +11,7 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
+import utilities.FilePathUtils;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -21,21 +22,11 @@ public class Extension {
     private WebDriver driver;
     private WebDriverWait explicitlyWait;
 
-    private Path getBrowserExtensionPath(String fileName) {
-        Path extensionPath;
-        try {
-            URL resourceUrl = getClass().getClassLoader().getResource("browserExtensions/" + fileName);
-            extensionPath = Paths.get(resourceUrl.toURI());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return extensionPath;
-    }
-
     // Selenium version 3.x
     public void firefoxExtensionsOld() {
         FirefoxProfile firefoxProfile = new FirefoxProfile();
-        firefoxProfile.addExtension(getBrowserExtensionPath("wappalyzer-firefox.xpi").toFile());
+        firefoxProfile.addExtension(
+                FilePathUtils.getFileFromClasspath("browserExtensions","wappalyzer-firefox.xpi"));
         FirefoxOptions firefoxOptions = new FirefoxOptions();
         firefoxOptions.setProfile(firefoxProfile);
         driver = new FirefoxDriver(firefoxOptions);
@@ -48,7 +39,8 @@ public class Extension {
     public void firefoxExtensions() throws InterruptedException {
         driver = new FirefoxDriver();
         FirefoxDriver fDriver = (FirefoxDriver) driver;
-        fDriver.installExtension(getBrowserExtensionPath("wappalyzer-firefox.xpi"));
+        fDriver.installExtension(
+                FilePathUtils.getFilePathFromClasspath("browserExtensions","wappalyzer-firefox.xpi"));
         driver = fDriver;
 
         driver.get("https://www.facebook.com/");
@@ -65,7 +57,8 @@ public class Extension {
     @Test
     public void chromeExtensions() throws InterruptedException {
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addExtensions(getBrowserExtensionPath("wappalyzer-chrome.crx").toFile());
+        chromeOptions.addExtensions(
+                FilePathUtils.getFileFromClasspath("browserExtensions","wappalyzer-chrome.crx"));
         driver = new ChromeDriver(chromeOptions);
 
         driver.get("https://www.facebook.com/");
@@ -82,7 +75,8 @@ public class Extension {
     @Test
     public void edgeExtensions() throws InterruptedException {
         EdgeOptions edgeOptions = new EdgeOptions();
-        edgeOptions.addExtensions(getBrowserExtensionPath("wappalyzer-chrome.crx").toFile());
+        edgeOptions.addExtensions(
+                FilePathUtils.getFileFromClasspath("browserExtensions","wappalyzer-chrome.crx"));
         driver = new EdgeDriver(edgeOptions);
 
         driver.get("https://www.facebook.com/");

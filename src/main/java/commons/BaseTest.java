@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.HashMap;
 
 public class BaseTest {
     @Getter
@@ -88,6 +89,29 @@ public class BaseTest {
             InetAddress ip = InetAddress.getLocalHost();
             URL gridUrl = new URL("http://" + ip.getHostAddress() + ":4444");
             driver = new RemoteWebDriver(gridUrl, capabilities);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        driverThreadLocal.set(driver);
+        return driverThreadLocal.get();
+    }
+
+    protected WebDriver initDriver(String browserName, String browserVersion, String osName, String osVersion) {
+        MutableCapabilities capabilities = new MutableCapabilities();
+        HashMap<String, Object> bstackOptions = new HashMap<String, Object>();
+        capabilities.setCapability("browserName", browserName);
+        bstackOptions.put("os", osName);
+        bstackOptions.put("osVersion", osVersion);
+        bstackOptions.put("browserVersion", browserVersion);
+        bstackOptions.put("userName", GlobalConstants.BROWSERSTACK_USERNAME);
+        bstackOptions.put("accessKey", GlobalConstants.BROWSERSTACK_ACCESS_KEY);
+        capabilities.setCapability("bstack:options", bstackOptions);
+
+        WebDriver driver;
+        try {
+            URL browserStackUrl = new URL(GlobalConstants.BROWSERSTACK_URL);
+            driver = new RemoteWebDriver(browserStackUrl, capabilities);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
