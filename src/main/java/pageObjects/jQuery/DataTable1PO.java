@@ -6,8 +6,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import pageUIs.jQuery.DataTable1PageUI;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DataTable1PO extends BasePage {
     private WebDriver driver;
@@ -23,7 +23,8 @@ public class DataTable1PO extends BasePage {
 
     public boolean isPageNumberSelected(String pageNumber) {
         waitForElementVisible(driver, DataTable1PageUI.DYNAMIC_PAGINATION_BUTTON, pageNumber);
-        return getAttributeValue(driver, DataTable1PageUI.DYNAMIC_PAGINATION_BUTTON, "class", pageNumber).endsWith("active");
+        return getAttributeValue(driver, DataTable1PageUI.DYNAMIC_PAGINATION_BUTTON, "class", pageNumber)
+                .endsWith("active");
     }
 
     public void clearAllSearchTextboxes() {
@@ -38,7 +39,6 @@ public class DataTable1PO extends BasePage {
     }
 
     public boolean isDataRowDisplayed(String female, String country, String male, String total) {
-//        waitForElementVisible(driver, HomePageUI.DYNAMIC_DATA_ROW, female, country, male, total);
         return isElementDisplayed(driver, DataTable1PageUI.DYNAMIC_DATA_ROW, female, country, male, total);
     }
 
@@ -53,21 +53,19 @@ public class DataTable1PO extends BasePage {
     }
 
     public List<String> getAllValueOfColumnName(String columnName) {
-        List<String> allValue = new ArrayList<String>();
-        List<WebElement> allCells = getListElements(driver, DataTable1PageUI.DYNAMIC_COLUMN, columnName.toLowerCase());
-        for (WebElement cell: allCells) {
-            allValue.add(cell.getText());
-        }
-        return allValue;
+        waitForAllElementsVisible(driver, DataTable1PageUI.DYNAMIC_COLUMN, columnName.toLowerCase());
+        return getListElements(driver, DataTable1PageUI.DYNAMIC_COLUMN, columnName.toLowerCase())
+                .stream()
+                .map(WebElement::getText)
+                .collect(Collectors.toList());
     }
 
     public List<String> getAllValueOfRowNumber(String rowIndex) {
-        List<String> allValue = new ArrayList<String>();
-        List<WebElement> allCells = getListElements(driver, DataTable1PageUI.DYNAMIC_ROW, rowIndex);
-        for (WebElement cell: allCells) {
-            allValue.add(cell.getText());
-        }
-        return allValue;
+        waitForAllElementsVisible(driver, DataTable1PageUI.DYNAMIC_ROW, rowIndex);
+        return getListElements(driver, DataTable1PageUI.DYNAMIC_ROW, rowIndex)
+                .stream()
+                .map(WebElement::getText)
+                .collect(Collectors.toList());
     }
 
 }

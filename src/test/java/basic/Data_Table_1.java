@@ -78,10 +78,14 @@ public class Data_Table_1 extends BaseTest {
 
         dataTable.getAllValueOfColumnName("Country");
         dataTable.getAllValueOfRowNumber("3");
-//        Assert.assertEquals(dataTable.getAllValueOfColumn("Country").get(2), dataTable.getAllValueOfRow("3").get(1));
+        Assert.assertEquals(
+                dataTable.getAllValueOfColumnName("Country").get(2),
+                dataTable.getAllValueOfRowNumber("3").get(1));
 
         dataTable.getAllValueOfColumnName("Males");
         dataTable.getAllValueOfRowNumber("5");
-//        Assert.assertEquals(dataTable.getAllValueOfColumn("Males").get(4), dataTable.getAllValueOfRow("5").get(2));
+        Assert.assertEquals(
+                dataTable.getAllValueOfColumnName("Males").get(4),
+                dataTable.getAllValueOfRowNumber("5").get(2));
     }
 }

@@ -17,7 +17,8 @@ public class DataTable2PO extends BasePage {
     }
 
     public String getIndexOfColumn(String columnName) {
-        return String.valueOf(getListElementsSize(driver, DataTable2PageUI.DYNAMIC_PRECEDING_SIBLING_OF_COLUMN, columnName) +1);
+        return String.valueOf(
+                getListElementsSize(driver, DataTable2PageUI.DYNAMIC_PRECEDING_SIBLING_OF_COLUMN, columnName) + 1);
     }
 
     public void enterValueToTextbox(String rowIndex, String columnName, String keyToSend) {
@@ -47,7 +48,7 @@ public class DataTable2PO extends BasePage {
         clearElementText(driver, dynamicLocator, rowIndex);
         if (driver.toString().toLowerCase().contains("firefox")) {
             removeAttributeInDOM(driver, dynamicLocator, "type", rowIndex);
-            String convertedDate = date.substring(6) + "-" + date.substring(0, 2) + "-" + date.substring(3,5);
+            String convertedDate = date.substring(6) + "-" + date.substring(0, 2) + "-" + date.substring(3, 5);
             sendKeysToElement(driver, dynamicLocator, convertedDate, rowIndex);
             setAttributeInDOM(driver, dynamicLocator, "type", "date", rowIndex);
         } else {
@@ -55,7 +56,8 @@ public class DataTable2PO extends BasePage {
         }
     }
 
-    public void enterAllValueToRow(String rowIndex, String company, String contactPerson, String country, boolean NPOStatus, String orderPlaced, String memberSince) {
+    public void enterAllValueToRow(String rowIndex, String company, String contactPerson, String country,
+                                   boolean NPOStatus, String orderPlaced, String memberSince) {
         enterValueToTextbox(rowIndex, "Company", company);
         enterValueToTextbox(rowIndex, "Contact Person", contactPerson);
         selectValueFromDropdown(rowIndex, country);

@@ -167,9 +167,9 @@ public class BasePage {
                 .until(ExpectedConditions.visibilityOfElementLocated(getDynamicLocator(locator, restParameter)));
     }
 
-    protected void waitForAllElementsVisible(WebDriver driver, String locator) {
+    protected void waitForAllElementsVisible(WebDriver driver, String locator, String... restParameter) {
         new WebDriverWait(driver, Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT))
-                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(getByLocator(locator)));
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(getDynamicLocator(locator, restParameter)));
     }
 
     protected void waitForElementInvisible(WebDriver driver, String locator, String... restParameter) {
