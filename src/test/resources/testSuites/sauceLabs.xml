@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="SauceLabs">
+
+    <test name="Run on Firefox latest / Linux ">
+        <parameter name="browser" value="Firefox"/>
+        <parameter name="browserVersion" value="latest"/>
+        <parameter name="platform" value="Linux"/>
+        <classes>
+            <class name="cloudTesting.SauceLabs"/>
+        </classes>
+    </test>
+
+    <test name="Run on Chrome 133 / Windows 10 ">
+        <parameter name="browser" value="Chrome"/>
+        <parameter name="browserVersion" value="133"/>
+        <parameter name="platform" value="Windows 10"/>
+        <classes>
+            <class name="cloudTesting.SauceLabs"/>
+        </classes>
+    </test>
+
+    <test name="Run on Edge latest / Windows 11 ">
+        <parameter name="browser" value="Edge"/>
+        <parameter name="browserVersion" value="latest"/>
+        <parameter name="platform" value="Windows 11"/>
+        <classes>
+            <class name="cloudTesting.SauceLabs"/>
+        </classes>
+    </test>
+
+    <test name="Run on Safari latest / Mac BigSur ">
+        <parameter name="browser" value="Safari"/>
+        <parameter name="browserVersion" value="latest"/>
+        <parameter name="platform" value="macOS 11.00"/>
+        <classes>
+            <class name="cloudTesting.SauceLabs"/>
+        </classes>
+    </test>
+
+</suite>

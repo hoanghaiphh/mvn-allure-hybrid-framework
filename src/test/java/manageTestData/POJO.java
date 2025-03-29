@@ -21,7 +21,7 @@ import testData.UserInfoPOJO;
 import utilities.RandomData;
 
 @Feature("User")
-public class Manage_Test_Data_POJO extends BaseTest {
+public class POJO extends BaseTest {
     private CustomerInfoPageObject customerInfoPage;
     private HomePageObject homePage;
     private RegisterPageObject registerPage;

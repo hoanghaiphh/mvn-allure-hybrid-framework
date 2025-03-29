@@ -27,7 +27,9 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Date;
 import java.util.HashMap;
 
 public class BaseTest {
@@ -99,7 +101,7 @@ public class BaseTest {
 
     protected WebDriver initDriver(String browserName, String browserVersion, String osName, String osVersion) {
         MutableCapabilities capabilities = new MutableCapabilities();
-        HashMap<String, Object> bstackOptions = new HashMap<String, Object>();
+        HashMap<String, Object> bstackOptions = new HashMap<>();
         capabilities.setCapability("browserName", browserName);
         bstackOptions.put("os", osName);
         bstackOptions.put("osVersion", osVersion);
@@ -112,6 +114,57 @@ public class BaseTest {
         try {
             URL browserStackUrl = new URL(GlobalConstants.BROWSERSTACK_URL);
             driver = new RemoteWebDriver(browserStackUrl, capabilities);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        driverThreadLocal.set(driver);
+        return driverThreadLocal.get();
+    }
+
+    protected WebDriver initDriver(String browserName, String browserVersion, String platform) {
+        MutableCapabilities capabilities;
+        BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
+        switch (browserList) {
+            case FIREFOX:
+                FirefoxOptions fOptions = new FirefoxOptions();
+                fOptions.setPlatformName(platform);
+                fOptions.setBrowserVersion(browserVersion);
+                capabilities = fOptions;
+                break;
+            case CHROME:
+                ChromeOptions cOptions = new ChromeOptions();
+                cOptions.setPlatformName(platform);
+                cOptions.setBrowserVersion(browserVersion);
+                capabilities = cOptions;
+                break;
+            case EDGE:
+                EdgeOptions eOptions = new EdgeOptions();
+                eOptions.setPlatformName(platform);
+                eOptions.setBrowserVersion(browserVersion);
+                capabilities = eOptions;
+                break;
+            case SAFARI:
+                SafariOptions sOptions = new SafariOptions();
+                sOptions.setPlatformName(platform);
+                sOptions.setBrowserVersion(browserVersion);
+                capabilities = sOptions;
+                break;
+            default:
+                throw new IllegalArgumentException("Browser is not valid!");
+        }
+
+        HashMap<String, String> sauceOptions = new HashMap<>();
+        sauceOptions.put("username", GlobalConstants.SAUCELABS_USERNAME);
+        sauceOptions.put("accessKey", GlobalConstants.SAUCELABS_ACCESS_KEY);
+        sauceOptions.put("build", "Build " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        sauceOptions.put("name", "Run on " + platform + " - " + browserName + " " + browserVersion);
+        capabilities.setCapability("sauce:options", sauceOptions);
+
+        WebDriver driver;
+        try {
+            URL sauceLabsUrl = new URL(GlobalConstants.SAUCELABS_URL);
+            driver = new RemoteWebDriver(sauceLabsUrl, capabilities);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

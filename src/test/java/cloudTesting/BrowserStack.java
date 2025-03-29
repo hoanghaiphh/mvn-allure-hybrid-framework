@@ -7,7 +7,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-public class Browser_Stack extends BaseTest {
+public class BrowserStack extends BaseTest {
 
     private WebDriver driver;
 

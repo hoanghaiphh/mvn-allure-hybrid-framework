@@ -1,51 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="NopCommerce Automation Testing" parallel="tests" thread-count="3">
+<suite name="Multiple Environment" parallel="tests" thread-count="3">
 
     <listeners>
         <listener class-name="reportConfigs.MethodListener"/>
         <listener class-name="reportConfigs.AllureListener"/>
     </listeners>
 
-    <test name="Multiple_Environment_Properties - Run on Firefox browser">
+    <test name="Run on Firefox browser">
         <parameter name="browser" value="Firefox"/>
         <classes>
-            <class name="multipleEnvironment.Multiple_Environment_Properties"/>
+            <class name="multipleEnvironment.Properties_Java"/>
+            <class name="multipleEnvironment.Owner_Library"/>
         </classes>
     </test>
 
-    <test name="Multiple_Environment_Properties - Run on Chrome browser">
+    <test name="Run on Chrome browser">
         <parameter name="browser" value="Chrome"/>
         <classes>
-            <class name="multipleEnvironment.Multiple_Environment_Properties"/>
+            <class name="multipleEnvironment.Properties_Java"/>
+            <class name="multipleEnvironment.Owner_Library"/>
         </classes>
     </test>
 
-    <test name="Multiple_Environment_Properties - Run on Edge browser">
+    <test name="Run on Edge browser">
         <parameter name="browser" value="Edge"/>
         <classes>
-            <class name="multipleEnvironment.Multiple_Environment_Properties"/>
-        </classes>
-    </test>
-
-    <test name="Multiple_Environment_Owner - Run on Firefox browser">
-        <parameter name="browser" value="Firefox"/>
-        <classes>
-            <class name="multipleEnvironment.Multiple_Environment_Owner"/>
-        </classes>
-    </test>
-
-    <test name="Multiple_Environment_Owner - Run on Chrome browser">
-        <parameter name="browser" value="Chrome"/>
-        <classes>
-            <class name="multipleEnvironment.Multiple_Environment_Owner"/>
-        </classes>
-    </test>
-
-    <test name="Multiple_Environment_Owner - Run on Edge browser">
-        <parameter name="browser" value="Edge"/>
-        <classes>
-            <class name="multipleEnvironment.Multiple_Environment_Owner"/>
+            <class name="multipleEnvironment.Properties_Java"/>
+            <class name="multipleEnvironment.Owner_Library"/>
         </classes>
     </test>
 

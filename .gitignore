@@ -11,8 +11,7 @@ target/
 *.iws
 *.iml
 *.ipr
-allure-results/*.json
-allure-results/*-attachment
+allure-results/
 browserLogs/
 
 ### Eclipse ###

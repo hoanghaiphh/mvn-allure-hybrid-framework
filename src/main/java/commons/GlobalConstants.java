@@ -20,6 +20,13 @@ public class GlobalConstants {
 
     public static final String BROWSERSTACK_USERNAME = "hoanghaiphan_abM5ye";
     public static final String BROWSERSTACK_ACCESS_KEY = "qD48tcbxg3mR4yCixi1y";
-    public static final String BROWSERSTACK_URL
-            = "https://" + BROWSERSTACK_USERNAME + ":" + BROWSERSTACK_ACCESS_KEY + "@hub-cloud.browserstack.com/wd/hub";
+    public static final String BROWSERSTACK_URL = "https://" + BROWSERSTACK_USERNAME + ":" + BROWSERSTACK_ACCESS_KEY
+            + "@hub-cloud.browserstack.com/wd/hub";
+
+    public static final String SAUCELABS_USERNAME = "oauth-hoanghai.phh-6f893";
+    public static final String SAUCELABS_ACCESS_KEY = "158fee65-9928-4c43-bb8b-51efef8bff13";
+    public static final String SAUCELABS_DATA_CENTER = "eu-central-1";
+    public static final String SAUCELABS_URL = "https://" + SAUCELABS_USERNAME + ":" + SAUCELABS_ACCESS_KEY
+            + "@ondemand." + SAUCELABS_DATA_CENTER + ".saucelabs.com:443/wd/hub";
+
 }

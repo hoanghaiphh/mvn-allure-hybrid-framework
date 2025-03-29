@@ -1,72 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="NopCommerce Automation Testing" parallel="tests" thread-count="3">
+<suite name="Manage Test Data" parallel="tests" thread-count="3">
 
     <listeners>
         <listener class-name="reportConfigs.MethodListener"/>
         <listener class-name="reportConfigs.AllureListener"/>
     </listeners>
 
-    <test name="Manage_Test_Data_POJO - Run on Firefox browser">
+    <test name="Run on Firefox browser">
         <parameter name="browser" value="Firefox"/>
         <classes>
-            <class name="manageTestData.Manage_Test_Data_POJO"/>
+            <class name="manageTestData.POJO"/>
+            <class name="manageTestData.Json_File"/>
+            <class name="manageTestData.Excel_File"/>
         </classes>
     </test>
 
-    <test name="Manage_Test_Data_POJO - Run on Chrome browser">
+    <test name="Run on Chrome browser">
         <parameter name="browser" value="Chrome"/>
         <classes>
-            <class name="manageTestData.Manage_Test_Data_POJO"/>
+            <class name="manageTestData.POJO"/>
+            <class name="manageTestData.Json_File"/>
+            <class name="manageTestData.Excel_File"/>
         </classes>
     </test>
 
-    <test name="Manage_Test_Data_POJO - Run on Edge browser">
+    <test name="Run on Edge browser">
         <parameter name="browser" value="Edge"/>
         <classes>
-            <class name="manageTestData.Manage_Test_Data_POJO"/>
-        </classes>
-    </test>
-
-    <test name="Manage_Test_Data_Json - Run on Firefox browser">
-        <parameter name="browser" value="Firefox"/>
-        <classes>
-            <class name="manageTestData.Manage_Test_Data_Json"/>
-        </classes>
-    </test>
-
-    <test name="Manage_Test_Data_Json - Run on Chrome browser">
-        <parameter name="browser" value="Chrome"/>
-        <classes>
-            <class name="manageTestData.Manage_Test_Data_Json"/>
-        </classes>
-    </test>
-
-    <test name="Manage_Test_Data_Json - Run on Edge browser">
-        <parameter name="browser" value="Edge"/>
-        <classes>
-            <class name="manageTestData.Manage_Test_Data_Json"/>
-        </classes>
-    </test>
-
-    <test name="Manage_Test_Data_Excel - Run on Firefox browser">
-        <parameter name="browser" value="Firefox"/>
-        <classes>
-            <class name="manageTestData.Manage_Test_Data_Excel"/>
-        </classes>
-    </test>
-
-    <test name="Manage_Test_Data_Excel - Run on Chrome browser">
-        <parameter name="browser" value="Chrome"/>
-        <classes>
-            <class name="manageTestData.Manage_Test_Data_Excel"/>
-        </classes>
-    </test>
-
-    <test name="Manage_Test_Data_Excel - Run on Edge browser">
-        <parameter name="browser" value="Edge"/>
-        <classes>
-            <class name="manageTestData.Manage_Test_Data_Excel"/>
+            <class name="manageTestData.POJO"/>
+            <class name="manageTestData.Json_File"/>
+            <class name="manageTestData.Excel_File"/>
         </classes>
     </test>
 

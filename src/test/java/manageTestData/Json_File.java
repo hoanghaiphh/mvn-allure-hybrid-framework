@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Random;
 
 @Feature("User")
-public class Manage_Test_Data_Json extends BaseTest {
+public class Json_File extends BaseTest {
     private CustomerInfoPageObject customerInfoPage;
     private HomePageObject homePage;
     private RegisterPageObject registerPage;

@@ -21,7 +21,7 @@ import utilities.ExcelConfig;
 import java.util.Map;
 
 @Feature("User")
-public class Manage_Test_Data_Excel extends BaseTest {
+public class Excel_File extends BaseTest {
     private CustomerInfoPageObject customerInfoPage;
     private HomePageObject homePage;
     private RegisterPageObject registerPage;
