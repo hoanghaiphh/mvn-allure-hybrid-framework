@@ -1,4 +1,4 @@
-package shareClassState;
+package basic;
 
 import commons.BaseTest;
 import commons.GlobalConstants;
@@ -23,7 +23,7 @@ import utilities.RandomData;
 
 import java.util.Set;
 
-public class Register_And_Login extends BaseTest {
+public class Share_Class_State_Register_And_Login extends BaseTest {
     private CustomerInfoPageObject customerInfoPage;
     private HomePageObject homePage;
     private RegisterPageObject registerPage;

@@ -10,24 +10,24 @@
     <test name="Run on Firefox browser" preserve-order="true">
         <parameter name="browser" value="Firefox"/>
         <classes>
-            <class name="shareClassState.Register_And_Login"/>
-            <class name="shareClassState.My_Account"/>
+            <class name="basic.Share_Class_State_Register_And_Login"/>
+            <class name="basic.Share_Class_State_MyAccount"/>
         </classes>
     </test>
 
     <test name="Run on Chrome browser">
         <parameter name="browser" value="Chrome"/>
         <classes>
-            <class name="shareClassState.Register_And_Login"/>
-            <class name="shareClassState.My_Account"/>
+            <class name="basic.Share_Class_State_Register_And_Login"/>
+            <class name="basic.Share_Class_State_MyAccount"/>
         </classes>
     </test>
 
     <test name="Run on Edge browser">
         <parameter name="browser" value="Edge"/>
         <classes>
-            <class name="shareClassState.Register_And_Login"/>
-            <class name="shareClassState.My_Account"/>
+            <class name="basic.Share_Class_State_Register_And_Login"/>
+            <class name="basic.Share_Class_State_MyAccount"/>
         </classes>
     </test>
 

@@ -1,4 +1,4 @@
-package shareClassState;
+package basic;
 
 import commons.BaseTest;
 import commons.GlobalConstants;
@@ -19,7 +19,7 @@ import testData.UserInfoPOJO;
 
 import java.util.Set;
 
-public class My_Account extends BaseTest {
+public class Share_Class_State_MyAccount extends BaseTest {
     private CustomerInfoPageObject customerInfoPage;
     private HomePageObject homePage;
 
@@ -32,7 +32,7 @@ public class My_Account extends BaseTest {
         openUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
 
-        Set<Cookie> cookies = Register_And_Login.getCookiesThreadLocal().get();
+        Set<Cookie> cookies = Share_Class_State_Register_And_Login.getCookiesThreadLocal().get();
         homePage.setCookies(driver, cookies);
         homePage.refreshCurrentPage(driver);
         Assert.assertTrue(homePage.isHeaderLinkByTextDisplayed("My account"));
@@ -45,7 +45,7 @@ public class My_Account extends BaseTest {
         customerInfoPage = (CustomerInfoPageObject) homePage.clickOnHeaderLink("My account");
 
         SoftVerification soft = SoftVerification.getSoftVerification();
-        UserInfoPOJO userInfo = Register_And_Login.getUserInfoThreadLocal().get();
+        UserInfoPOJO userInfo = Share_Class_State_Register_And_Login.getUserInfoThreadLocal().get();
 
         soft.verifyTrue(customerInfoPage.isGenderMaleSelected());
         soft.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getFirstName());
