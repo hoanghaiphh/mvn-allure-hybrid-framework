@@ -46,8 +46,7 @@ public class Json_File extends BaseTest {
         soft = SoftVerification.getSoftVerification();
 
         userInfo = UserInfoJson.getUserInfo();
-        if (userInfo != null) userInfo.setRandomEmail(
-                RandomData.getRandomData().getRandomEmailByTimestamp("test", driver));
+        if (userInfo != null) userInfo.setRandomEmail(RandomData.getRandomEmail("test", driver));
     }
 
     @Test /*test Json Reader*/

@@ -48,8 +48,7 @@ public class Share_Class_State_Register_And_Login extends BaseTest {
         String lastName = fakerVi.getLastname();
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
-        userInfo.setEmailAddress(
-                RandomData.getRandomData().getRandomEmailByTimestamp(firstName + lastName, driver));
+        userInfo.setEmailAddress(RandomData.getRandomEmail(firstName + lastName, driver));
         FakerConfig fakerDefault = FakerConfig.getData();
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());

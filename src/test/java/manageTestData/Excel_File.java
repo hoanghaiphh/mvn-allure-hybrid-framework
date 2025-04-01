@@ -40,7 +40,7 @@ public class Excel_File extends BaseTest {
 
         soft = SoftVerification.getSoftVerification();
 
-        userInfo = ExcelConfig.getExcelData().getRowData("testDataUserInfo.xlsx", "Sheet1", 1);
+        userInfo = ExcelConfig.getRowData("testDataUserInfo.xlsx", "Sheet1", 1);
     }
 
     @Description("User_01_Register")

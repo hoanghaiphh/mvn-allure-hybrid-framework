@@ -29,7 +29,9 @@ public class BasePage {
 //  Browser ------------------------------------------------------------------------------------------------------------
 
     public static String getCurrentBrowserName(WebDriver driver) {
-        return ((RemoteWebDriver) driver).getCapabilities().getBrowserName();
+        String browserName = ((RemoteWebDriver) driver).getCapabilities().getBrowserName().toUpperCase();
+        if (browserName.contains("EDGE")) browserName = "EDGE";
+        return browserName;
     }
 
     public void openUrl(WebDriver driver, String pageUrl) {

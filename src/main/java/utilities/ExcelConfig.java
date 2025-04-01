@@ -8,12 +8,9 @@ import org.apache.poi.ss.usermodel.*;
 
 public class ExcelConfig {
 
-    public static ExcelConfig getExcelData() {
-        return new ExcelConfig();
-    }
-
-    public Map<String, String> getRowData(String fileName, String sheetName, int rowIndex) {
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("testData/" + fileName)) {
+    public static Map<String, String> getRowData(String fileName, String sheetName, int rowIndex) {
+        try (InputStream inputStream
+                     = ExcelConfig.class.getClassLoader().getResourceAsStream("testData/" + fileName)) {
             if (inputStream == null) throw new RuntimeException("Không tìm thấy file: " + fileName);
 
             Workbook workbook = WorkbookFactory.create(inputStream);
@@ -36,7 +33,7 @@ public class ExcelConfig {
         }
     }
 
-    private String getCellDataAsString(Workbook workbook, Cell cell) {
+    private static String getCellDataAsString(Workbook workbook, Cell cell) {
         if (cell.getCellType() == CellType.FORMULA) {
             FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
             CellValue cellValue = evaluator.evaluate(cell);

@@ -19,9 +19,8 @@ public class JiraListener implements ITestListener {
             JiraServiceProvider jiraServiceProvider = new JiraServiceProvider(GlobalConstants.JIRA_URL,
                     GlobalConstants.JIRA_USERNAME, GlobalConstants.JIRA_API_KEY, GlobalConstants.JIRA_PROJECT_KEY);
 
-            String driverName = BasePage.getCurrentBrowserName(BaseTest.getDriverThreadLocal().get()).toUpperCase();
-            if (driverName.contains("EDGE")) driverName = "EDGE";
-            String issueSummary = method.getName() + " FAILED in Automation Testing on " + driverName;
+            String browserName = BasePage.getCurrentBrowserName(BaseTest.getDriverThreadLocal().get());
+            String issueSummary = method.getName() + " FAILED in Automation Testing on " + browserName;
 
             StringBuilder issueDescription = new StringBuilder("Failure Reason from Automation Testing\n\n");
             if (result.getThrowable() != null) {

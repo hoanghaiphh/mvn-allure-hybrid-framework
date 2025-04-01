@@ -44,8 +44,7 @@ public class Pattern_Object extends BaseTest {
         String lastName = faker.getLastname();
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
-        userInfo.setEmailAddress(
-                RandomData.getRandomData().getRandomEmailByTimestamp(firstName + lastName, driver));
+        userInfo.setEmailAddress(RandomData.getRandomEmail(firstName + lastName, driver));
         userInfo.setPassword(faker.getPassword());
         userInfo.setCompanyName(faker.getCompanyName());
     }
