@@ -6,8 +6,7 @@ public class BasePageUI {
     public static final String LOGIN_LINK = "class=ico-login";
     public static final String LOGOUT_LINK = "class=ico-logout";
 
-    // Page Element Component Pattern Object
-
+    // Pattern Object
     public static final String DYNAMIC_HEADER_LINK_TEXT = "xpath=//div[@class='header-links']//a[text()='%s']";
     public static final String DYNAMIC_TEXTBOX_ID = "css=input#%s";
     public static final String DYNAMIC_BUTTON_TEXT = "xpath=//button[text()='%s']";

@@ -18,6 +18,11 @@ public class GlobalConstants {
     public static final String ALLURE_RESULTS_FOLDER_PATH = PROJECT_PATH + "/allure-results/";
     public static final String BROWSER_LOGS_FOLDER_PATH = PROJECT_PATH + "/browserLogs/";
 
+    public static final String JIRA_URL = "https://haiph.atlassian.net";
+    public static final String JIRA_USERNAME = "hoanghai.phh@gmail.com";
+    public static final String JIRA_API_KEY = System.getenv("JIRA_API_TOKEN");
+    public static final String JIRA_PROJECT_KEY = "SCRUM";
+
     public static final String BROWSERSTACK_USERNAME = "hoanghaiphan_abM5ye";
     public static final String BROWSERSTACK_ACCESS_KEY = "qD48tcbxg3mR4yCixi1y";
     public static final String BROWSERSTACK_URL = "https://" + BROWSERSTACK_USERNAME + ":" + BROWSERSTACK_ACCESS_KEY

@@ -62,4 +62,12 @@ public class LoginPageObject extends BasePageObject {
         clickOnLoginButton();
         return PageGenerator.getHomePage(driver);
     }
+
+    // Pattern Object
+    public HomePageObject patternObject_loginToSystem(UserInfoPOJO userInfo) {
+        sendKeysToTextboxByID("Email", userInfo.getEmailAddress());
+        sendKeysToTextboxByID("Password", userInfo.getPassword());
+        clickOnButtonByText("Log in");
+        return PageGenerator.getHomePage(driver);
+    }
 }

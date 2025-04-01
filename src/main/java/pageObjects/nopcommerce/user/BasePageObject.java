@@ -59,7 +59,7 @@ public class BasePageObject extends BasePage {
         };
     }
 
-    // Page Element Component Pattern Object
+    // Pattern Object
 
     @Step("Input value to {0} textbox: {1}")
     public void sendKeysToTextboxByID(String textboxID, String keyToSend) {

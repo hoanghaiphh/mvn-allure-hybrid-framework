@@ -117,4 +117,17 @@ public class RegisterPageObject extends BasePageObject {
         waitForElementVisible(driver, RegisterPageUI.REGISTER_SUCCESS_MESSAGE);
         return getElementText(driver, RegisterPageUI.REGISTER_SUCCESS_MESSAGE);
     }
+
+    // Pattern Object
+    public void patternObject_registerUser(UserInfoPOJO userInfo) {
+        selectCheckboxOrRadioByID("gender-male");
+        sendKeysToTextboxByID("FirstName", userInfo.getFirstName());
+        sendKeysToTextboxByID("LastName", userInfo.getLastName());
+        sendKeysToTextboxByID("Email", userInfo.getEmailAddress());
+        sendKeysToTextboxByID("Company", userInfo.getCompanyName());
+        sendKeysToTextboxByID("Password", userInfo.getPassword());
+        sendKeysToTextboxByID("ConfirmPassword", userInfo.getPassword());
+        selectCheckboxOrRadioByID("Newsletter");
+        clickOnButtonByText("Register");
+    }
 }
