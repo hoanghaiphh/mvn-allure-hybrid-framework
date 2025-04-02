@@ -5,6 +5,7 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import pageUIs.saucedemo.InventoryPUI;
+import utilities.CommonUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,7 +23,7 @@ public class InventoryPO extends BasePage {
     public void selectSortingCriteria(String criteria) {
         waitForElementClickable(driver, InventoryPUI.SORT_DROPDOWN);
         selectOptionInDropdown(driver, InventoryPUI.SORT_DROPDOWN, criteria);
-        sleepInSeconds(1);
+        CommonUtils.sleepInSeconds(1);
     }
 
     @Step("Verify that products was sorted by criteria: {0}")
@@ -53,9 +54,9 @@ public class InventoryPO extends BasePage {
     @Step("Select criteria for sorting: {0}")
     public void selectSortingCriteria_2(String criteria) {
         waitForElementClickable(driver, InventoryPUI.SORT_DROPDOWN_PARENT);
-        sleepInSeconds(1);
+        CommonUtils.sleepInSeconds(1);
         selectOptionInCustomDropdown(driver, InventoryPUI.SORT_DROPDOWN_PARENT, InventoryPUI.SORT_DROPDOWN_CHILD, criteria);
-        sleepInSeconds(1);
+        CommonUtils.sleepInSeconds(1);
     }
 
     @Step("Verify that book was sorted by Publication Date")

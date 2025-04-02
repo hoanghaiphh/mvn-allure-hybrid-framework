@@ -1,11 +1,11 @@
 package cloudTesting;
 
-import commons.BasePage;
 import commons.BaseTest;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+import utilities.CommonUtils;
 
 public class BrowserStack extends BaseTest {
 
@@ -17,7 +17,7 @@ public class BrowserStack extends BaseTest {
         driver = initDriver(browserName, browserVersion, osName, osVersion);
         openUrl(driver, "https://www.facebook.com/");
 
-        BasePage.getBasePage().sleepInSeconds(1);
+        CommonUtils.sleepInSeconds(1);
     }
 
     @Test

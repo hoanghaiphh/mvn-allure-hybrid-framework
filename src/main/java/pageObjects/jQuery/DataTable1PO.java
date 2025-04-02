@@ -3,11 +3,9 @@ package pageObjects.jQuery;
 import commons.BasePage;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import pageUIs.jQuery.DataTable1PageUI;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DataTable1PO extends BasePage {
     private WebDriver driver;
@@ -29,7 +27,7 @@ public class DataTable1PO extends BasePage {
 
     public void clearAllSearchTextboxes() {
         waitForAllElementsVisible(driver, DataTable1PageUI.ALL_SEARCH_TEXTBOXES);
-        clearAllElementsText(driver, DataTable1PageUI.ALL_SEARCH_TEXTBOXES);
+        clearListElementsText(driver, DataTable1PageUI.ALL_SEARCH_TEXTBOXES);
     }
 
     public void searchValueByHeader(String headerName, String value) {
@@ -54,18 +52,12 @@ public class DataTable1PO extends BasePage {
 
     public List<String> getAllValueOfColumnName(String columnName) {
         waitForAllElementsVisible(driver, DataTable1PageUI.DYNAMIC_COLUMN, columnName.toLowerCase());
-        return getListElements(driver, DataTable1PageUI.DYNAMIC_COLUMN, columnName.toLowerCase())
-                .stream()
-                .map(WebElement::getText)
-                .collect(Collectors.toList());
+        return getListElementsText(driver, DataTable1PageUI.DYNAMIC_COLUMN, columnName.toLowerCase());
     }
 
     public List<String> getAllValueOfRowNumber(String rowIndex) {
         waitForAllElementsVisible(driver, DataTable1PageUI.DYNAMIC_ROW, rowIndex);
-        return getListElements(driver, DataTable1PageUI.DYNAMIC_ROW, rowIndex)
-                .stream()
-                .map(WebElement::getText)
-                .collect(Collectors.toList());
+        return getListElementsText(driver, DataTable1PageUI.DYNAMIC_ROW, rowIndex);
     }
 
 }

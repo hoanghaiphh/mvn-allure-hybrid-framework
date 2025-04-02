@@ -18,7 +18,7 @@ public class DataTable2PO extends BasePage {
 
     public String getIndexOfColumn(String columnName) {
         return String.valueOf(
-                getListElementsSize(driver, DataTable2PageUI.DYNAMIC_PRECEDING_SIBLING_OF_COLUMN, columnName) + 1);
+                getListElements(driver, DataTable2PageUI.DYNAMIC_PRECEDING_SIBLING_OF_COLUMN, columnName).size() + 1);
     }
 
     public void enterValueToTextbox(String rowIndex, String columnName, String keyToSend) {

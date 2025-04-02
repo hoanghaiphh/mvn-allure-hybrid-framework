@@ -19,7 +19,7 @@ import reportConfigs.SoftVerification;
 import testData.UserInfoJson1;
 import testData.UserInfoJson2;
 import testData.UserInfoJson;
-import utilities.RandomData;
+import utilities.CommonUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +46,7 @@ public class Json_File extends BaseTest {
         soft = SoftVerification.getSoftVerification();
 
         userInfo = UserInfoJson.getUserInfo();
-        if (userInfo != null) userInfo.setRandomEmail(RandomData.getRandomEmail("test", driver));
+        if (userInfo != null) userInfo.setRandomEmail(CommonUtils.getRandomEmail("test", driver));
     }
 
     @Test /*test Json Reader*/

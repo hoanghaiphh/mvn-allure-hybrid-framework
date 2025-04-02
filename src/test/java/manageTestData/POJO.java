@@ -18,7 +18,7 @@ import pageObjects.nopcommerce.user.LoginPageObject;
 import pageObjects.nopcommerce.user.RegisterPageObject;
 import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
 import testData.UserInfoPOJO;
-import utilities.RandomData;
+import utilities.CommonUtils;
 
 @Feature("User")
 public class POJO extends BaseTest {
@@ -47,7 +47,7 @@ public class POJO extends BaseTest {
         String lastName = fakerVi.getLastname();
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
-        userInfo.setEmailAddress(RandomData.getRandomEmail(firstName + lastName, driver));
+        userInfo.setEmailAddress(CommonUtils.getRandomEmail(firstName + lastName, driver));
         FakerConfig fakerDefault = FakerConfig.getData();
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());

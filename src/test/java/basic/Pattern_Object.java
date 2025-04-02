@@ -19,7 +19,7 @@ import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
 import reportConfigs.SoftVerification;
 import testData.UserInfoPOJO;
 import utilities.FakerConfig;
-import utilities.RandomData;
+import utilities.CommonUtils;
 
 @Feature("User")
 public class Pattern_Object extends BaseTest {
@@ -44,7 +44,7 @@ public class Pattern_Object extends BaseTest {
         String lastName = faker.getLastname();
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
-        userInfo.setEmailAddress(RandomData.getRandomEmail(firstName + lastName, driver));
+        userInfo.setEmailAddress(CommonUtils.getRandomEmail(firstName + lastName, driver));
         userInfo.setPassword(faker.getPassword());
         userInfo.setCompanyName(faker.getCompanyName());
     }

@@ -8,6 +8,7 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.jQuery.DataTable2PO;
 import pageObjects.jQuery.PageGenerator;
+import utilities.CommonUtils;
 
 public class Data_Table_2 extends BaseTest {
     private WebDriver driver;
@@ -26,24 +27,24 @@ public class Data_Table_2 extends BaseTest {
         dataTable.loadDataToTable();
 
         dataTable.enterValueToTextbox("3", "Contact Person", "PERSON 03");
-        dataTable.sleepInSeconds(1);
+        CommonUtils.sleepInSeconds(1);
         dataTable.enterValueToTextbox("1", "Company", "COMPANY 01");
-        dataTable.sleepInSeconds(1);
+        CommonUtils.sleepInSeconds(1);
 
         dataTable.enterAllValueToRow("5", "COMPANY 05", "PERSON 05",
                 "Japan", false, "005", "05/25/2020");
-        dataTable.sleepInSeconds(1);
+        CommonUtils.sleepInSeconds(1);
         dataTable.enterAllValueToRow("2", "COMPANY 02", "PERSON 02",
                 "Germany", true, "002", "02/22/2020");
-        dataTable.sleepInSeconds(1);
+        CommonUtils.sleepInSeconds(1);
 
         dataTable.rowForAction("5", "Move Up");
-        dataTable.sleepInSeconds(1);
+        CommonUtils.sleepInSeconds(1);
         dataTable.rowForAction("4", "Move Down");
-        dataTable.sleepInSeconds(1);
+        CommonUtils.sleepInSeconds(1);
         dataTable.rowForAction("2", "Insert");
-        dataTable.sleepInSeconds(1);
+        CommonUtils.sleepInSeconds(1);
         dataTable.rowForAction("2", "Remove");
-        dataTable.sleepInSeconds(1);
+        CommonUtils.sleepInSeconds(1);
     }
 }

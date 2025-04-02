@@ -1,4 +1,4 @@
-package basic;
+package shareClassState;
 
 import commons.BaseTest;
 import commons.GlobalConstants;
@@ -19,11 +19,11 @@ import pageObjects.nopcommerce.user.RegisterPageObject;
 import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
 import testData.UserInfoPOJO;
 import utilities.FakerConfig;
-import utilities.RandomData;
+import utilities.CommonUtils;
 
 import java.util.Set;
 
-public class Share_Class_State_Register_And_Login extends BaseTest {
+public class Register_And_Login extends BaseTest {
     private CustomerInfoPageObject customerInfoPage;
     private HomePageObject homePage;
     private RegisterPageObject registerPage;
@@ -48,7 +48,7 @@ public class Share_Class_State_Register_And_Login extends BaseTest {
         String lastName = fakerVi.getLastname();
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
-        userInfo.setEmailAddress(RandomData.getRandomEmail(firstName + lastName, driver));
+        userInfo.setEmailAddress(CommonUtils.getRandomEmail(firstName + lastName, driver));
         FakerConfig fakerDefault = FakerConfig.getData();
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());

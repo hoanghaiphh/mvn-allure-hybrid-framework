@@ -1,11 +1,11 @@
 package jiraConfig;
 
-import commons.BasePage;
 import commons.BaseTest;
 import commons.GlobalConstants;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+import utilities.CommonUtils;
 
 import java.lang.reflect.Method;
 
@@ -19,7 +19,7 @@ public class JiraListener implements ITestListener {
             JiraServiceProvider jiraServiceProvider = new JiraServiceProvider(GlobalConstants.JIRA_URL,
                     GlobalConstants.JIRA_USERNAME, GlobalConstants.JIRA_API_KEY, GlobalConstants.JIRA_PROJECT_KEY);
 
-            String browserName = BasePage.getCurrentBrowserName(BaseTest.getDriverThreadLocal().get());
+            String browserName = CommonUtils.getCurrentBrowserName(BaseTest.getDriverThreadLocal().get());
             String issueSummary = method.getName() + " FAILED in Automation Testing on " + browserName;
 
             StringBuilder issueDescription = new StringBuilder("Failure Reason from Automation Testing\n\n");

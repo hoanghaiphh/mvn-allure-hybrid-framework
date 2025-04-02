@@ -2,10 +2,13 @@ package pageObjects.nopcommerce.user;
 
 import commons.BasePage;
 import io.qameta.allure.Step;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import pageObjects.nopcommerce.PageGenerator;
 import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
 import pageUIs.nopcommerce.user.BasePageUI;
+
+import java.util.Set;
 
 public class BasePageObject extends BasePage {
     private WebDriver driver;
@@ -103,4 +106,8 @@ public class BasePageObject extends BasePage {
         return isElementDisplayed(driver, BasePageUI.DYNAMIC_HEADER_LINK_TEXT, headerLinkText);
     }
 
+    public void loginByCookies(Set<Cookie> cookies) {
+        setCookies(driver, cookies);
+        refreshCurrentPage(driver);
+    }
 }
