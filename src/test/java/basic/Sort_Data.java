@@ -21,7 +21,7 @@ public class Sort_Data extends BaseTest {
     @Test
     public void TC_01_Sort_Data(String browserName) {
         driver = initDriver(browserName);
-        openUrl(driver, GlobalConstants.SAUCE_DEMO);
+        configBrowserAndOpenUrl(driver, GlobalConstants.SAUCE_DEMO);
 
         loginPage = PageGenerator.getLoginPage(driver);
 
@@ -39,10 +39,11 @@ public class Sort_Data extends BaseTest {
         inventoryPage.selectSortingCriteria("Price (high to low)");
         soft.verifyTrue(inventoryPage.isProductsSortedByCriteria("Price (high to low)"));
 
+
         inventoryPage.navigateToUrl(driver,
                 "https://www.amazon.com/s?k=selenium+java&i=stripbooks-intl-ship&crid=1H7VZTCMM9ZFB&sprefix=selenium+ja%2Cstripbooks-intl-ship%2C333&ref=nb_sb_noss_2");
 
-        inventoryPage.selectSortingCriteria_2("Publication Date");
+        inventoryPage.sortBooksByPublicationDate();
         soft.verifyTrue(inventoryPage.isBookSortedByPublicationDate());
     }
 

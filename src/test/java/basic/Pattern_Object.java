@@ -7,35 +7,34 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.nopcommerce.PageGenerator;
-import pageObjects.nopcommerce.user.HomePageObject;
-import pageObjects.nopcommerce.user.LoginPageObject;
-import pageObjects.nopcommerce.user.RegisterPageObject;
-import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
+import pageObjects.nopcommerce.HomePO;
+import pageObjects.nopcommerce.LoginPO;
+import pageObjects.nopcommerce.RegisterPO;
+import pageObjects.nopcommerce.myAccount.CustomerInfoPO;
 import reportConfigs.SoftVerification;
 import testData.UserInfoPOJO;
 import utilities.FakerConfig;
-import utilities.CommonUtils;
 
 @Feature("User")
 public class Pattern_Object extends BaseTest {
-    private CustomerInfoPageObject customerInfoPage;
-    private HomePageObject homePage;
-    private RegisterPageObject registerPage;
-    private LoginPageObject loginPage;
+    private CustomerInfoPO customerInfoPage;
+    private HomePO homePage;
+    private RegisterPO registerPage;
+    private LoginPO loginPage;
 
     private WebDriver driver;
     private UserInfoPOJO userInfo;
+    private SoftVerification soft;
 
     @Parameters("browser")
     @BeforeClass
     public void beforeClass(String browserName) {
         driver = initDriver(browserName);
-        openUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
+        configBrowserAndOpenUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
 
         userInfo = UserInfoPOJO.getUserInfo();
@@ -44,9 +43,11 @@ public class Pattern_Object extends BaseTest {
         String lastName = faker.getLastname();
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
-        userInfo.setEmailAddress(CommonUtils.getRandomEmail(firstName + lastName, driver));
+        userInfo.setEmailAddress(getRandomEmailByCurrentState(firstName + lastName));
         userInfo.setPassword(faker.getPassword());
         userInfo.setCompanyName(faker.getCompanyName());
+
+        soft = SoftVerification.getSoftVerification();
     }
 
     @Description("User_01_Register")
@@ -57,7 +58,7 @@ public class Pattern_Object extends BaseTest {
         registerPage = PageGenerator.getRegisterPage(driver);
 
         registerPage.patternObject_registerUser(userInfo);
-        Assert.assertEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
+        soft.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
 
         registerPage.clickOnHeaderLinkByText("Log out");
         homePage = PageGenerator.getHomePage(driver);
@@ -71,7 +72,7 @@ public class Pattern_Object extends BaseTest {
         loginPage = PageGenerator.getLoginPage(driver);
 
         homePage = loginPage.patternObject_loginToSystem(userInfo);
-        Assert.assertTrue(homePage.isHeaderLinkByTextDisplayed("My account"));
+        soft.verifyTrue(homePage.isHeaderLinkByTextDisplayed("My account"));
     }
 
     @Description("User_03_MyAccount")
@@ -81,7 +82,6 @@ public class Pattern_Object extends BaseTest {
         homePage.clickOnHeaderLinkByText("My account");
         customerInfoPage = PageGenerator.getCustomerInfoPage(driver);
 
-        SoftVerification soft = SoftVerification.getSoftVerification();
         soft.verifyTrue(customerInfoPage.isCheckboxOrRadioByIDSelected("gender-male"));
         soft.verifyEquals(customerInfoPage.getValueInTextboxByID("FirstName"), userInfo.getFirstName());
         soft.verifyEquals(customerInfoPage.getValueInTextboxByID("LastName"), userInfo.getLastName());

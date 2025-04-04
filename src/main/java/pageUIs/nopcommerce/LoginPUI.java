@@ -1,7 +1,11 @@
-package pageUIs.nopcommerce.user;
+package pageUIs.nopcommerce;
 
-public class LoginPageUI {
+public class LoginPUI {
+
     public static final String EMAIL_TEXTBOX = "id=Email";
+
     public static final String PASSWORD_TEXTBOX = "id=Password";
+
     public static final String LOGIN_BUTTON = "css=button.button-1.login-button";
+
 }

@@ -33,9 +33,8 @@ public class AllureListener extends BaseTest implements ITestListener {
     public void onTestFailure(ITestResult iTestResult) {
         String testThrowable = iTestResult.getThrowable().toString();
         attachTextLog(iTestResult.getName() + " FAILED", testThrowable);
-        if (!testThrowable.contains("Verification failures") && !testThrowable.contains("Verification failure")) {
-            WebDriver driver = BaseTest.getDriverThreadLocal().get();
-            attachScreenshot(iTestResult.getName(), driver);
+        if (!testThrowable.contains("Verification failure")) {
+            attachScreenshot(iTestResult.getName(), getDriverThreadLocal().get());
         }
     }
 

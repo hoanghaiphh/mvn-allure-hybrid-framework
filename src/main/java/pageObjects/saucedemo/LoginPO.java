@@ -2,7 +2,8 @@ package pageObjects.saucedemo;
 
 import commons.BasePage;
 import org.openqa.selenium.WebDriver;
-import pageUIs.saucedemo.LoginPUI;
+
+import static pageUIs.saucedemo.LoginPUI.*;
 
 public class LoginPO extends BasePage {
     private WebDriver driver;
@@ -12,15 +13,9 @@ public class LoginPO extends BasePage {
     }
 
     public InventoryPO loginToSystem(String userName, String password) {
-        waitForElementVisible(driver, LoginPUI.USERNAME_TEXTBOX);
-        sendKeysToElement(driver, LoginPUI.USERNAME_TEXTBOX, userName);
-
-        waitForElementVisible(driver, LoginPUI.PASSWORD_TEXTBOX);
-        sendKeysToElement(driver, LoginPUI.PASSWORD_TEXTBOX, password);
-
-        waitForElementClickable(driver, LoginPUI.LOGIN_BUTTON);
-        clickOnElement(driver, LoginPUI.LOGIN_BUTTON);
-
+        sendKeysToElement(getVisibleElement(driver, USERNAME_TEXTBOX), userName);
+        sendKeysToElement(getVisibleElement(driver, PASSWORD_TEXTBOX), password);
+        clickOnElement(getClickableElement(driver, LOGIN_BUTTON));
         return PageGenerator.getInventoryPage(driver);
     }
 }

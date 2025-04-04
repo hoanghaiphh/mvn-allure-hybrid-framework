@@ -8,28 +8,28 @@ import io.qameta.allure.SeverityLevel;
 import lombok.Getter;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.nopcommerce.PageGenerator;
-import pageObjects.nopcommerce.user.HomePageObject;
-import pageObjects.nopcommerce.user.LoginPageObject;
-import pageObjects.nopcommerce.user.RegisterPageObject;
-import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
+import pageObjects.nopcommerce.HomePO;
+import pageObjects.nopcommerce.LoginPO;
+import pageObjects.nopcommerce.RegisterPO;
+import pageObjects.nopcommerce.myAccount.CustomerInfoPO;
+import reportConfigs.SoftVerification;
 import testData.UserInfoPOJO;
 import utilities.FakerConfig;
-import utilities.CommonUtils;
 
 import java.util.Set;
 
 public class Register_And_Login extends BaseTest {
-    private CustomerInfoPageObject customerInfoPage;
-    private HomePageObject homePage;
-    private RegisterPageObject registerPage;
-    private LoginPageObject loginPage;
+    private CustomerInfoPO customerInfoPage;
+    private HomePO homePage;
+    private RegisterPO registerPage;
+    private LoginPO loginPage;
 
     private WebDriver driver;
+    private SoftVerification soft;
     @Getter
     private static ThreadLocal<UserInfoPOJO> userInfoThreadLocal = new ThreadLocal<>();
     @Getter
@@ -39,7 +39,7 @@ public class Register_And_Login extends BaseTest {
     @BeforeClass
     public void beforeClass(String browserName) {
         driver = initDriver(browserName);
-        openUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
+        configBrowserAndOpenUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
 
         UserInfoPOJO userInfo = UserInfoPOJO.getUserInfo();
@@ -48,37 +48,37 @@ public class Register_And_Login extends BaseTest {
         String lastName = fakerVi.getLastname();
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
-        userInfo.setEmailAddress(CommonUtils.getRandomEmail(firstName + lastName, driver));
+        userInfo.setEmailAddress(getRandomEmailByCurrentState(firstName + lastName));
         FakerConfig fakerDefault = FakerConfig.getData();
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());
 
         userInfoThreadLocal.set(userInfo);
+
+        soft = SoftVerification.getSoftVerification();
     }
 
     @Description("User_01_Register")
     @Severity(SeverityLevel.CRITICAL)
     @Test
     public void User_01_Register() {
-        registerPage = (RegisterPageObject) homePage.clickOnHeaderLink("Register");
+        registerPage = (RegisterPO) homePage.clickOnHeaderLink("Register");
         registerPage.addUserInfo(userInfoThreadLocal.get());
         registerPage.clickOnRegisterButton();
-        Assert.assertEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
+        soft.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
 
-        homePage = (HomePageObject) registerPage.clickOnHeaderLink("Log out");
+        homePage = (HomePO) registerPage.clickOnHeaderLink("Log out");
     }
 
     @Description("User_02_Login")
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void User_02_Login() {
-        loginPage = (LoginPageObject) homePage.clickOnHeaderLink("Log in");
+        loginPage = (LoginPO) homePage.clickOnHeaderLink("Log in");
 
         homePage = loginPage.loginToSystem(userInfoThreadLocal.get());
-        Assert.assertTrue(homePage.isMyAccountLinkDisplayed());
+        soft.verifyTrue(homePage.isMyAccountLinkDisplayed());
 
-        Set<Cookie> cookies = homePage.getCookies(driver);
-
-        cookiesThreadLocal.set(cookies);
+        cookiesThreadLocal.set(homePage.getCookies(driver));
     }
 }

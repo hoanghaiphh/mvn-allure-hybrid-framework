@@ -2,7 +2,11 @@ package pageObjects.jQuery;
 
 import commons.BasePage;
 import org.openqa.selenium.WebDriver;
-import pageUIs.jQuery.DataTable2PageUI;
+import org.openqa.selenium.WebElement;
+
+import java.util.List;
+
+import static pageUIs.jQuery.DataTable2PUI.*;
 
 public class DataTable2PO extends BasePage {
     private WebDriver driver;
@@ -12,47 +16,40 @@ public class DataTable2PO extends BasePage {
     }
 
     public void loadDataToTable() {
-        waitForElementClickable(driver, DataTable2PageUI.LOAD_DATA_BUTTON);
-        clickOnElement(driver, DataTable2PageUI.LOAD_DATA_BUTTON);
+        clickOnElement(getClickableElement(driver, LOAD_DATA_BUTTON));
     }
 
-    public String getIndexOfColumn(String columnName) {
-        return String.valueOf(
-                getListElements(driver, DataTable2PageUI.DYNAMIC_PRECEDING_SIBLING_OF_COLUMN, columnName).size() + 1);
+    private String getIndexOfColumn(String columnName) {
+        List<WebElement> elementList = getVisibleListElements(driver, PRECEDING_SIBLINGS_OF_DYNAMIC_COLUMN, columnName);
+        return String.valueOf(elementList.size() + 1);
     }
 
     public void enterValueToTextbox(String rowIndex, String columnName, String keyToSend) {
-        String columnIndex = getIndexOfColumn(columnName);
-        waitForElementVisible(driver, DataTable2PageUI.DYNAMIC_TEXTBOX, rowIndex, columnIndex);
-        clearElementText(driver, DataTable2PageUI.DYNAMIC_TEXTBOX, rowIndex, columnIndex);
-        sendKeysToElement(driver, DataTable2PageUI.DYNAMIC_TEXTBOX, keyToSend, rowIndex, columnIndex);
+        WebElement element = getVisibleElement(driver, DYNAMIC_TEXTBOX, rowIndex, getIndexOfColumn(columnName));
+        clearElementText(element);
+        sendKeysToElement(element, keyToSend);
     }
 
     public void selectValueFromDropdown(String rowIndex, String valueToSelect) {
-        waitForElementClickable(driver, DataTable2PageUI.DYNAMIC_DROPDOWN, rowIndex);
-        selectOptionInDropdown(driver, DataTable2PageUI.DYNAMIC_DROPDOWN, valueToSelect, rowIndex);
+        selectOptionInDefaultDropdown(getClickableElement(driver, DYNAMIC_DROPDOWN, rowIndex), valueToSelect);
     }
 
     public void selectOrDeselectCheckbox(String rowIndex, boolean status) {
-        waitForElementClickable(driver, DataTable2PageUI.DYNAMIC_CHECKBOX, rowIndex);
-        if (status) {
-            selectCheckboxOrRadio(driver, DataTable2PageUI.DYNAMIC_CHECKBOX, rowIndex);
-        } else {
-            deselectCheckbox(driver, DataTable2PageUI.DYNAMIC_CHECKBOX, rowIndex);
-        }
+        WebElement element = getClickableElement(driver, DYNAMIC_CHECKBOX, rowIndex);
+        if (status) selectCheckboxOrRadio(element);
+        else deselectCheckbox(element);
     }
 
     public void enterDateToDatePicker(String rowIndex, String date) {
-        String dynamicLocator = DataTable2PageUI.DYNAMIC_DATE_PICKER;
-        waitForElementVisible(driver, dynamicLocator, rowIndex);
-        clearElementText(driver, dynamicLocator, rowIndex);
+        WebElement element = getVisibleElement(driver, DYNAMIC_DATE_PICKER, rowIndex);
+        clearElementText(element);
         if (driver.toString().toLowerCase().contains("firefox")) {
-            removeAttributeInDOM(driver, dynamicLocator, "type", rowIndex);
+            removeAttributeInDOM(driver, element, "type");
             String convertedDate = date.substring(6) + "-" + date.substring(0, 2) + "-" + date.substring(3, 5);
-            sendKeysToElement(driver, dynamicLocator, convertedDate, rowIndex);
-            setAttributeInDOM(driver, dynamicLocator, "type", "date", rowIndex);
+            sendKeysToElement(element, convertedDate);
+            setAttributeInDOM(driver, element, "type", "date");
         } else {
-            sendKeysToElement(driver, dynamicLocator, date, rowIndex);
+            sendKeysToElement(element, date);
         }
     }
 
@@ -67,8 +64,7 @@ public class DataTable2PO extends BasePage {
     }
 
     public void rowForAction(String rowIndex, String action) {
-        waitForElementClickable(driver, DataTable2PageUI.DYNAMIC_ACTION_BUTTON, rowIndex, action);
-        clickOnElement(driver, DataTable2PageUI.DYNAMIC_ACTION_BUTTON, rowIndex, action);
+        clickOnElement(getClickableElement(driver, DYNAMIC_ACTION_BUTTON, rowIndex, action));
     }
 
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Data Table" parallel="tests" thread-count="3">
+<suite name="Basic" parallel="tests" thread-count="3">
 
     <listeners>
         <listener class-name="reportConfigs.MethodListener"/>
@@ -12,6 +12,10 @@
         <classes>
             <class name="basic.Data_Table_1"/>
             <class name="basic.Data_Table_2"/>
+            <class name="basic.Upload_Files"/>
+            <class name="basic.Sort_Data"/>
+            <class name="basic.Pattern_Object"/>
+            <class name="basic.Jira"/>
         </classes>
     </test>
 
@@ -20,6 +24,10 @@
         <classes>
             <class name="basic.Data_Table_1"/>
             <class name="basic.Data_Table_2"/>
+            <class name="basic.Upload_Files"/>
+            <class name="basic.Sort_Data"/>
+            <class name="basic.Pattern_Object"/>
+            <class name="basic.Jira"/>
         </classes>
     </test>
 
@@ -28,6 +36,10 @@
         <classes>
             <class name="basic.Data_Table_1"/>
             <class name="basic.Data_Table_2"/>
+            <class name="basic.Upload_Files"/>
+            <class name="basic.Sort_Data"/>
+            <class name="basic.Pattern_Object"/>
+            <class name="basic.Jira"/>
         </classes>
     </test>
 

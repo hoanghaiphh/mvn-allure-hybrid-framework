@@ -9,7 +9,6 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.jQuery.PageGenerator;
 import pageObjects.jQuery.UploadFilesPO;
-import utilities.CommonUtils;
 
 public class Upload_Files extends BaseTest {
     private WebDriver driver;
@@ -19,7 +18,7 @@ public class Upload_Files extends BaseTest {
     @BeforeClass
     public void beforeClass(String browserName) {
         driver = initDriver(browserName);
-        openUrl(driver, GlobalConstants.JQUERY_FILE_UPLOAD);
+        configBrowserAndOpenUrl(driver, GlobalConstants.JQUERY_FILE_UPLOAD);
         uploadFiles = PageGenerator.getUploadFilesPage(driver);
     }
 
@@ -38,7 +37,7 @@ public class Upload_Files extends BaseTest {
         Assert.assertTrue(uploadFiles.isFileUploaded("avatar.jpg", "snow.png", "topic13.png"));
 
         uploadFiles.deleteUploadedFiles("avatar.jpg", "snow.png", "topic13.png");
-        CommonUtils.sleepInSeconds(1);
+        uploadFiles.sleepThread(1);
         Assert.assertFalse(uploadFiles.isFileUploaded("avatar.jpg", "snow.png", "topic13.png"));
     }
 
@@ -58,7 +57,7 @@ public class Upload_Files extends BaseTest {
 
         uploadFiles.selectAllFiles();
         uploadFiles.actionForAllFiles("delete");
-        CommonUtils.sleepInSeconds(1);
+        uploadFiles.sleepThread(1);
         Assert.assertFalse(uploadFiles.isFileUploaded("avatar.jpg", "snow.png", "topic13.png"));
     }
 }

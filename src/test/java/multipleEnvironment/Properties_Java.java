@@ -14,7 +14,7 @@ public class Properties_Java extends BaseTest {
     @BeforeClass
     public void beforeClass(String browserName) {
         driver = initDriver(browserName);
-        openUrl(driver, getEnvironmentProperties().getPropertyValue("App.Url"));
+        configBrowserAndOpenUrl(driver, getEnvironmentProperties().getPropertyValue("App.Url"));
     }
 
     @Test

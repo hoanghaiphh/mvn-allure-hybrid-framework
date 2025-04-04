@@ -3,9 +3,11 @@ package pageObjects.jQuery;
 import commons.BasePage;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-import pageUIs.jQuery.DataTable1PageUI;
+import org.openqa.selenium.WebElement;
 
 import java.util.List;
+
+import static pageUIs.jQuery.DataTable1PUI.*;
 
 public class DataTable1PO extends BasePage {
     private WebDriver driver;
@@ -15,49 +17,42 @@ public class DataTable1PO extends BasePage {
     }
 
     public void openPageNumber(String pageNumber) {
-        waitForElementClickable(driver, DataTable1PageUI.DYNAMIC_PAGINATION_BUTTON, pageNumber);
-        clickOnElement(driver, DataTable1PageUI.DYNAMIC_PAGINATION_BUTTON, pageNumber);
+        clickOnElement(getClickableElement(driver, DYNAMIC_PAGINATION_BUTTON, pageNumber));
     }
 
     public boolean isPageNumberSelected(String pageNumber) {
-        waitForElementVisible(driver, DataTable1PageUI.DYNAMIC_PAGINATION_BUTTON, pageNumber);
-        return getAttributeValue(driver, DataTable1PageUI.DYNAMIC_PAGINATION_BUTTON, "class", pageNumber)
-                .endsWith("active");
+        WebElement element = getVisibleElement(driver, DYNAMIC_PAGINATION_BUTTON, pageNumber);
+        return getElementAttributeValue(element, "class").endsWith("active");
     }
 
     public void clearAllSearchTextboxes() {
-        waitForAllElementsVisible(driver, DataTable1PageUI.ALL_SEARCH_TEXTBOXES);
-        clearListElementsText(driver, DataTable1PageUI.ALL_SEARCH_TEXTBOXES);
+        clearListElementsText(getVisibleListElements(driver, ALL_SEARCH_TEXTBOXES));
     }
 
     public void searchValueByHeader(String headerName, String value) {
-        waitForElementVisible(driver, DataTable1PageUI.DYNAMIC_SEARCH_TEXTBOX, headerName);
-        sendKeysToElement(driver, DataTable1PageUI.DYNAMIC_SEARCH_TEXTBOX, value, headerName);
-        sendKeyPressToElementByActions(driver, DataTable1PageUI.DYNAMIC_SEARCH_TEXTBOX, Keys.ENTER, headerName);
+        WebElement element = getVisibleElement(driver, DYNAMIC_SEARCH_TEXTBOX, headerName);
+        sendKeysToElement(element, value);
+        sendKeyPressToElementByActions(driver, element, Keys.ENTER);
     }
 
     public boolean isDataRowDisplayed(String female, String country, String male, String total) {
-        return isElementDisplayed(driver, DataTable1PageUI.DYNAMIC_DATA_ROW, female, country, male, total);
+        return isElementDisplayed(driver, DYNAMIC_DATA_ROW, female, country, male, total);
     }
 
     public void removeOrEditDataRow(String action, String headerName, String value) {
-        waitForElementClickable(driver, DataTable1PageUI.DYNAMIC_ACTION_BUTTON, headerName.toLowerCase(), value, action);
-        clickOnElement(driver, DataTable1PageUI.DYNAMIC_ACTION_BUTTON, headerName.toLowerCase(), value, action);
+        clickOnElement(getClickableElement(driver, DYNAMIC_ACTION_BUTTON, headerName.toLowerCase(), value, action));
     }
 
     public void submitChangesAfterEditDataRow() {
-        waitForElementClickable(driver, DataTable1PageUI.SUBMIT_BUTTON);
-        clickOnElement(driver, DataTable1PageUI.SUBMIT_BUTTON);
+        clickOnElement(getClickableElement(driver, SUBMIT_BUTTON));
     }
 
     public List<String> getAllValueOfColumnName(String columnName) {
-        waitForAllElementsVisible(driver, DataTable1PageUI.DYNAMIC_COLUMN, columnName.toLowerCase());
-        return getListElementsText(driver, DataTable1PageUI.DYNAMIC_COLUMN, columnName.toLowerCase());
+        return getListElementsText(getVisibleListElements(driver, DYNAMIC_COLUMN, columnName.toLowerCase()));
     }
 
     public List<String> getAllValueOfRowNumber(String rowIndex) {
-        waitForAllElementsVisible(driver, DataTable1PageUI.DYNAMIC_ROW, rowIndex);
-        return getListElementsText(driver, DataTable1PageUI.DYNAMIC_ROW, rowIndex);
+        return getListElementsText(getVisibleListElements(driver, DYNAMIC_ROW, rowIndex));
     }
 
 }

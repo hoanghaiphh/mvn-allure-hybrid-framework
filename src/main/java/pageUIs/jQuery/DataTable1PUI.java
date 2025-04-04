@@ -1,6 +1,6 @@
 package pageUIs.jQuery;
 
-public class DataTable1PageUI {
+public class DataTable1PUI {
 
     public static final String DYNAMIC_PAGINATION_BUTTON = "xpath=//li[@class='qgrd-pagination-page']/a[text()='%s']";
 

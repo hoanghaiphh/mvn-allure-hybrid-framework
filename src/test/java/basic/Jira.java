@@ -8,37 +8,36 @@ import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import jiraConfig.JiraCreateIssue;
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.nopcommerce.PageGenerator;
-import pageObjects.nopcommerce.user.HomePageObject;
-import pageObjects.nopcommerce.user.LoginPageObject;
-import pageObjects.nopcommerce.user.RegisterPageObject;
-import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
+import pageObjects.nopcommerce.HomePO;
+import pageObjects.nopcommerce.LoginPO;
+import pageObjects.nopcommerce.RegisterPO;
+import pageObjects.nopcommerce.myAccount.CustomerInfoPO;
 import reportConfigs.SoftVerification;
 import testData.UserInfoPOJO;
 import utilities.FakerConfig;
-import utilities.CommonUtils;
 
 @Listeners(jiraConfig.JiraListener.class)
 @Feature("User")
 public class Jira extends BaseTest {
-    private CustomerInfoPageObject customerInfoPage;
-    private HomePageObject homePage;
-    private RegisterPageObject registerPage;
-    private LoginPageObject loginPage;
+    private CustomerInfoPO customerInfoPage;
+    private HomePO homePage;
+    private RegisterPO registerPage;
+    private LoginPO loginPage;
 
     private WebDriver driver;
     private UserInfoPOJO userInfo;
+    private SoftVerification soft;
 
     @Parameters("browser")
     @BeforeClass
     public void beforeClass(String browserName) {
         driver = initDriver(browserName);
-        openUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
+        configBrowserAndOpenUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
 
         userInfo = UserInfoPOJO.getUserInfo();
@@ -48,10 +47,12 @@ public class Jira extends BaseTest {
         String lastName = fakerVi.getLastname();
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
-        userInfo.setEmailAddress(CommonUtils.getRandomEmail(firstName + lastName, driver));
+        userInfo.setEmailAddress(getRandomEmailByCurrentState(firstName + lastName));
         FakerConfig fakerDefault = FakerConfig.getData();
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());
+
+        soft = SoftVerification.getSoftVerification();
     }
 
     @JiraCreateIssue(isCreateIssue = true)
@@ -59,11 +60,11 @@ public class Jira extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @Test
     public void User_01_Register() {
-        registerPage = (RegisterPageObject) homePage.clickOnHeaderLink("Register");
+        registerPage = (RegisterPO) homePage.clickOnHeaderLink("Register");
         registerPage.addUserInfo(userInfo);
         registerPage.clickOnRegisterButton();
 
-        Assert.assertEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed..."); // failed
+        soft.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed..."); // failed
     }
 
     @JiraCreateIssue(isCreateIssue = true)
@@ -71,11 +72,11 @@ public class Jira extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void User_02_Login() {
-        homePage = (HomePageObject) registerPage.clickOnHeaderLink("Log out");
-        loginPage = (LoginPageObject) homePage.clickOnHeaderLink("Log in");
+        homePage = (HomePO) registerPage.clickOnHeaderLink("Log out");
+        loginPage = (LoginPO) homePage.clickOnHeaderLink("Log in");
         homePage = loginPage.loginToSystem(userInfo);
 
-        Assert.assertFalse(homePage.isMyAccountLinkDisplayed()); // failed
+        soft.verifyFalse(homePage.isMyAccountLinkDisplayed()); // failed
     }
 
     @JiraCreateIssue(isCreateIssue = true)
@@ -83,9 +84,8 @@ public class Jira extends BaseTest {
     @Severity(SeverityLevel.MINOR)
     @Test
     public void User_03_MyAccount() {
-        customerInfoPage = (CustomerInfoPageObject) homePage.clickOnHeaderLink("My account");
+        customerInfoPage = (CustomerInfoPO) homePage.clickOnHeaderLink("My account");
 
-        SoftVerification soft = SoftVerification.getSoftVerification();
         soft.verifyTrue(customerInfoPage.isGenderMaleSelected());
         soft.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), "userInfo.getFirstName()"); // failed
         soft.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());

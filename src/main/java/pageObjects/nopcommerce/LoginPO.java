@@ -1,62 +1,59 @@
-package pageObjects.nopcommerce.user;
+package pageObjects.nopcommerce;
 
-import io.qameta.allure.Step;
-import org.openqa.selenium.WebDriver;
-import pageObjects.nopcommerce.PageGenerator;
-import pageUIs.nopcommerce.user.LoginPageUI;
 import testData.UserInfoJson;
 import testData.UserInfoPOJO;
+import io.qameta.allure.Step;
+import org.openqa.selenium.WebDriver;
 
 import java.util.Map;
 
-public class LoginPageObject extends BasePageObject {
+import static pageUIs.nopcommerce.LoginPUI.*;
+
+public class LoginPO extends BasePageObject {
     private WebDriver driver;
 
-    public LoginPageObject(WebDriver driver) {
+    public LoginPO(WebDriver driver) {
         super(driver);
         this.driver = driver;
     }
 
     @Step("Input value into Email textbox: {0}")
     public void sendKeyToEmailTextbox(String emailAddress) {
-        waitForElementVisible(driver, LoginPageUI.EMAIL_TEXTBOX);
-        sendKeysToElement(driver, LoginPageUI.EMAIL_TEXTBOX, emailAddress);
+        sendKeysToElement(getVisibleElement(driver, EMAIL_TEXTBOX), emailAddress);
     }
 
     @Step("Input value into Password textbox: {0}")
     public void sendKeyToPasswordTextbox(String password) {
-        waitForElementVisible(driver, LoginPageUI.PASSWORD_TEXTBOX);
-        sendKeysToElement(driver, LoginPageUI.PASSWORD_TEXTBOX, password);
+        sendKeysToElement(getVisibleElement(driver, PASSWORD_TEXTBOX), password);
     }
 
     @Step("Click on Login button")
     public void clickOnLoginButton() {
-        waitForElementClickable(driver, LoginPageUI.LOGIN_BUTTON);
-        clickOnElement(driver, LoginPageUI.LOGIN_BUTTON);
+        clickOnElement(getClickableElement(driver, LOGIN_BUTTON));
     }
 
-    public HomePageObject loginToSystem(String emailAddress, String password) {
+    public HomePO loginToSystem(String emailAddress, String password) {
         sendKeyToEmailTextbox(emailAddress);
         sendKeyToPasswordTextbox(password);
         clickOnLoginButton();
         return PageGenerator.getHomePage(driver);
     }
 
-    public HomePageObject loginToSystem(UserInfoPOJO userInfo) {
+    public HomePO loginToSystem(UserInfoPOJO userInfo) {
         sendKeyToEmailTextbox(userInfo.getEmailAddress());
         sendKeyToPasswordTextbox(userInfo.getPassword());
         clickOnLoginButton();
         return PageGenerator.getHomePage(driver);
     }
 
-    public HomePageObject loginToSystem(UserInfoJson userInfo) {
+    public HomePO loginToSystem(UserInfoJson userInfo) {
         sendKeyToEmailTextbox(userInfo.getRandomEmail());
         sendKeyToPasswordTextbox(userInfo.getLogin().getPassword());
         clickOnLoginButton();
         return PageGenerator.getHomePage(driver);
     }
 
-    public HomePageObject loginToSystem(Map<String, String> userInfo) {
+    public HomePO loginToSystem(Map<String, String> userInfo) {
         sendKeyToEmailTextbox(userInfo.get("email"));
         sendKeyToPasswordTextbox(userInfo.get("password"));
         clickOnLoginButton();
@@ -64,7 +61,7 @@ public class LoginPageObject extends BasePageObject {
     }
 
     // Pattern Object
-    public HomePageObject patternObject_loginToSystem(UserInfoPOJO userInfo) {
+    public HomePO patternObject_loginToSystem(UserInfoPOJO userInfo) {
         sendKeysToTextboxByID("Email", userInfo.getEmailAddress());
         sendKeysToTextboxByID("Password", userInfo.getPassword());
         clickOnButtonByText("Log in");

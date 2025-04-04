@@ -26,8 +26,7 @@ public class MethodListener implements IInvokedMethodListener {
             }
 
             List<Throwable> failures = allFailures.getFailuresForTest(result);
-
-            if (failures.size() > 0) {
+            if (!failures.isEmpty()) {
                 result.setStatus(ITestResult.FAILURE);
                 String lastFailure = failures.get(failures.size() - 1).toString();
 
@@ -48,6 +47,7 @@ public class MethodListener implements IInvokedMethodListener {
                         adjustSize = failures.size();
                         message.append(adjustSize + " Failures, including " + (adjustSize - 1) + " Verification & 1 Other\n");
                     }
+
                     for (int i = 0; i < adjustSize; i++) {
                         message.append("Failure " + (i + 1) + " of " + adjustSize + "\n");
                         message.append(Utils.shortStackTrace(failures.get(i), false)).append("\n\n");

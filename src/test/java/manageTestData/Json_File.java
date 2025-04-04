@@ -11,15 +11,14 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.nopcommerce.PageGenerator;
-import pageObjects.nopcommerce.user.HomePageObject;
-import pageObjects.nopcommerce.user.LoginPageObject;
-import pageObjects.nopcommerce.user.RegisterPageObject;
-import pageObjects.nopcommerce.user.myAccount.CustomerInfoPageObject;
+import pageObjects.nopcommerce.HomePO;
+import pageObjects.nopcommerce.LoginPO;
+import pageObjects.nopcommerce.RegisterPO;
+import pageObjects.nopcommerce.myAccount.CustomerInfoPO;
 import reportConfigs.SoftVerification;
 import testData.UserInfoJson1;
 import testData.UserInfoJson2;
 import testData.UserInfoJson;
-import utilities.CommonUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,10 +26,10 @@ import java.util.Random;
 
 @Feature("User")
 public class Json_File extends BaseTest {
-    private CustomerInfoPageObject customerInfoPage;
-    private HomePageObject homePage;
-    private RegisterPageObject registerPage;
-    private LoginPageObject loginPage;
+    private CustomerInfoPO customerInfoPage;
+    private HomePO homePage;
+    private RegisterPO registerPage;
+    private LoginPO loginPage;
 
     private WebDriver driver;
     private SoftVerification soft;
@@ -40,13 +39,13 @@ public class Json_File extends BaseTest {
     @BeforeClass
     public void beforeClass(String browserName) {
         driver = initDriver(browserName);
-        openUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
+        configBrowserAndOpenUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
 
         soft = SoftVerification.getSoftVerification();
 
         userInfo = UserInfoJson.getUserInfo();
-        if (userInfo != null) userInfo.setRandomEmail(CommonUtils.getRandomEmail("test", driver));
+        if (userInfo != null) userInfo.setRandomEmail(getRandomEmailByCurrentState("test"));
     }
 
     @Test /*test Json Reader*/
@@ -85,7 +84,7 @@ public class Json_File extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void User_01_Register() {
-        registerPage = (RegisterPageObject) homePage.clickOnHeaderLink("Register");
+        registerPage = (RegisterPO) homePage.clickOnHeaderLink("Register");
 
         registerPage.addUserInfo(userInfo);
 
@@ -98,9 +97,9 @@ public class Json_File extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @Test
     public void User_02_Login() {
-        homePage = (HomePageObject) registerPage.clickOnHeaderLink("Log out");
+        homePage = (HomePO) registerPage.clickOnHeaderLink("Log out");
 
-        loginPage = (LoginPageObject) homePage.clickOnHeaderLink("Log in");
+        loginPage = (LoginPO) homePage.clickOnHeaderLink("Log in");
 
         homePage = loginPage.loginToSystem(userInfo);
 
@@ -111,7 +110,7 @@ public class Json_File extends BaseTest {
     @Severity(SeverityLevel.MINOR)
     @Test
     public void User_03_MyAccount() {
-        customerInfoPage = (CustomerInfoPageObject) homePage.clickOnHeaderLink("My account");
+        customerInfoPage = (CustomerInfoPO) homePage.clickOnHeaderLink("My account");
 
         soft.verifyTrue(customerInfoPage.isGenderMaleSelected());
         soft.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getName().getFirstName());

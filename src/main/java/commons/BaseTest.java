@@ -27,10 +27,14 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Random;
+import java.util.regex.Pattern;
 
 public class BaseTest {
     @Getter
@@ -173,7 +177,7 @@ public class BaseTest {
         return driverThreadLocal.get();
     }
 
-    protected void openUrl(WebDriver driver, String url) {
+    protected void configBrowserAndOpenUrl(WebDriver driver, String url) {
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT));
         driver.get(url);
@@ -238,6 +242,35 @@ public class BaseTest {
 
     protected BaseTest() {
         log = LogManager.getLogger(getClass());
+    }
+
+    protected String getCurrentBrowserName() {
+        WebDriver driver = driverThreadLocal.get();
+        String browserName = ((RemoteWebDriver) driver).getCapabilities().getBrowserName().toUpperCase();
+        if (browserName.contains("EDGE")) browserName = "EDGE";
+        return browserName;
+    }
+
+    protected long getRandomNumber(int min, int max) {
+        Random rnd = new Random();
+        return min + rnd.nextInt(max - min);
+    }
+
+    protected long getEpochTimeMillis() {
+        return Calendar.getInstance().getTimeInMillis();
+    }
+
+    protected String getRandomEmailByCurrentState(String prefix) {
+        String timestamp = new SimpleDateFormat("_yyMMdd.HHmmss_").format(new Date());
+        String browserName = getCurrentBrowserName().toLowerCase();
+        return removeDiacritics(prefix) + timestamp + browserName + "@gmail.com";
+    }
+
+    private String removeDiacritics(String str) {
+        str = str.replace("Đ", "D").replace("đ", "d");
+        String normalized = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(normalized).replaceAll("").toLowerCase();
     }
 
 }

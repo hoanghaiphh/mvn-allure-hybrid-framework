@@ -14,7 +14,7 @@ public class Owner_Library extends BaseTest {
     @BeforeClass
     public void beforeClass(String browserName) {
         driver = initDriver(browserName);
-        openUrl(driver, getEnvironmentOwner().getUrl());
+        configBrowserAndOpenUrl(driver, getEnvironmentOwner().getUrl());
     }
 
     @Test

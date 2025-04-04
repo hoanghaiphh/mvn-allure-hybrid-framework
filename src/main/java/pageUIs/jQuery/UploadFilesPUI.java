@@ -1,6 +1,6 @@
 package pageUIs.jQuery;
 
-public class UploadFilesPageUI {
+public class UploadFilesPUI {
 
     public static final String ADD_FILES_BUTTON = "css=input[type='file']";
 

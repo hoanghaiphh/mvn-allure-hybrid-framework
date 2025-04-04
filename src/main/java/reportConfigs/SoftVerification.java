@@ -8,7 +8,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.testng.Assert;
 import org.testng.Reporter;
 
-public class SoftVerification {
+public class SoftVerification extends BaseTest {
 
     public static SoftVerification getSoftVerification() {
         return new SoftVerification();
@@ -67,7 +67,7 @@ public class SoftVerification {
 
     @Attachment(value = "verification failure screenshot", type = "image/png")
     private byte[] allureAttachScreenshot() {
-        return ((TakesScreenshot) BaseTest.getDriverThreadLocal().get()).getScreenshotAs(OutputType.BYTES);
+        return ((TakesScreenshot) getDriverThreadLocal().get()).getScreenshotAs(OutputType.BYTES);
     }
 
 }

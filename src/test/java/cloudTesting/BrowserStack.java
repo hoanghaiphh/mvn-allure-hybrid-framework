@@ -2,10 +2,10 @@ package cloudTesting;
 
 import commons.BaseTest;
 import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import utilities.CommonUtils;
 
 public class BrowserStack extends BaseTest {
 
@@ -15,14 +15,17 @@ public class BrowserStack extends BaseTest {
     @BeforeClass
     public void beforeClass(String browserName, String browserVersion, String osName, String osVersion) {
         driver = initDriver(browserName, browserVersion, osName, osVersion);
-        openUrl(driver, "https://www.facebook.com/");
-
-        CommonUtils.sleepInSeconds(1);
+        configBrowserAndOpenUrl(driver, "https://www.facebook.com/");
     }
 
     @Test
-    public void TC_00() {
+    public void TC_01() throws InterruptedException {
+        Thread.sleep(1000);
+    }
 
+    @Test
+    public void TC_02() {
+        Assert.assertTrue(false);
     }
 
 }

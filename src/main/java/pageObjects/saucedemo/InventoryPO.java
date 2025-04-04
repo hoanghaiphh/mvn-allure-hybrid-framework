@@ -4,13 +4,15 @@ import commons.BasePage;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import pageUIs.saucedemo.InventoryPUI;
-import utilities.CommonUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static pageUIs.saucedemo.InventoryPUI.*;
 
 public class InventoryPO extends BasePage {
     private WebDriver driver;
@@ -21,25 +23,24 @@ public class InventoryPO extends BasePage {
 
     @Step("Select criteria for sorting: {0}")
     public void selectSortingCriteria(String criteria) {
-        waitForElementClickable(driver, InventoryPUI.SORT_DROPDOWN);
-        selectOptionInDropdown(driver, InventoryPUI.SORT_DROPDOWN, criteria);
-        CommonUtils.sleepInSeconds(1);
+        selectOptionInDefaultDropdown(getClickableElement(driver, SORT_DROPDOWN), criteria);
+        sleepThread(1);
     }
 
     @Step("Verify that products was sorted by criteria: {0}")
     public boolean isProductsSortedByCriteria(String criteria) {
-        var productNames = getListElements(driver, InventoryPUI.PRODUCT_NAME);
-        var productNamesUIOrder = productNames.stream()
+        List<String> productNamesUIOrder = getVisibleListElements(driver, PRODUCT_NAME)
+                .stream()
                 .map(WebElement::getText)
                 .toList();
-        var productNamesAsc = new ArrayList<>(productNamesUIOrder);
+        List<String> productNamesAsc = new ArrayList<>(productNamesUIOrder);
         Collections.sort(productNamesAsc);
 
-        var productPrices = getListElements(driver, InventoryPUI.PRODUCT_PRICE);
-        var productPricesUIOrder = productPrices.stream()
+        List<Float> productPricesUIOrder = getVisibleListElements(driver, PRODUCT_PRICE)
+                .stream()
                 .map(n -> Float.valueOf(n.getText().replace("$", "")))
                 .toList();
-        var productPricesAsc = new ArrayList<>(productPricesUIOrder);
+        List<Float> productPricesAsc = new ArrayList<>(productPricesUIOrder);
         Collections.sort(productPricesAsc);
 
         return switch (criteria) {
@@ -51,28 +52,26 @@ public class InventoryPO extends BasePage {
         };
     }
 
-    @Step("Select criteria for sorting: {0}")
-    public void selectSortingCriteria_2(String criteria) {
-        waitForElementClickable(driver, InventoryPUI.SORT_DROPDOWN_PARENT);
-        CommonUtils.sleepInSeconds(1);
-        selectOptionInCustomDropdown(driver, InventoryPUI.SORT_DROPDOWN_PARENT, InventoryPUI.SORT_DROPDOWN_CHILD, criteria);
-        CommonUtils.sleepInSeconds(1);
+    @Step("Sort books by Publication Date")
+    public void sortBooksByPublicationDate() {
+        waitForListElementsInvisible(driver, LOADING_SPINNER);
+        selectOptionInCustomDropdown(driver, SORT_DROPDOWN_PARENT, SORT_DROPDOWN_CHILD, "Publication Date");
+        waitForListElementsInvisible(driver, LOADING_SPINNER);
     }
 
-    @Step("Verify that book was sorted by Publication Date")
+    @Step("Verify that books was sorted by Publication Date")
     public boolean isBookSortedByPublicationDate() {
-        var publicationDates = getListElements(driver, InventoryPUI.BOOK_PUBLICATION_DATE);
-        var formatter = new SimpleDateFormat("MMM dd, yyyy");
-        var publicationDatesUIOrder = publicationDates.stream()
+        List<Date> publicationDatesUIOrder = getVisibleListElements(driver, BOOK_PUBLICATION_DATE)
+                .stream()
                 .map(n -> {
                     try {
-                        return formatter.parse(n.getText());
+                        return new SimpleDateFormat("MMM dd, yyyy").parse(n.getText());
                     } catch (ParseException e) {
                         throw new RuntimeException(e);
                     }
                 })
                 .toList();
-        var publicationDatesAsc = new ArrayList<>(publicationDatesUIOrder);
+        List<Date> publicationDatesAsc = new ArrayList<>(publicationDatesUIOrder);
         Collections.sort(publicationDatesAsc);
 
         return publicationDatesUIOrder.equals(publicationDatesAsc.reversed());

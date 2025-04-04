@@ -18,7 +18,7 @@ public class Data_Table_1 extends BaseTest {
     @BeforeClass
     public void beforeClass(String browserName) {
         driver = initDriver(browserName);
-        openUrl(driver, GlobalConstants.JQUERY_DATA_TABLE_1);
+        configBrowserAndOpenUrl(driver, GlobalConstants.JQUERY_DATA_TABLE_1);
         dataTable = PageGenerator.getDataTable1Page(driver);
     }
 
