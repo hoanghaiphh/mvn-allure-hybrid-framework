@@ -15,7 +15,6 @@ import pageObjects.nopcommerce.PageGenerator;
 import pageObjects.nopcommerce.HomePO;
 import pageObjects.nopcommerce.LoginPO;
 import pageObjects.nopcommerce.RegisterPO;
-import pageObjects.nopcommerce.myAccount.CustomerInfoPO;
 import reportConfigs.SoftVerification;
 import testData.UserInfoPOJO;
 import utilities.FakerConfig;
@@ -23,7 +22,6 @@ import utilities.FakerConfig;
 import java.util.Set;
 
 public class Register_And_Login extends BaseTest {
-    private CustomerInfoPO customerInfoPage;
     private HomePO homePage;
     private RegisterPO registerPage;
     private LoginPO loginPage;
