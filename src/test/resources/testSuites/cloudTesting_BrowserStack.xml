@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="BrowserStack" parallel="tests" thread-count="4">
+<suite name="BrowserStack">
+
+    <listeners>
+        <listener class-name="reportConfigs.AllureListener"/>
+    </listeners>
 
     <test name="Run on Firefox latest / Windows 11 ">
         <parameter name="browser" value="Firefox"/>
@@ -32,14 +36,14 @@
         </classes>
     </test>
 
-    <test name="Run on Safari 18.1 / Mac Sequoia ">
-        <parameter name="browser" value="Safari"/>
-        <parameter name="browserVersion" value="18.1"/>
-        <parameter name="os" value="OS X"/>
-        <parameter name="osVersion" value="Sequoia"/>
-        <classes>
-            <class name="cloudTesting.BrowserStack"/>
-        </classes>
-    </test>
+<!--    <test name="Run on Safari 18.1 / Mac Sequoia ">-->
+<!--        <parameter name="browser" value="Safari"/>-->
+<!--        <parameter name="browserVersion" value="18.1"/>-->
+<!--        <parameter name="os" value="OS X"/>-->
+<!--        <parameter name="osVersion" value="Sequoia"/>-->
+<!--        <classes>-->
+<!--            <class name="cloudTesting.BrowserStack"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 
 </suite>

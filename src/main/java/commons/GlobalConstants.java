@@ -11,6 +11,7 @@ public class GlobalConstants {
             = "https://www.jqueryscript.net/demo/CRUD-Data-Grid-Plugin-jQuery-Quickgrid/";
     public static final String JQUERY_DATA_TABLE_2
             = "https://www.jqueryscript.net/demo/jQuery-Dynamic-Data-Grid-Plugin-appendGrid/";
+    public static final String TECHPANDA = "https://live.techpanda.org/";
 
     public static final long SHORT_TIMEOUT = 3;
     public static final long LONG_TIMEOUT = 30;

@@ -113,7 +113,6 @@ public class BasePage {
         alert.sendKeys(keyToSend);
     }
 
-
     /* WebElement */
 
     private By getByLocator(String locator) {
@@ -179,6 +178,11 @@ public class BasePage {
     protected void waitForElementSelected(WebDriver driver, String locator, String... restParameter) {
         new WebDriverWait(driver, Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT))
                 .until(ExpectedConditions.elementToBeSelected(getDynamicLocator(locator, restParameter)));
+    }
+
+    protected void waitForElementTextToBe(WebDriver driver, String locator, String text, String... restParameter) {
+        new WebDriverWait(driver, Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT))
+                .until(ExpectedConditions.textToBePresentInElementLocated(getDynamicLocator(locator, restParameter), text));
     }
 
     protected boolean isElementDisplayed(WebDriver driver, String locator, String... restParameter) {

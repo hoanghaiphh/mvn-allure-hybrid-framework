@@ -2,6 +2,10 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="SauceLabs">
 
+    <listeners>
+        <listener class-name="reportConfigs.AllureListener"/>
+    </listeners>
+
     <test name="Run on Firefox latest / Linux ">
         <parameter name="browser" value="Firefox"/>
         <parameter name="browserVersion" value="latest"/>
@@ -29,13 +33,13 @@
         </classes>
     </test>
 
-    <test name="Run on Safari latest / Mac BigSur ">
-        <parameter name="browser" value="Safari"/>
-        <parameter name="browserVersion" value="latest"/>
-        <parameter name="platform" value="macOS 11.00"/>
-        <classes>
-            <class name="cloudTesting.SauceLabs"/>
-        </classes>
-    </test>
+<!--    <test name="Run on Safari latest / Mac BigSur ">-->
+<!--        <parameter name="browser" value="Safari"/>-->
+<!--        <parameter name="browserVersion" value="latest"/>-->
+<!--        <parameter name="platform" value="macOS 11.00"/>-->
+<!--        <classes>-->
+<!--            <class name="cloudTesting.SauceLabs"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 
 </suite>

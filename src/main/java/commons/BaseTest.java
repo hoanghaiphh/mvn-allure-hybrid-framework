@@ -112,6 +112,7 @@ public class BaseTest {
         bstackOptions.put("browserVersion", browserVersion);
         bstackOptions.put("userName", GlobalConstants.BROWSERSTACK_USERNAME);
         bstackOptions.put("accessKey", GlobalConstants.BROWSERSTACK_ACCESS_KEY);
+        bstackOptions.put("noBlankPolling", true);
         capabilities.setCapability("bstack:options", bstackOptions);
 
         WebDriver driver;
