@@ -55,7 +55,7 @@ public class BaseTest {
         return driverThreadLocal.get();
     }
 
-    protected WebDriver initDriver(String browserName, String osName) {
+    protected WebDriver initDriverSeleniumGrid(String browserName, String osName) {
         OSList osList = OSList.valueOf(osName.toUpperCase());
         Platform platform = switch (osList) {
             case WINDOWS -> Platform.WINDOWS;
@@ -103,7 +103,7 @@ public class BaseTest {
         return driverThreadLocal.get();
     }
 
-    protected WebDriver initDriver(String browserName, String browserVersion, String osName, String osVersion) {
+    protected WebDriver initDriverBrowserStack(String browserName, String browserVersion, String osName, String osVersion) {
         MutableCapabilities capabilities = new MutableCapabilities();
         HashMap<String, Object> bstackOptions = new HashMap<>();
         capabilities.setCapability("browserName", browserName);
@@ -127,7 +127,7 @@ public class BaseTest {
         return driverThreadLocal.get();
     }
 
-    protected WebDriver initDriver(String browserName, String browserVersion, String platform) {
+    protected WebDriver initDriverSauceLabs(String browserName, String browserVersion, String platform) {
         MutableCapabilities capabilities;
         BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
         switch (browserList) {
@@ -170,6 +170,61 @@ public class BaseTest {
         try {
             URL sauceLabsUrl = new URL(GlobalConstants.SAUCELABS_URL);
             driver = new RemoteWebDriver(sauceLabsUrl, capabilities);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        driverThreadLocal.set(driver);
+        return driverThreadLocal.get();
+    }
+
+    protected WebDriver initDriverLambdaTest(String browserName, String browserVersion, String platform) {
+        MutableCapabilities capabilities;
+        BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
+        switch (browserList) {
+            case FIREFOX:
+                FirefoxOptions fOptions = new FirefoxOptions();
+                fOptions.setPlatformName(platform);
+                fOptions.setBrowserVersion(browserVersion);
+                capabilities = fOptions;
+                break;
+            case CHROME:
+                ChromeOptions cOptions = new ChromeOptions();
+                cOptions.setPlatformName(platform);
+                cOptions.setBrowserVersion(browserVersion);
+                capabilities = cOptions;
+                break;
+            case EDGE:
+                EdgeOptions eOptions = new EdgeOptions();
+                eOptions.setPlatformName(platform);
+                eOptions.setBrowserVersion(browserVersion);
+                capabilities = eOptions;
+                break;
+            case SAFARI:
+                SafariOptions sOptions = new SafariOptions();
+                sOptions.setPlatformName(platform);
+                sOptions.setBrowserVersion(browserVersion);
+                capabilities = sOptions;
+                break;
+            default:
+                throw new IllegalArgumentException("Browser is not valid!");
+        }
+
+        HashMap<String, Object> ltOptions = new HashMap<>();
+        ltOptions.put("username", GlobalConstants.LAMBDATEST_USERNAME);
+        ltOptions.put("accessKey", GlobalConstants.LAMBDATEST_ACCESS_KEY);
+        ltOptions.put("build", "Build " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        ltOptions.put("name", "Run on " + platform + " - " + browserName + " " + browserVersion);
+        ltOptions.put("resolution", "1920x1080");
+        ltOptions.put("project", "live.techpanda.org");
+        ltOptions.put("selenium_version", "4.29.0");
+        ltOptions.put("w3c", true);
+        capabilities.setCapability("LT:Options", ltOptions);
+
+        WebDriver driver;
+        try {
+            URL lambdaTestUrl = new URL(GlobalConstants.LAMBDATEST_URL);
+            driver = new RemoteWebDriver(lambdaTestUrl, capabilities);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -35,4 +35,8 @@ public class GlobalConstants {
     public static final String SAUCELABS_URL = "https://" + SAUCELABS_USERNAME + ":" + SAUCELABS_ACCESS_KEY
             + "@ondemand." + SAUCELABS_DATA_CENTER + ".saucelabs.com:443/wd/hub";
 
+    public static final String LAMBDATEST_USERNAME = "hoanghaiphh";
+    public static final String LAMBDATEST_ACCESS_KEY = "LT_c1OXZkeL5EvpbeevFs1Hj7HJ72iSsznVmLUwMvYmgRO2Pac";
+    public static final String LAMBDATEST_URL = "https://hub.lambdatest.com/wd/hub";
+
 }

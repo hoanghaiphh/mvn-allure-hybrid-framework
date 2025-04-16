@@ -36,14 +36,14 @@
         </classes>
     </test>
 
-<!--    <test name="Run on Safari 18.1 / Mac Sequoia ">-->
-<!--        <parameter name="browser" value="Safari"/>-->
-<!--        <parameter name="browserVersion" value="18.1"/>-->
-<!--        <parameter name="os" value="OS X"/>-->
-<!--        <parameter name="osVersion" value="Sequoia"/>-->
-<!--        <classes>-->
-<!--            <class name="cloudTesting.BrowserStack"/>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <test name="Run on Safari 18.1 / Mac Sequoia ">
+        <parameter name="browser" value="Safari"/>
+        <parameter name="browserVersion" value="18.1"/>
+        <parameter name="os" value="OS X"/>
+        <parameter name="osVersion" value="Sequoia"/>
+        <classes>
+            <class name="cloudTesting.BrowserStack"/>
+        </classes>
+    </test>
 
 </suite>

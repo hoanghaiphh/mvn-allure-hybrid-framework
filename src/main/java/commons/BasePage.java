@@ -309,12 +309,16 @@ public class BasePage {
         new Actions(driver).dragAndDrop(srcElement, dstElement).perform();
     }
 
-    protected void sendKeyPressToElementByActions(WebDriver driver, WebElement webElement, Keys key) {
+    protected void scrollToElementByActions(WebDriver driver, WebElement webElement) {
+        new Actions(driver).scrollToElement(webElement).perform();
+    }
+
+    protected void pressKeyOnElement(WebDriver driver, WebElement webElement, Keys key) {
         new Actions(driver).sendKeys(webElement, key).perform();
     }
 
-    protected void scrollToElementByActions(WebDriver driver, WebElement webElement) {
-        new Actions(driver).scrollToElement(webElement).perform();
+    protected void pressKey(WebDriver driver, Keys key) {
+        new Actions(driver).sendKeys(key).perform();
     }
 
     /* JavascriptExecutor */

@@ -13,7 +13,7 @@ public class Selenium_Grid_4_MultipleOS extends BaseTest {
     @Parameters({"browser", "os"})
     @BeforeClass
     public void beforeClass(String browserName, String osName) {
-        driver = initDriver(browserName, osName);
+        driver = initDriverSeleniumGrid(browserName, osName);
         configBrowserAndOpenUrl(driver, "https://www.facebook.com/");
     }
 

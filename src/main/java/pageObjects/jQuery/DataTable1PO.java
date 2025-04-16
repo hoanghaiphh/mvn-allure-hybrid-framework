@@ -32,7 +32,7 @@ public class DataTable1PO extends BasePage {
     public void searchValueByHeader(String headerName, String value) {
         WebElement element = getVisibleElement(driver, DYNAMIC_SEARCH_TEXTBOX, headerName);
         sendKeysToElement(element, value);
-        sendKeyPressToElementByActions(driver, element, Keys.ENTER);
+        pressKeyOnElement(driver, element, Keys.ENTER);
     }
 
     public boolean isDataRowDisplayed(String female, String country, String male, String total) {

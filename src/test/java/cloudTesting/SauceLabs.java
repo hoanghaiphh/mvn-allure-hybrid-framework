@@ -30,7 +30,7 @@ public class SauceLabs extends BaseTest {
     @Parameters({"browser", "browserVersion", "platform"})
     @BeforeClass
     public void beforeClass(String browserName, String browserVersion, String platform) {
-        driver = initDriver(browserName, browserVersion, platform);
+        driver = initDriverSauceLabs(browserName, browserVersion, platform);
         configBrowserAndOpenUrl(driver, GlobalConstants.TECHPANDA);
         homePage = PageGenerator.getHomePage(driver);
 
@@ -64,8 +64,7 @@ public class SauceLabs extends BaseTest {
         accountDashboardPage = loginPage.loginToSystemWithInfo(userInfo);
 
         String fullName = userInfo.getFirstName() + " " + userInfo.getLastName();
-        Assert.assertTrue(accountDashboardPage.isHeaderWelcomeMsg(
-                "WELCOME, " + fullName.toUpperCase() + "!"));
+        Assert.assertTrue(accountDashboardPage.headerWelcomeMsgContains(fullName));
         Assert.assertEquals(accountDashboardPage.getWelcomeMsg(), "Hello, " + fullName + "!");
 
         String contactInfo = accountDashboardPage.getContactInfo();

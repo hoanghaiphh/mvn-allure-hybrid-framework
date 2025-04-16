@@ -17,7 +17,7 @@ import pageObjects.techpanda.myAccount.AccountInfoPO;
 import testData.UserInfoPOJO;
 import utilities.FakerConfig;
 
-public class BrowserStack extends BaseTest {
+public class LambdaTest extends BaseTest {
     private HomePO homePage;
     private LoginPO loginPage;
     private RegisterPO registerPage;
@@ -27,10 +27,10 @@ public class BrowserStack extends BaseTest {
     private WebDriver driver;
     private UserInfoPOJO userInfo;
 
-    @Parameters({"browser", "browserVersion", "os", "osVersion"})
+    @Parameters({"browser", "browserVersion", "platform"})
     @BeforeClass
-    public void beforeClass(String browserName, String browserVersion, String osName, String osVersion) {
-        driver = initDriverBrowserStack(browserName, browserVersion, osName, osVersion);
+    public void beforeClass(String browserName, String browserVersion, String platform) {
+        driver = initDriverLambdaTest(browserName, browserVersion, platform);
         configBrowserAndOpenUrl(driver, GlobalConstants.TECHPANDA);
         homePage = PageGenerator.getHomePage(driver);
 

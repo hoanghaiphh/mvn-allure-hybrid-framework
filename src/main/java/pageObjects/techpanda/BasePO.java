@@ -2,6 +2,7 @@ package pageObjects.techpanda;
 
 import commons.BasePage;
 import io.qameta.allure.Step;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 
 import static pageUIs.techpanda.BasePUI.*;
@@ -19,13 +20,18 @@ public class BasePO extends BasePage {
             clickOnElement(getClickableElement(driver, SEND_ANYWAY_BUTTON));
         } else if (driverInstance.contains("FIREFOX")) {
             acceptAlert(getPresentAlert(driver));
+        } else if (driverInstance.contains("SAFARI")) {
+            pressKey(driver, Keys.TAB);
+            pressKey(driver, Keys.ENTER);
         }
     }
 
     @Step("Verify that Welcome Message on header should be: {0}")
-    public boolean isHeaderWelcomeMsg(String expectedMsg) {
+    public boolean headerWelcomeMsgContains(String expectedMsg) {
+        String driverInstance = driver.toString().toUpperCase();
+        if (!driverInstance.contains("SAFARI")) expectedMsg = expectedMsg.toUpperCase();
         waitForElementTextToBe(driver, HEADER_WELCOME_MSG, expectedMsg);
-        return getElementText(getVisibleElement(driver, HEADER_WELCOME_MSG)).equals(expectedMsg);
+        return getElementText(getVisibleElement(driver, HEADER_WELCOME_MSG)).contains(expectedMsg);
     }
 
 }
