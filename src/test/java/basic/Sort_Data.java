@@ -3,6 +3,8 @@ package basic;
 import commons.BaseTest;
 import commons.GlobalConstants;
 import org.openqa.selenium.WebDriver;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.saucedemo.InventoryPO;
@@ -17,10 +19,11 @@ public class Sort_Data extends BaseTest {
     private WebDriver driver;
     private SoftVerification soft = SoftVerification.getSoftVerification();
 
-    @Parameters("browser")
-    @Test
-    public void TC_01_Sort_Data(String browserName) {
-        driver = initDriver(browserName);
+    @Parameters({"platform", "browserName", "browserVersion", "osName", "osVersion"})
+    @BeforeClass
+    public void beforeClass(String platform, String browserName,
+                            @Optional String browserVersion, @Optional String osName, @Optional String osVersion) {
+        driver = initDriver(platform, browserName, browserVersion, osName, osVersion);
         configBrowserAndOpenUrl(driver, GlobalConstants.SAUCE_DEMO);
 
         loginPage = PageGenerator.getLoginPage(driver);

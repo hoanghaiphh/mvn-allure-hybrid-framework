@@ -7,8 +7,10 @@
         <listener class-name="reportConfigs.AllureListener"/>
     </listeners>
 
+    <parameter name="platform" value="LOCAL"/>
+
     <test name="Run on Firefox browser">
-        <parameter name="browser" value="Firefox"/>
+        <parameter name="browserName" value="Firefox_Headless"/>
         <classes>
             <class name="manageTestData.POJO"/>
             <class name="manageTestData.Json_File"/>
@@ -17,7 +19,7 @@
     </test>
 
     <test name="Run on Chrome browser">
-        <parameter name="browser" value="Chrome"/>
+        <parameter name="browserName" value="Chrome_Headless"/>
         <classes>
             <class name="manageTestData.POJO"/>
             <class name="manageTestData.Json_File"/>
@@ -26,7 +28,7 @@
     </test>
 
     <test name="Run on Edge browser">
-        <parameter name="browser" value="Edge"/>
+        <parameter name="browserName" value="Edge_Headless"/>
         <classes>
             <class name="manageTestData.POJO"/>
             <class name="manageTestData.Json_File"/>

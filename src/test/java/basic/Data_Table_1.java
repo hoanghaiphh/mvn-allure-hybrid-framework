@@ -5,6 +5,7 @@ import commons.GlobalConstants;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.jQuery.DataTable1PO;
@@ -14,10 +15,11 @@ public class Data_Table_1 extends BaseTest {
     private WebDriver driver;
     private DataTable1PO dataTable;
 
-    @Parameters("browser")
+    @Parameters({"platform", "browserName", "browserVersion", "osName", "osVersion"})
     @BeforeClass
-    public void beforeClass(String browserName) {
-        driver = initDriver(browserName);
+    public void beforeClass(String platform, String browserName,
+                            @Optional String browserVersion, @Optional String osName, @Optional String osVersion) {
+        driver = initDriver(platform, browserName, browserVersion, osName, osVersion);
         configBrowserAndOpenUrl(driver, GlobalConstants.JQUERY_DATA_TABLE_1);
         dataTable = PageGenerator.getDataTable1Page(driver);
     }

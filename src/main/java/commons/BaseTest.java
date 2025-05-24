@@ -1,28 +1,18 @@
 package commons;
 
+import factoryPlatform.*;
 import lombok.Getter;
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.safari.SafariDriver;
-import org.openqa.selenium.safari.SafariOptions;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import utilities.OwnerConfig;
 import utilities.PropertiesConfig;
 
-import java.net.InetAddress;
-import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -40,8 +29,24 @@ public class BaseTest {
     @Getter
     private static ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
 
-    protected WebDriver initDriver(String browserName) {
-        BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
+    protected WebDriver initDriver(String platform, String browserName,
+                                   String browserVersion, String osName, String osVersion) {
+
+        EnumList.Platform platformList = EnumList.Platform.valueOf(platform.toUpperCase());
+        WebDriver driver = switch (platformList) {
+            case LOCAL -> new LocalDevice(browserName).initDriver();
+            case GRID -> new SeleniumGrid4(browserName, osName).initDriver();
+            case BROWSER_STACK -> new BrowserStack(browserName, browserVersion, osName, osVersion).initDriver();
+            case SAUCE_LABS -> new SauceLabs(browserName, browserVersion, osName).initDriver();
+            case LAMBDA_TEST -> new LambdaTest(browserName, browserVersion, osName).initDriver();
+        };
+
+        driverThreadLocal.set(driver);
+        return driverThreadLocal.get();
+    }
+
+    /*protected WebDriver initDriver(String browserName) {
+        EnumList.Browser browserList = EnumList.Browser.valueOf(browserName.toUpperCase());
         WebDriver driver = switch (browserList) {
             case FIREFOX -> new FirefoxDriver();
             case CHROME -> new ChromeDriver();
@@ -231,7 +236,7 @@ public class BaseTest {
 
         driverThreadLocal.set(driver);
         return driverThreadLocal.get();
-    }
+    }*/
 
     protected void configBrowserAndOpenUrl(WebDriver driver, String url) {
         driver.manage().window().maximize();

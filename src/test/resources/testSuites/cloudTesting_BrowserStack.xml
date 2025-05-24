@@ -6,10 +6,12 @@
         <listener class-name="reportConfigs.AllureListener"/>
     </listeners>
 
+    <parameter name="platform" value="BROWSER_STACK"/>
+
     <test name="Run on Firefox latest / Windows 11 ">
-        <parameter name="browser" value="Firefox"/>
+        <parameter name="browserName" value="Firefox"/>
         <parameter name="browserVersion" value="latest"/>
-        <parameter name="os" value="Windows"/>
+        <parameter name="osName" value="Windows"/>
         <parameter name="osVersion" value="11"/>
         <classes>
             <class name="cloudTesting.BrowserStack"/>
@@ -17,9 +19,9 @@
     </test>
 
     <test name="Run on Chrome 132.0 / Windows 10 ">
-        <parameter name="browser" value="Chrome"/>
+        <parameter name="browserName" value="Chrome"/>
         <parameter name="browserVersion" value="132.0"/>
-        <parameter name="os" value="Windows"/>
+        <parameter name="osName" value="Windows"/>
         <parameter name="osVersion" value="10"/>
         <classes>
             <class name="cloudTesting.BrowserStack"/>
@@ -27,9 +29,9 @@
     </test>
 
     <test name="Run on Edge latest / Windows 10 ">
-        <parameter name="browser" value="Edge"/>
+        <parameter name="browserName" value="Edge"/>
         <parameter name="browserVersion" value="latest"/>
-        <parameter name="os" value="Windows"/>
+        <parameter name="osName" value="Windows"/>
         <parameter name="osVersion" value="10"/>
         <classes>
             <class name="cloudTesting.BrowserStack"/>
@@ -37,9 +39,9 @@
     </test>
 
     <test name="Run on Safari 18.1 / Mac Sequoia ">
-        <parameter name="browser" value="Safari"/>
+        <parameter name="browserName" value="Safari"/>
         <parameter name="browserVersion" value="18.1"/>
-        <parameter name="os" value="OS X"/>
+        <parameter name="osName" value="OS X"/>
         <parameter name="osVersion" value="Sequoia"/>
         <classes>
             <class name="cloudTesting.BrowserStack"/>

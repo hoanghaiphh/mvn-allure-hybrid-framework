@@ -8,6 +8,7 @@ import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageFactory.CustomerInfoPageFactory;
@@ -29,10 +30,11 @@ public class Page_Factory extends BaseTest {
     private UserInfoPOJO userInfo;
     private SoftVerification soft;
 
-    @Parameters("browser")
+    @Parameters({"platform", "browserName", "browserVersion", "osName", "osVersion"})
     @BeforeClass
-    public void beforeClass(String browserName) {
-        driver = initDriver(browserName);
+    public void beforeClass(String platform, String browserName,
+                            @Optional String browserVersion, @Optional String osName, @Optional String osVersion) {
+        driver = initDriver(platform, browserName, browserVersion, osName, osVersion);
         configBrowserAndOpenUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = new HomePageFactory(driver);
 

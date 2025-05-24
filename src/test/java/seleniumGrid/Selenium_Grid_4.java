@@ -1,6 +1,6 @@
 package seleniumGrid;
 
-import commons.BrowserList;
+import commons.EnumList;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -20,7 +20,7 @@ public class Selenium_Grid_4 {
     @Parameters("browser")
     @BeforeClass
     public void beforeClass(String browserName) {
-        BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
+        EnumList.Browser browserList = EnumList.Browser.valueOf(browserName.toUpperCase());
         Capabilities capability = switch (browserList) {
             case FIREFOX -> new FirefoxOptions();
             case CHROME -> new ChromeOptions();

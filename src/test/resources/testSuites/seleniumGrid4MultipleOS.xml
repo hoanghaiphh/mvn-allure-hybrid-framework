@@ -2,33 +2,35 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="Selenium Grid 4" parallel="tests" thread-count="4">
 
+    <parameter name="platform" value="GRID"/>
+
     <test name="Run on Firefox browser">
-        <parameter name="browser" value="Firefox"/>
-        <parameter name="os" value="Linux"/>
+        <parameter name="browserName" value="Firefox"/>
+        <parameter name="osName" value="Linux"/>
         <classes>
             <class name="seleniumGrid.Selenium_Grid_4_MultipleOS"/>
         </classes>
     </test>
 
     <test name="Run on Chrome browser">
-        <parameter name="browser" value="Chrome"/>
-        <parameter name="os" value="Windows"/>
+        <parameter name="browserName" value="Chrome"/>
+        <parameter name="osName" value="Windows"/>
         <classes>
             <class name="seleniumGrid.Selenium_Grid_4_MultipleOS"/>
         </classes>
     </test>
 
     <test name="Run on Edge browser">
-        <parameter name="browser" value="Edge"/>
-        <parameter name="os" value="Windows"/>
+        <parameter name="browserName" value="Edge"/>
+        <parameter name="osName" value="Windows"/>
         <classes>
             <class name="seleniumGrid.Selenium_Grid_4_MultipleOS"/>
         </classes>
     </test>
 
     <test name="Run on Safari browser">
-        <parameter name="browser" value="Safari"/>
-        <parameter name="os" value="Mac"/>
+        <parameter name="browserName" value="Safari"/>
+        <parameter name="osName" value="Mac"/>
         <classes>
             <class name="seleniumGrid.Selenium_Grid_4_MultipleOS"/>
         </classes>
