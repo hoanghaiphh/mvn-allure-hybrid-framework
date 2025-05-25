@@ -8,11 +8,11 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.URL;
 import java.util.HashMap;
 
-public class BrowserStack implements PlatformFactory {
+public class BrowserStackManager implements PlatformFactory {
 
     private String browserName, browserVersion, osName, osVersion;
 
-    public BrowserStack(String browserName, String browserVersion, String osName, String osVersion) {
+    public BrowserStackManager(String browserName, String browserVersion, String osName, String osVersion) {
         this.browserName = browserName;
         this.browserVersion = browserVersion;
         this.osName = osName;

@@ -4,11 +4,11 @@ import commons.EnumList;
 import factoryBrowser.*;
 import org.openqa.selenium.WebDriver;
 
-public class LocalDevice implements PlatformFactory {
+public class LocalManager implements PlatformFactory {
 
     private String browserName;
 
-    public LocalDevice(String browserName) {
+    public LocalManager(String browserName) {
         this.browserName = browserName;
     }
 

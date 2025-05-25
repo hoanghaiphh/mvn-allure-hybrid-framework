@@ -5,11 +5,11 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class CommonUtils {
+public class FileUtils {
 
     public static Path getFilePathFromClasspath(String folderName, String fileName) {
         try {
-            URL url = CommonUtils.class.getClassLoader().getResource(folderName + "/" + fileName);
+            URL url = FileUtils.class.getClassLoader().getResource(folderName + "/" + fileName);
             if (url == null) {
                 throw new RuntimeException("File not found in classpath: " + folderName + "/" + fileName);
             }

@@ -1,7 +1,7 @@
 package pageObjects.jQuery;
 
 import commons.BasePage;
-import utilities.CommonUtils;
+import utilities.FileUtils;
 import org.openqa.selenium.WebDriver;
 
 import java.util.Arrays;
@@ -18,7 +18,7 @@ public class UploadFilesPO extends BasePage {
 
     public void addFiles(String... fileNames) {
         String filePath = Arrays.stream(fileNames)
-                .map(fileName -> CommonUtils.getFileAbsolutePath("uploadFiles", fileName))
+                .map(fileName -> FileUtils.getFileAbsolutePath("uploadFiles", fileName))
                 .collect(Collectors.joining("\n"));
 
         sendKeysToElement(getElement(driver, ADD_FILES_BUTTON), filePath.trim());

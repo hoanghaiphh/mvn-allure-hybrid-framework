@@ -34,11 +34,11 @@ public class BaseTest {
 
         EnumList.Platform platformList = EnumList.Platform.valueOf(platform.toUpperCase());
         WebDriver driver = switch (platformList) {
-            case LOCAL -> new LocalDevice(browserName).initDriver();
-            case GRID -> new SeleniumGrid4(browserName, osName).initDriver();
-            case BROWSER_STACK -> new BrowserStack(browserName, browserVersion, osName, osVersion).initDriver();
-            case SAUCE_LABS -> new SauceLabs(browserName, browserVersion, osName).initDriver();
-            case LAMBDA_TEST -> new LambdaTest(browserName, browserVersion, osName).initDriver();
+            case LOCAL -> new LocalManager(browserName).initDriver();
+            case GRID -> new GridManager(browserName, osName).initDriver();
+            case BROWSER_STACK -> new BrowserStackManager(browserName, browserVersion, osName, osVersion).initDriver();
+            case SAUCE_LABS -> new SauceLabsManager(browserName, browserVersion, osName).initDriver();
+            case LAMBDA_TEST -> new LambdaTestManager(browserName, browserVersion, osName).initDriver();
         };
 
         driverThreadLocal.set(driver);

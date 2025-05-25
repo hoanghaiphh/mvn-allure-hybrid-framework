@@ -10,11 +10,11 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.InetAddress;
 import java.net.URL;
 
-public class SeleniumGrid4 implements PlatformFactory {
+public class GridManager implements PlatformFactory {
 
     private String browserName, osName;
 
-    public SeleniumGrid4(String browserName, String osName) {
+    public GridManager(String browserName, String osName) {
         this.browserName = browserName;
         this.osName = osName;
     }
@@ -34,7 +34,7 @@ public class SeleniumGrid4 implements PlatformFactory {
             case CHROME -> new ChromeDriverManager(platform).getOptions();
             case EDGE -> new EdgeDriverManager(platform).getOptions();
             case SAFARI -> new SafariDriverManager(platform).getOptions();
-            default -> throw new IllegalArgumentException("Browser " + browserName.toUpperCase() + " is not valid!");
+            default -> throw new BrowserNotSupportedException(browserName);
         };
 
         try {

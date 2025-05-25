@@ -14,22 +14,27 @@ public class SafariDriverManager implements BrowserFactory {
     private SafariOptions options = new SafariOptions();
 
     public SafariDriverManager() {
+        checkOS();
     }
 
     public SafariDriverManager(Platform osName) {
+        checkOS();
         options.setCapability(CapabilityType.PLATFORM_NAME, osName);
     }
 
     public SafariDriverManager(String osName, String browserVersion) {
+        checkOS();
         options.setPlatformName(osName);
         options.setBrowserVersion(browserVersion);
     }
 
     @Override
     public WebDriver initDriver() {
-        if (!GlobalConstants.OS_NAME.toUpperCase().contains("MAC"))
-            throw new IllegalStateException("Safari is not supported on " + GlobalConstants.OS_NAME);
         return new SafariDriver(options);
+    }
+
+    private void checkOS() {
+        if (!GlobalConstants.OS_NAME.toUpperCase().contains("MAC")) throw new BrowserNotSupportedException("Safari");
     }
 
 }

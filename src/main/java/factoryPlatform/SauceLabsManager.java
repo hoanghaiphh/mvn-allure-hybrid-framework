@@ -12,11 +12,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-public class LambdaTest implements PlatformFactory {
+public class SauceLabsManager implements PlatformFactory {
 
     private String browserName, browserVersion, osName;
 
-    public LambdaTest(String browserName, String browserVersion, String osName) {
+    public SauceLabsManager(String browserName, String browserVersion, String osName) {
         this.browserName = browserName;
         this.browserVersion = browserVersion;
         this.osName = osName;
@@ -30,23 +30,19 @@ public class LambdaTest implements PlatformFactory {
             case CHROME -> new ChromeDriverManager(osName, browserVersion).getOptions();
             case EDGE -> new EdgeDriverManager(osName, browserVersion).getOptions();
             case SAFARI -> new SafariDriverManager(osName, browserVersion).getOptions();
-            default -> throw new IllegalArgumentException("Browser " + browserName.toUpperCase() + " is not valid!");
+            default -> throw new BrowserNotSupportedException(browserName);
         };
 
-        HashMap<String, Object> ltOptions = new HashMap<>();
-        ltOptions.put("username", GlobalConstants.LAMBDATEST_USERNAME);
-        ltOptions.put("accessKey", GlobalConstants.LAMBDATEST_ACCESS_KEY);
-        ltOptions.put("build", "Build " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-        ltOptions.put("name", "Run on " + osName + " - " + browserName + " " + browserVersion);
-        ltOptions.put("resolution", "1920x1080");
-        ltOptions.put("project", "live.techpanda.org");
-        ltOptions.put("selenium_version", "4.29.0");
-        ltOptions.put("w3c", true);
-        capabilities.setCapability("LT:Options", ltOptions);
+        HashMap<String, String> sauceOptions = new HashMap<>();
+        sauceOptions.put("username", GlobalConstants.SAUCELABS_USERNAME);
+        sauceOptions.put("accessKey", GlobalConstants.SAUCELABS_ACCESS_KEY);
+        sauceOptions.put("build", "Build " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        sauceOptions.put("name", "Run on " + osName + " - " + browserName + " " + browserVersion);
+        capabilities.setCapability("sauce:options", sauceOptions);
 
         try {
-            URL lambdaTestUrl = new URL(GlobalConstants.LAMBDATEST_URL);
-            return new RemoteWebDriver(lambdaTestUrl, capabilities);
+            URL sauceLabsUrl = new URL(GlobalConstants.SAUCELABS_URL);
+            return new RemoteWebDriver(sauceLabsUrl, capabilities);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
