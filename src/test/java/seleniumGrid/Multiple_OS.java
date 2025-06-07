@@ -7,7 +7,7 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-public class Selenium_Grid_4_MultipleOS extends BaseTest {
+public class Multiple_OS extends BaseTest {
 
     private WebDriver driver;
 

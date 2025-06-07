@@ -11,6 +11,6 @@ public class EnumList {
     }
 
     public enum Platform {
-        LOCAL, GRID, BROWSER_STACK, SAUCE_LABS, LAMBDA_TEST
+        LOCAL, GRID, BROWSER_STACK, SAUCE_LABS, LAMBDA_TEST, DOCKER
     }
 }

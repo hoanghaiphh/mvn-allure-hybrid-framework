@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Docker" parallel="tests" thread-count="3">
+
+    <listeners>
+        <listener class-name="reportConfigs.AllureListener"/>
+    </listeners>
+
+    <parameter name="platform" value="DOCKER"/>
+
+    <test name="Run on Firefox latest / standalone">
+        <parameter name="browserName" value="Firefox"/>
+        <parameter name="portNumber" value="5555"/>
+        <classes>
+            <class name="seleniumGrid.Docker"/>
+        </classes>
+    </test>
+
+    <test name="Run on Chrome latest / standalone">
+        <parameter name="browserName" value="Chrome"/>
+        <parameter name="portNumber" value="6666"/>
+        <classes>
+            <class name="seleniumGrid.Docker"/>
+        </classes>
+    </test>
+
+    <test name="Run on Edge latest / standalone">
+        <parameter name="browserName" value="Edge"/>
+        <parameter name="portNumber" value="7777"/>
+        <classes>
+            <class name="seleniumGrid.Docker"/>
+        </classes>
+    </test>
+
+    <test name="Run on Firefox latest / Hub-Node">
+        <parameter name="browserName" value="Firefox"/>
+        <classes>
+            <class name="seleniumGrid.Docker"/>
+        </classes>
+    </test>
+
+    <test name="Run on Chrome latest / Hub-Node">
+        <parameter name="browserName" value="Chrome"/>
+        <classes>
+            <class name="seleniumGrid.Docker"/>
+        </classes>
+    </test>
+
+    <test name="Run on Edge latest / Hub-Node">
+        <parameter name="browserName" value="Edge"/>
+        <classes>
+            <class name="seleniumGrid.Docker"/>
+        </classes>
+    </test>
+
+</suite>

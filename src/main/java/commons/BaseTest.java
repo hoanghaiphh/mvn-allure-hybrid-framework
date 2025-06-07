@@ -30,15 +30,17 @@ public class BaseTest {
     private static ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
 
     protected WebDriver initDriver(String platform, String browserName,
-                                   String browserVersion, String osName, String osVersion) {
+                                   String browserVersion, String platformParameter, String osVersion) {
 
         EnumList.Platform platformList = EnumList.Platform.valueOf(platform.toUpperCase());
         WebDriver driver = switch (platformList) {
             case LOCAL -> new LocalManager(browserName).initDriver();
-            case GRID -> new GridManager(browserName, osName).initDriver();
-            case BROWSER_STACK -> new BrowserStackManager(browserName, browserVersion, osName, osVersion).initDriver();
-            case SAUCE_LABS -> new SauceLabsManager(browserName, browserVersion, osName).initDriver();
-            case LAMBDA_TEST -> new LambdaTestManager(browserName, browserVersion, osName).initDriver();
+            case GRID -> new GridManager(browserName, platformParameter).initDriver();
+            case BROWSER_STACK ->
+                    new BrowserStackManager(browserName, browserVersion, platformParameter, osVersion).initDriver();
+            case SAUCE_LABS -> new SauceLabsManager(browserName, browserVersion, platformParameter).initDriver();
+            case LAMBDA_TEST -> new LambdaTestManager(browserName, browserVersion, platformParameter).initDriver();
+            case DOCKER -> new DockerManager(browserName, platformParameter).initDriver();
         };
 
         driverThreadLocal.set(driver);

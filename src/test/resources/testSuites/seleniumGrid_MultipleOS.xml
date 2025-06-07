@@ -8,7 +8,7 @@
         <parameter name="browserName" value="Firefox"/>
         <parameter name="osName" value="Linux"/>
         <classes>
-            <class name="seleniumGrid.Selenium_Grid_4_MultipleOS"/>
+            <class name="seleniumGrid.Multiple_OS"/>
         </classes>
     </test>
 
@@ -16,7 +16,7 @@
         <parameter name="browserName" value="Chrome"/>
         <parameter name="osName" value="Windows"/>
         <classes>
-            <class name="seleniumGrid.Selenium_Grid_4_MultipleOS"/>
+            <class name="seleniumGrid.Multiple_OS"/>
         </classes>
     </test>
 
@@ -24,7 +24,7 @@
         <parameter name="browserName" value="Edge"/>
         <parameter name="osName" value="Windows"/>
         <classes>
-            <class name="seleniumGrid.Selenium_Grid_4_MultipleOS"/>
+            <class name="seleniumGrid.Multiple_OS"/>
         </classes>
     </test>
 
@@ -32,7 +32,7 @@
         <parameter name="browserName" value="Safari"/>
         <parameter name="osName" value="Mac"/>
         <classes>
-            <class name="seleniumGrid.Selenium_Grid_4_MultipleOS"/>
+            <class name="seleniumGrid.Multiple_OS"/>
         </classes>
     </test>
 
