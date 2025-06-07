@@ -31,7 +31,7 @@ public class Docker extends BaseTest {
     @Parameters({"platform", "browserName", "portNumber"})
     @BeforeClass
     public void beforeClass(String platform, String browserName, @Optional("4444") String portNumber) {
-        driver = initDriver(platform, browserName, "", portNumber, "");
+        driver = initDriver(platform, browserName, portNumber);
         configBrowserAndOpenUrl(driver, GlobalConstants.TECHPANDA);
         homePage = PageGenerator.getHomePage(driver);
 

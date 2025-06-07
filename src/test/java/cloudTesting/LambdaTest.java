@@ -28,11 +28,10 @@ public class LambdaTest extends BaseTest {
     private WebDriver driver;
     private UserInfoPOJO userInfo;
 
-    @Parameters({"platform", "browserName", "browserVersion", "osName", "osVersion"})
+    @Parameters({"platform", "browserName", "browserVersion", "osName"})
     @BeforeClass
-    public void beforeClass(String platform, String browserName,
-                            @Optional String browserVersion, @Optional String osName, @Optional String osVersion) {
-        driver = initDriver(platform, browserName, browserVersion, osName, osVersion);
+    public void beforeClass(String platform, String browserName, String browserVersion, String osName) {
+        driver = initDriver(platform, browserName, browserVersion, osName);
         configBrowserAndOpenUrl(driver, GlobalConstants.TECHPANDA);
         homePage = PageGenerator.getHomePage(driver);
 

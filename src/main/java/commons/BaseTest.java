@@ -26,219 +26,55 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 public class BaseTest {
+
     @Getter
     private static ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
 
-    protected WebDriver initDriver(String platform, String browserName,
-                                   String browserVersion, String platformParameter, String osVersion) {
-
+    protected WebDriver initDriver(String platform, String browserName, String... args) {
         EnumList.Platform platformList = EnumList.Platform.valueOf(platform.toUpperCase());
-        WebDriver driver = switch (platformList) {
-            case LOCAL -> new LocalManager(browserName).initDriver();
-            case GRID -> new GridManager(browserName, platformParameter).initDriver();
-            case BROWSER_STACK ->
-                    new BrowserStackManager(browserName, browserVersion, platformParameter, osVersion).initDriver();
-            case SAUCE_LABS -> new SauceLabsManager(browserName, browserVersion, platformParameter).initDriver();
-            case LAMBDA_TEST -> new LambdaTestManager(browserName, browserVersion, platformParameter).initDriver();
-            case DOCKER -> new DockerManager(browserName, platformParameter).initDriver();
-        };
 
-        driverThreadLocal.set(driver);
-        return driverThreadLocal.get();
-    }
-
-    /*protected WebDriver initDriver(String browserName) {
-        EnumList.Browser browserList = EnumList.Browser.valueOf(browserName.toUpperCase());
-        WebDriver driver = switch (browserList) {
-            case FIREFOX -> new FirefoxDriver();
-            case CHROME -> new ChromeDriver();
-            case EDGE -> new EdgeDriver();
-            case SAFARI -> new SafariDriver();
-            case FIREFOX_HEADLESS -> new FirefoxDriver(new FirefoxOptions().addArguments("--headless"));
-            case CHROME_HEADLESS -> new ChromeDriver(new ChromeOptions().addArguments("--headless=new"));
-            case EDGE_HEADLESS -> new EdgeDriver(new EdgeOptions().addArguments("--headless=new"));
-        };
-        driverThreadLocal.set(driver);
-        return driverThreadLocal.get();
-    }
-
-    protected WebDriver initDriverSeleniumGrid(String browserName, String osName) {
-        OSList osList = OSList.valueOf(osName.toUpperCase());
-        Platform platform = switch (osList) {
-            case WINDOWS -> Platform.WINDOWS;
-            case MAC -> Platform.MAC;
-            case LINUX -> Platform.LINUX;
-        };
-
-        Capabilities capabilities;
-        BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
-        switch (browserList) {
-            case FIREFOX:
-                FirefoxOptions fOptions = new FirefoxOptions();
-                fOptions.setCapability(CapabilityType.PLATFORM_NAME, platform);
-                capabilities = fOptions;
+        WebDriver driver = null;
+        switch (platformList) {
+            case LOCAL: {
+                if (args.length != 0) throw new IllegalArgumentException("Platform parameters are not valid !!!");
+                driver = new LocalManager(browserName).initDriver();
                 break;
-            case CHROME:
-                ChromeOptions cOptions = new ChromeOptions();
-                cOptions.setCapability(CapabilityType.PLATFORM_NAME, platform);
-                capabilities = cOptions;
+            }
+            case GRID: {
+                if (args.length != 1) throw new IllegalArgumentException("Platform parameters are not valid !!!");
+                String osName = args[0];
+                driver = new GridManager(browserName, osName).initDriver();
                 break;
-            case EDGE:
-                EdgeOptions eOptions = new EdgeOptions();
-                eOptions.setCapability(CapabilityType.PLATFORM_NAME, platform);
-                capabilities = eOptions;
+            }
+            case DOCKER: {
+                if (args.length != 1) throw new IllegalArgumentException("Platform parameters are not valid !!!");
+                String portNumber = args[0];
+                driver = new DockerManager(browserName, portNumber).initDriver();
                 break;
-            case SAFARI:
-                SafariOptions sOptions = new SafariOptions();
-                sOptions.setCapability(CapabilityType.PLATFORM_NAME, platform);
-                capabilities = sOptions;
+            }
+            case BROWSER_STACK: {
+                if (args.length != 3) throw new IllegalArgumentException("Platform parameters are not valid !!!");
+                String browserVersion = args[0], osName = args[1], osVersion = args[2];
+                driver = new BrowserStackManager(browserName, browserVersion, osName, osVersion).initDriver();
                 break;
-            default:
-                throw new IllegalArgumentException("Browser is not valid!");
-        }
-
-        WebDriver driver;
-        try {
-            InetAddress ip = InetAddress.getLocalHost();
-            URL gridUrl = new URL("http://" + ip.getHostAddress() + ":4444");
-            driver = new RemoteWebDriver(gridUrl, capabilities);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            }
+            case SAUCE_LABS: {
+                if (args.length != 2) throw new IllegalArgumentException("Platform parameters are not valid !!!");
+                String browserVersion = args[0], osName = args[1];
+                driver = new SauceLabsManager(browserName, browserVersion, osName).initDriver();
+                break;
+            }
+            case LAMBDA_TEST: {
+                if (args.length != 2) throw new IllegalArgumentException("Platform parameters are not valid !!!");
+                String browserVersion = args[0], osName = args[1];
+                driver = new LambdaTestManager(browserName, browserVersion, osName).initDriver();
+                break;
+            }
         }
 
         driverThreadLocal.set(driver);
         return driverThreadLocal.get();
     }
-
-    protected WebDriver initDriverBrowserStack(String browserName, String browserVersion, String osName, String osVersion) {
-        MutableCapabilities capabilities = new MutableCapabilities();
-        HashMap<String, Object> bstackOptions = new HashMap<>();
-        capabilities.setCapability("browserName", browserName);
-        bstackOptions.put("os", osName);
-        bstackOptions.put("osVersion", osVersion);
-        bstackOptions.put("browserVersion", browserVersion);
-        bstackOptions.put("userName", GlobalConstants.BROWSERSTACK_USERNAME);
-        bstackOptions.put("accessKey", GlobalConstants.BROWSERSTACK_ACCESS_KEY);
-        bstackOptions.put("noBlankPolling", true);
-        capabilities.setCapability("bstack:options", bstackOptions);
-
-        WebDriver driver;
-        try {
-            URL browserStackUrl = new URL(GlobalConstants.BROWSERSTACK_URL);
-            driver = new RemoteWebDriver(browserStackUrl, capabilities);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        driverThreadLocal.set(driver);
-        return driverThreadLocal.get();
-    }
-
-    protected WebDriver initDriverSauceLabs(String browserName, String browserVersion, String platform) {
-        MutableCapabilities capabilities;
-        BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
-        switch (browserList) {
-            case FIREFOX:
-                FirefoxOptions fOptions = new FirefoxOptions();
-                fOptions.setPlatformName(platform);
-                fOptions.setBrowserVersion(browserVersion);
-                capabilities = fOptions;
-                break;
-            case CHROME:
-                ChromeOptions cOptions = new ChromeOptions();
-                cOptions.setPlatformName(platform);
-                cOptions.setBrowserVersion(browserVersion);
-                capabilities = cOptions;
-                break;
-            case EDGE:
-                EdgeOptions eOptions = new EdgeOptions();
-                eOptions.setPlatformName(platform);
-                eOptions.setBrowserVersion(browserVersion);
-                capabilities = eOptions;
-                break;
-            case SAFARI:
-                SafariOptions sOptions = new SafariOptions();
-                sOptions.setPlatformName(platform);
-                sOptions.setBrowserVersion(browserVersion);
-                capabilities = sOptions;
-                break;
-            default:
-                throw new IllegalArgumentException("Browser is not valid!");
-        }
-
-        HashMap<String, String> sauceOptions = new HashMap<>();
-        sauceOptions.put("username", GlobalConstants.SAUCELABS_USERNAME);
-        sauceOptions.put("accessKey", GlobalConstants.SAUCELABS_ACCESS_KEY);
-        sauceOptions.put("build", "Build " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-        sauceOptions.put("name", "Run on " + platform + " - " + browserName + " " + browserVersion);
-        capabilities.setCapability("sauce:options", sauceOptions);
-
-        WebDriver driver;
-        try {
-            URL sauceLabsUrl = new URL(GlobalConstants.SAUCELABS_URL);
-            driver = new RemoteWebDriver(sauceLabsUrl, capabilities);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        driverThreadLocal.set(driver);
-        return driverThreadLocal.get();
-    }
-
-    protected WebDriver initDriverLambdaTest(String browserName, String browserVersion, String platform) {
-        MutableCapabilities capabilities;
-        BrowserList browserList = BrowserList.valueOf(browserName.toUpperCase());
-        switch (browserList) {
-            case FIREFOX:
-                FirefoxOptions fOptions = new FirefoxOptions();
-                fOptions.setPlatformName(platform);
-                fOptions.setBrowserVersion(browserVersion);
-                capabilities = fOptions;
-                break;
-            case CHROME:
-                ChromeOptions cOptions = new ChromeOptions();
-                cOptions.setPlatformName(platform);
-                cOptions.setBrowserVersion(browserVersion);
-                capabilities = cOptions;
-                break;
-            case EDGE:
-                EdgeOptions eOptions = new EdgeOptions();
-                eOptions.setPlatformName(platform);
-                eOptions.setBrowserVersion(browserVersion);
-                capabilities = eOptions;
-                break;
-            case SAFARI:
-                SafariOptions sOptions = new SafariOptions();
-                sOptions.setPlatformName(platform);
-                sOptions.setBrowserVersion(browserVersion);
-                capabilities = sOptions;
-                break;
-            default:
-                throw new IllegalArgumentException("Browser is not valid!");
-        }
-
-        HashMap<String, Object> ltOptions = new HashMap<>();
-        ltOptions.put("username", GlobalConstants.LAMBDATEST_USERNAME);
-        ltOptions.put("accessKey", GlobalConstants.LAMBDATEST_ACCESS_KEY);
-        ltOptions.put("build", "Build " + new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-        ltOptions.put("name", "Run on " + platform + " - " + browserName + " " + browserVersion);
-        ltOptions.put("resolution", "1920x1080");
-        ltOptions.put("project", "live.techpanda.org");
-        ltOptions.put("selenium_version", "4.29.0");
-        ltOptions.put("w3c", true);
-        capabilities.setCapability("LT:Options", ltOptions);
-
-        WebDriver driver;
-        try {
-            URL lambdaTestUrl = new URL(GlobalConstants.LAMBDATEST_URL);
-            driver = new RemoteWebDriver(lambdaTestUrl, capabilities);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        driverThreadLocal.set(driver);
-        return driverThreadLocal.get();
-    }*/
 
     protected void configBrowserAndOpenUrl(WebDriver driver, String url) {
         driver.manage().window().maximize();

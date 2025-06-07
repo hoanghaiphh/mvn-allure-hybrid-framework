@@ -30,8 +30,7 @@ public class BrowserStack extends BaseTest {
 
     @Parameters({"platform", "browserName", "browserVersion", "osName", "osVersion"})
     @BeforeClass
-    public void beforeClass(String platform, String browserName,
-                            @Optional String browserVersion, @Optional String osName, @Optional String osVersion) {
+    public void beforeClass(String platform, String browserName, String browserVersion, String osName, String osVersion) {
         driver = initDriver(platform, browserName, browserVersion, osName, osVersion);
         configBrowserAndOpenUrl(driver, GlobalConstants.TECHPANDA);
         homePage = PageGenerator.getHomePage(driver);
