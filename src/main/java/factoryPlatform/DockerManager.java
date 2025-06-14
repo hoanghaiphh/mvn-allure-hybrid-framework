@@ -28,7 +28,7 @@ public class DockerManager implements PlatformFactory {
         };
 
         try {
-            return new RemoteWebDriver(new URL("http://localhost:" + portNumber), capabilities);
+            return new RemoteWebDriver(new URL("http://localhost:" + portNumber + "/wd/hub"), capabilities);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
