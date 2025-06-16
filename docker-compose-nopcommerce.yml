@@ -1,0 +1,55 @@
+# NopCommerce Local URL: http://localhost:8086
+# NopCommerce Admin Email: haiph@automationfc.vn
+# NopCommerce Admin Password: haiph@automationfc.vn
+
+# Database URL: http://localhost:1433
+# Database Server: nopcommerce-sqlserver
+# Database Name: nopcommerce
+# Database Username: sa
+# Database Password: haiph@automationfc.vn
+
+version: '3.8'
+
+services:
+  
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: nopcommerce-sqlserver
+    environment:
+      SA_PASSWORD: "haiph@automationfc.vn"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - nopcommerce-network
+    restart: unless-stopped
+
+  nopcommerce:
+    image: nopcommerceteam/nopcommerce:latest
+    container_name: nopcommerce-app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__NopCommerce="Server=sqlserver;Database=NopCommerce;User ID=sa;Password=haiph@automationfc.vn;TrustServerCertificate=True"
+    ports:
+      - "8086:80"
+    depends_on:
+      - sqlserver
+    networks:
+      - nopcommerce-network
+    restart: unless-stopped
+    volumes:
+      - nopcommerce-appdata:/app/App_Data
+      - nopcommerce-logs:/app/Logs
+
+volumes:
+  sqlserver-data:
+  nopcommerce-appdata:
+  nopcommerce-logs:
+
+networks:
+  nopcommerce-network:
+    driver: bridge
