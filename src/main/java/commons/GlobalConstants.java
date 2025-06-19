@@ -4,7 +4,7 @@ public class GlobalConstants {
     public static final String PROJECT_PATH = System.getProperty("user.dir");
     public static final String OS_NAME = System.getProperty("os.name");
 
-    public static final String NOPCOMMERCE_LOCAL = "http://local.nopcommerce.com/";
+    public static final String NOPCOMMERCE_LOCAL = "http://localhost:8086";
     public static final String SAUCE_DEMO = "https://www.saucedemo.com/";
     public static final String JQUERY_FILE_UPLOAD = "https://blueimp.github.io/jQuery-File-Upload/";
     public static final String JQUERY_DATA_TABLE_1
