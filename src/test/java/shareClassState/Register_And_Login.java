@@ -9,7 +9,6 @@ import lombok.Getter;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.nopcommerce.PageGenerator;
@@ -34,11 +33,10 @@ public class Register_And_Login extends BaseTest {
     @Getter
     private static ThreadLocal<Set<Cookie>> cookiesThreadLocal = new ThreadLocal<>();
 
-    @Parameters({"platform", "browserName", "browserVersion", "osName", "osVersion"})
+    @Parameters({"platform", "browserName"})
     @BeforeClass
-    public void beforeClass(String platform, String browserName,
-                            @Optional String browserVersion, @Optional String osName, @Optional String osVersion) {
-        driver = initDriver(platform, browserName, browserVersion, osName, osVersion);
+    public void beforeClass(String platform, String browserName) {
+        driver = initDriver(platform, browserName);
         configBrowserAndOpenUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
         homePage = PageGenerator.getHomePage(driver);
 

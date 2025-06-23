@@ -5,7 +5,6 @@ import commons.GlobalConstants;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.jQuery.PageGenerator;
@@ -15,11 +14,10 @@ public class Upload_Files extends BaseTest {
     private WebDriver driver;
     private UploadFilesPO uploadFiles;
 
-    @Parameters({"platform", "browserName", "browserVersion", "osName", "osVersion"})
+    @Parameters({"platform", "browserName"})
     @BeforeClass
-    public void beforeClass(String platform, String browserName,
-                            @Optional String browserVersion, @Optional String osName, @Optional String osVersion) {
-        driver = initDriver(platform, browserName, browserVersion, osName, osVersion);
+    public void beforeClass(String platform, String browserName) {
+        driver = initDriver(platform, browserName);
         configBrowserAndOpenUrl(driver, GlobalConstants.JQUERY_FILE_UPLOAD);
         uploadFiles = PageGenerator.getUploadFilesPage(driver);
     }

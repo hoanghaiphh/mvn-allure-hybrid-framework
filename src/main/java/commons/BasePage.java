@@ -220,6 +220,10 @@ public class BasePage {
         return webElement.getDomAttribute(attributeName);
     }
 
+    protected String getElementPropertyValue(WebElement webElement, String propertyName) {
+        return webElement.getDomProperty(propertyName);
+    }
+
     protected String getElementCssValue(WebElement webElement, String propertyName) {
         return webElement.getCssValue(propertyName);
     }

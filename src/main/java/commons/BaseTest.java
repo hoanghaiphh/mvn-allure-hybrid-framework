@@ -126,17 +126,6 @@ public class BaseTest {
         log.info("All browser drivers were killed.");
     }
 
-    protected PropertiesConfig getEnvironmentProperties() {
-        String env = System.getProperty("env", "test").toLowerCase();
-        return PropertiesConfig.getProperties(env);
-    }
-
-    protected OwnerConfig getEnvironmentOwner() {
-        String env = System.getProperty("env", "test").toLowerCase();
-        ConfigFactory.setProperty("environment", env);
-        return ConfigFactory.create(OwnerConfig.class);
-    }
-
     protected final Logger log;
 
     protected BaseTest() {

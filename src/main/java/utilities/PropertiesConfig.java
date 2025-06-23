@@ -4,7 +4,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertiesConfig {
-    private Properties properties;
+
+    private final Properties properties;
 
     private PropertiesConfig(String environment) {
         String str = "environments/env-%s.properties";
@@ -21,8 +22,9 @@ public class PropertiesConfig {
         }
     }
 
-    public static PropertiesConfig getProperties(String environment) {
-        return new PropertiesConfig(environment);
+    public static PropertiesConfig getEnvironmentProperties() {
+        String systemEnv = System.getProperty("env", "local").toLowerCase();
+        return new PropertiesConfig(systemEnv);
     }
 
     public String getPropertyValue(String key) {
@@ -30,4 +32,5 @@ public class PropertiesConfig {
         if (value == null) throw new RuntimeException(key + " not specified in the properties file!");
         return value;
     }
+
 }
