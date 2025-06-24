@@ -1,5 +1,8 @@
 package utilities;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -8,6 +11,8 @@ import java.util.Map;
 
 public class SQLUtils implements AutoCloseable {
 
+    private static final Logger LOG = LogManager.getLogger(SQLUtils.class);
+
     private final Connection connection;
 
     private SQLUtils(String dbUrl, String dbUsername, String dbPassword) throws SQLException {
@@ -15,7 +20,7 @@ public class SQLUtils implements AutoCloseable {
         // Class.forName("com.mysql.cj.jdbc.Driver");
         connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
         connection.setAutoCommit(true);
-        System.out.println("Opened SQL connection: " + connection);
+        LOG.info("Opened SQL connection: {}", connection);
     }
 
     private SQLUtils(PropertiesConfig environmentProperties) throws SQLException {
@@ -26,18 +31,14 @@ public class SQLUtils implements AutoCloseable {
                 environmentProperties.getPropertyValue("db.Username"),
                 environmentProperties.getPropertyValue("db.Password"));
         connection.setAutoCommit(true);
-        System.out.println("Opened SQL connection: " + connection);
+        LOG.info("Opened SQL connection: {}", connection);
     }
 
     @Override
-    public void close() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-                System.out.println("Closed SQL connection: " + connection);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Database closing error occurred: " + e.getMessage(), e);
+    public void close() throws SQLException {
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
+            LOG.info("Closed SQL connection: {}", connection);
         }
     }
 

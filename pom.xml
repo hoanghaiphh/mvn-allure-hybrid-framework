@@ -93,6 +93,12 @@
             <version>12.10.0.jre11</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.3.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -185,6 +191,24 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>sql-query-orangehrm</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>${testSuites.dir}sqlQuery_OrangeHRM.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
 
 </project>

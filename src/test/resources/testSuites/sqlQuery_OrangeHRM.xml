@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Manage Test Data" parallel="tests" thread-count="3">
+
+    <listeners>
+        <listener class-name="reportConfigs.AllureListener"/>
+    </listeners>
+
+    <parameter name="platform" value="LOCAL"/>
+
+    <test name="Run on Firefox browser">
+        <parameter name="browserName" value="Firefox"/>
+        <classes>
+            <class name="sqlQuery.OrangeHRM"/>
+        </classes>
+    </test>
+
+    <test name="Run on Chrome browser">
+        <parameter name="browserName" value="Chrome"/>
+        <classes>
+            <class name="sqlQuery.OrangeHRM"/>
+        </classes>
+    </test>
+
+    <test name="Run on Edge browser">
+        <parameter name="browserName" value="Edge"/>
+        <classes>
+            <class name="sqlQuery.OrangeHRM"/>
+        </classes>
+    </test>
+
+</suite>

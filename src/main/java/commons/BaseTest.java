@@ -2,7 +2,6 @@ package commons;
 
 import factoryPlatform.*;
 import lombok.Getter;
-import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
@@ -10,13 +9,14 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
-import utilities.OwnerConfig;
 import utilities.PropertiesConfig;
+import utilities.SQLUtils;
 
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -29,6 +29,8 @@ public class BaseTest {
 
     @Getter
     private static ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
+
+    private static ThreadLocal<SQLUtils> sqlThreadLocal = new ThreadLocal<>();
 
     protected WebDriver initDriver(String platform, String browserName, String... args) {
         EnumList.Platform platformList = EnumList.Platform.valueOf(platform.toUpperCase());
@@ -82,6 +84,13 @@ public class BaseTest {
         driver.get(url);
     }
 
+    protected SQLUtils initSQLConnection(PropertiesConfig env) {
+        if (sqlThreadLocal.get() == null) {
+            sqlThreadLocal.set(SQLUtils.getSQLConnection(env));
+        }
+        return sqlThreadLocal.get();
+    }
+
     @BeforeSuite
     protected void clearReports() {
         try {
@@ -98,7 +107,19 @@ public class BaseTest {
     }
 
     @AfterClass(alwaysRun = true)
-    protected void quitDriver() {
+    protected void afterClass() {
+        SQLUtils sqlInstance = sqlThreadLocal.get();
+        if (sqlInstance != null) {
+            try {
+                sqlInstance.close();
+            } catch (SQLException e) {
+                log.error("Error closing SQL connection for thread {}: {}",
+                        Thread.currentThread().getName(), e.getMessage(), e);
+            } finally {
+                sqlThreadLocal.remove();
+            }
+        }
+
         WebDriver driver = driverThreadLocal.get();
         if (driver != null) {
             String driverInstanceName = driver.toString();

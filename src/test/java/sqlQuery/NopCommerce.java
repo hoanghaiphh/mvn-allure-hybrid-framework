@@ -6,7 +6,6 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import org.openqa.selenium.WebDriver;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
@@ -30,9 +29,10 @@ public class NopCommerce extends BaseTest {
 
     private PropertiesConfig env;
     private WebDriver driver;
-    private SoftVerification soft;
-    private UserInfoPOJO userInfo;
     private SQLUtils sql;
+    private SoftVerification soft;
+
+    private UserInfoPOJO userInfo;
 
     @Parameters({"platform", "browserName"})
     @BeforeClass
@@ -40,12 +40,10 @@ public class NopCommerce extends BaseTest {
         env = PropertiesConfig.getEnvironmentProperties();
         driver = initDriver(platform, browserName);
         configBrowserAndOpenUrl(driver, env.getPropertyValue("app.Url"));
-        homePage = PageGenerator.getHomePage(driver);
-
+        sql = initSQLConnection(env);
         soft = SoftVerification.getSoftVerification();
 
         userInfo = UserInfoPOJO.getUserInfo();
-
         DataGenerator fakerVi = DataGenerator.create("vi");
         String firstName = fakerVi.getFirstname();
         String lastName = fakerVi.getLastname();
@@ -56,7 +54,7 @@ public class NopCommerce extends BaseTest {
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());
 
-        sql = SQLUtils.getSQLConnection(env);
+        homePage = PageGenerator.getHomePage(driver);
     }
 
     @Description("User_01_Register")
@@ -64,11 +62,8 @@ public class NopCommerce extends BaseTest {
     @Test
     public void User_01_Register() {
         registerPage = (RegisterPO) homePage.clickOnHeaderLink("Register");
-
         registerPage.addUserInfo(userInfo);
-
         registerPage.clickOnRegisterButton();
-
         soft.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
     }
 
@@ -81,7 +76,6 @@ public class NopCommerce extends BaseTest {
         loginPage = (LoginPO) homePage.clickOnHeaderLink("Log in");
 
         homePage = loginPage.loginToSystem(userInfo);
-
         soft.verifyTrue(homePage.isMyAccountLinkDisplayed());
     }
 
@@ -90,7 +84,6 @@ public class NopCommerce extends BaseTest {
     @Test
     public void User_03_MyAccount() {
         customerInfoPage = (CustomerInfoPO) homePage.clickOnHeaderLink("My account");
-
         soft.verifyTrue(customerInfoPage.isGenderMaleSelected());
         soft.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getFirstName());
         soft.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
@@ -109,11 +102,6 @@ public class NopCommerce extends BaseTest {
         soft.verifyTrue(customerInfoPage.isUserDeletedFromDatabase(sql, userInfo.getEmailAddress()));
 
         customerInfoPage.deleteNullRecordsFromDatabase(sql);
-    }
-
-    @AfterClass
-    public void closeDatabase() {
-        sql.close();
     }
 
 }
