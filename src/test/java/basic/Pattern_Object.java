@@ -17,7 +17,7 @@ import pageObjects.nopcommerce.RegisterPO;
 import pageObjects.nopcommerce.myAccount.CustomerInfoPO;
 import reportConfigs.SoftVerification;
 import testData.UserInfoPOJO;
-import utilities.FakerConfig;
+import utilities.DataGenerator;
 
 @Feature("User")
 public class Pattern_Object extends BaseTest {
@@ -38,7 +38,7 @@ public class Pattern_Object extends BaseTest {
         homePage = PageGenerator.getHomePage(driver);
 
         userInfo = UserInfoPOJO.getUserInfo();
-        FakerConfig faker = FakerConfig.getData("vi");
+        DataGenerator faker = DataGenerator.create("vi");
         String firstName = faker.getFirstname();
         String lastName = faker.getLastname();
         userInfo.setFirstName(firstName);

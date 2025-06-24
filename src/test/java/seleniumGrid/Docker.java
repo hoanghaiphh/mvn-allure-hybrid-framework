@@ -16,7 +16,7 @@ import pageObjects.techpanda.RegisterPO;
 import pageObjects.techpanda.myAccount.AccountDashboardPO;
 import pageObjects.techpanda.myAccount.AccountInfoPO;
 import testData.UserInfoPOJO;
-import utilities.FakerConfig;
+import utilities.DataGenerator;
 
 public class Docker extends BaseTest {
     private HomePO homePage;
@@ -36,7 +36,7 @@ public class Docker extends BaseTest {
         homePage = PageGenerator.getHomePage(driver);
 
         userInfo = UserInfoPOJO.getUserInfo();
-        FakerConfig faker = FakerConfig.getData("vi");
+        DataGenerator faker = DataGenerator.create("vi");
         String firstname = faker.getFirstname();
         String lastname = faker.getLastname();
         String email = getRandomEmailByCurrentState(firstname + lastname);

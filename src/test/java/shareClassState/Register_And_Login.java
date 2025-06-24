@@ -17,7 +17,7 @@ import pageObjects.nopcommerce.LoginPO;
 import pageObjects.nopcommerce.RegisterPO;
 import reportConfigs.SoftVerification;
 import testData.UserInfoPOJO;
-import utilities.FakerConfig;
+import utilities.DataGenerator;
 
 import java.util.Set;
 
@@ -41,13 +41,13 @@ public class Register_And_Login extends BaseTest {
         homePage = PageGenerator.getHomePage(driver);
 
         UserInfoPOJO userInfo = UserInfoPOJO.getUserInfo();
-        FakerConfig fakerVi = FakerConfig.getData("vi");
+        DataGenerator fakerVi = DataGenerator.create("vi");
         String firstName = fakerVi.getFirstname();
         String lastName = fakerVi.getLastname();
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
         userInfo.setEmailAddress(getRandomEmailByCurrentState(firstName + lastName));
-        FakerConfig fakerDefault = FakerConfig.getData();
+        DataGenerator fakerDefault = DataGenerator.create();
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());
 

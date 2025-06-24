@@ -1,40 +1,45 @@
-package manageTestData;
+package sqlQuery;
 
 import commons.BaseTest;
-import org.openqa.selenium.WebDriver;
-import reportConfigs.SoftVerification;
-import utilities.DataGenerator;
-import commons.GlobalConstants;
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
+import org.openqa.selenium.WebDriver;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import pageObjects.nopcommerce.PageGenerator;
 import pageObjects.nopcommerce.HomePO;
 import pageObjects.nopcommerce.LoginPO;
+import pageObjects.nopcommerce.PageGenerator;
 import pageObjects.nopcommerce.RegisterPO;
 import pageObjects.nopcommerce.myAccount.CustomerInfoPO;
+import reportConfigs.SoftVerification;
 import testData.UserInfoPOJO;
+import utilities.DataGenerator;
+import utilities.PropertiesConfig;
+import utilities.SQLUtils;
 
 @Feature("User")
-public class POJO extends BaseTest {
+public class NopCommerce extends BaseTest {
     private CustomerInfoPO customerInfoPage;
     private HomePO homePage;
     private RegisterPO registerPage;
     private LoginPO loginPage;
 
+    private PropertiesConfig env;
     private WebDriver driver;
     private SoftVerification soft;
     private UserInfoPOJO userInfo;
+    private SQLUtils sql;
 
     @Parameters({"platform", "browserName"})
     @BeforeClass
     public void beforeClass(String platform, String browserName) {
+        env = PropertiesConfig.getEnvironmentProperties();
         driver = initDriver(platform, browserName);
-        configBrowserAndOpenUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
+        configBrowserAndOpenUrl(driver, env.getPropertyValue("app.Url"));
         homePage = PageGenerator.getHomePage(driver);
 
         soft = SoftVerification.getSoftVerification();
@@ -50,6 +55,8 @@ public class POJO extends BaseTest {
         DataGenerator fakerDefault = DataGenerator.create();
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());
+
+        sql = SQLUtils.getSQLConnection(env);
     }
 
     @Description("User_01_Register")
@@ -88,6 +95,25 @@ public class POJO extends BaseTest {
         soft.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getFirstName());
         soft.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
         soft.verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.getCompanyName());
+    }
+
+    @Description("User_04_Database_Verification")
+    @Severity(SeverityLevel.CRITICAL)
+    @Test
+    public void User_04_Database_Verification() {
+        soft.verifyEquals(
+                customerInfoPage.getUserInformationFromDatabase(sql, userInfo.getEmailAddress()),
+                customerInfoPage.getUserInformationFromTestData(userInfo));
+
+        customerInfoPage.deleteUserFromDatabase(sql, userInfo.getEmailAddress());
+        soft.verifyTrue(customerInfoPage.isUserDeletedFromDatabase(sql, userInfo.getEmailAddress()));
+
+        customerInfoPage.deleteNullRecordsFromDatabase(sql);
+    }
+
+    @AfterClass
+    public void closeDatabase() {
+        sql.close();
     }
 
 }

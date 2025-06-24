@@ -6,7 +6,12 @@ import pageObjects.nopcommerce.myAccount.CustomerInfoPO;
 import io.qameta.allure.Step;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
+import testData.UserInfoPOJO;
+import utilities.SQLUtils;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static pageUIs.nopcommerce.BasePageUI.*;
@@ -97,6 +102,66 @@ public class BasePageObject extends BasePage {
     public void loginByCookies(Set<Cookie> cookies) {
         setCookies(driver, cookies);
         refreshCurrentPage(driver);
+    }
+
+    @Step("Get User Information from test data")
+    public Map<String, Object> getUserInformationFromTestData(UserInfoPOJO userInfo) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("Email", userInfo.getEmailAddress());
+        result.put("FirstName", userInfo.getFirstName());
+        result.put("LastName", userInfo.getLastName());
+        result.put("Company", userInfo.getCompanyName());
+        return result;
+    }
+
+    @Step("Get Information of User {1} from database")
+    public Map<String, Object> getUserInformationFromDatabase(SQLUtils sql, String emailAddress) {
+        String sqlQuery = """
+                SELECT [Email],[FirstName],[LastName],[Company]
+                FROM [nopcommerce].[dbo].[Customer]
+                WHERE [Email] = ?;
+                """;
+
+        List<Map<String, Object>> result = sql.executeSELECTQuery(sqlQuery, emailAddress);
+
+        if (result.size() == 1) {
+            return result.get(0);
+        } else if (result.isEmpty()) {
+            throw new IllegalStateException("User with email: " + emailAddress + " not found in the database !!!");
+        } else {
+            String msg = "Found " + result.size() + " emails: " + emailAddress + " !!! Expected exactly 1 record.";
+            throw new IllegalStateException(msg);
+        }
+    }
+
+    @Step("Delete User {1} from database")
+    public void deleteUserFromDatabase(SQLUtils sql, String emailAddress) {
+        String sqlQuery = "DELETE FROM [nopcommerce].[dbo].[Customer] WHERE [Email] = ?";
+        sql.executeDELETEQuery(sqlQuery, emailAddress);
+    }
+
+    @Step("Verify that User {1} was deleted from database")
+    public boolean isUserDeletedFromDatabase(SQLUtils sql, String emailAddress) {
+        String sqlQuery = "SELECT [Email] FROM [nopcommerce].[dbo].[Customer] WHERE [Email] = ?;";
+        List<Map<String, Object>> result = sql.executeSELECTQuery(sqlQuery, emailAddress);
+        boolean status;
+        if (result.isEmpty()) {
+            status = true;
+        } else {
+            status = false;
+        }
+        return status;
+    }
+
+    @Step("Delete null records from database")
+    public void deleteNullRecordsFromDatabase(SQLUtils sql) {
+        String sqlQuery = """
+                DELETE FROM [nopcommerce].[dbo].[Customer]
+                WHERE [Email] IS NULL
+                  AND [FirstName] IS NULL
+                  AND [LastName] IS NULL;
+                """;
+        sql.executeDELETEQuery(sqlQuery);
     }
 
 }

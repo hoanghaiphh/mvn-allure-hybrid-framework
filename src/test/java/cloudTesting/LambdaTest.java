@@ -6,7 +6,6 @@ import io.qameta.allure.Description;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.techpanda.HomePO;
@@ -16,7 +15,7 @@ import pageObjects.techpanda.RegisterPO;
 import pageObjects.techpanda.myAccount.AccountDashboardPO;
 import pageObjects.techpanda.myAccount.AccountInfoPO;
 import testData.UserInfoPOJO;
-import utilities.FakerConfig;
+import utilities.DataGenerator;
 
 public class LambdaTest extends BaseTest {
     private HomePO homePage;
@@ -36,7 +35,7 @@ public class LambdaTest extends BaseTest {
         homePage = PageGenerator.getHomePage(driver);
 
         userInfo = UserInfoPOJO.getUserInfo();
-        FakerConfig faker = FakerConfig.getData("vi");
+        DataGenerator faker = DataGenerator.create("vi");
         String firstname = faker.getFirstname();
         String lastname = faker.getLastname();
         String email = getRandomEmailByCurrentState(firstname + lastname);

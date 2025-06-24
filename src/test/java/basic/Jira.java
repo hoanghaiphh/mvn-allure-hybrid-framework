@@ -16,7 +16,7 @@ import pageObjects.nopcommerce.RegisterPO;
 import pageObjects.nopcommerce.myAccount.CustomerInfoPO;
 import reportConfigs.SoftVerification;
 import testData.UserInfoPOJO;
-import utilities.FakerConfig;
+import utilities.DataGenerator;
 
 @Listeners(jiraConfig.JiraListener.class)
 @Feature("User")
@@ -39,13 +39,13 @@ public class Jira extends BaseTest {
 
         userInfo = UserInfoPOJO.getUserInfo();
 
-        FakerConfig fakerVi = FakerConfig.getData("vi");
+        DataGenerator fakerVi = DataGenerator.create("vi");
         String firstName = fakerVi.getFirstname();
         String lastName = fakerVi.getLastname();
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
         userInfo.setEmailAddress(getRandomEmailByCurrentState(firstName + lastName));
-        FakerConfig fakerDefault = FakerConfig.getData();
+        DataGenerator fakerDefault = DataGenerator.create();
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());
 

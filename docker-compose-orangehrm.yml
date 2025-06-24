@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  
+  mysql_db:
+    image: mysql:5.7
+    container_name: orangehrm-mysql
+    environment:
+      MYSQL_DATABASE: "orangehrm"
+      MYSQL_USER: "orangehrmuser"
+      MYSQL_PASSWORD: "Abcd@1234!!!!"
+      MYSQL_ROOT_PASSWORD: "Abcd@1234!!!!"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - orangehrm-network
+    restart: unless-stopped
+
+  orangehrm:
+    image: orangehrm/orangehrm:latest
+    container_name: orangehrm-app
+    environment:
+      DB_HOSTNAME: "mysql_db"
+      DB_NAME: "orangehrm"
+      DB_USERNAME: "orangehrmuser"
+      DB_PASSWORD: "Abcd@1234!!!!"
+    ports:
+      - "8086:80"
+    depends_on:
+      - mysql_db
+    networks:
+      - orangehrm-network
+    restart: unless-stopped
+    volumes:
+      - orangehrm_data:/var/www/html
+
+volumes:
+  mysql_data:
+  orangehrm_data:
+
+networks:
+  orangehrm-network:
+    driver: bridge
