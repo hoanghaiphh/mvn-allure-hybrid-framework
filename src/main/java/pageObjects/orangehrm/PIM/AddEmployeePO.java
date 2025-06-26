@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import pageObjects.orangehrm.PimPO;
+import testData.EmployeeInfo;
 
 import static pageUIs.orangehrm.PIM.AddEmployeePUI.*;
 
@@ -76,6 +77,20 @@ public class AddEmployeePO extends PimPO {
         if (!isElementSelected(element)) {
             clickOnElementByJS(driver, element);
         }
+    }
+
+    @Step("Input Employee Information into fields")
+    public void inputEmployeeInformationIntoFields(EmployeeInfo empInfo) {
+        sendKeysToFirstNameTextbox(empInfo.getFirstName());
+        sendKeysToMiddleNameTextbox(empInfo.getMiddleName());
+        sendKeysToLastNameTextbox(empInfo.getLastName());
+        switchOnCreateLoginDetails();
+        selectStatusEnabledRadio();
+        String userName
+                = (empInfo.getFirstName() + "." + empInfo.getLastName()).toLowerCase() + "." + empInfo.getEmployeeId();
+        sendKeysToEmployeeUsernameTextbox(userName);
+        sendKeysToEmployeePasswordTextbox(empInfo.getPassword());
+        sendKeysToEmployeeConfirmPasswordTextbox(empInfo.getPassword());
     }
 
     @Step("Click on Save button (Add Employee)")

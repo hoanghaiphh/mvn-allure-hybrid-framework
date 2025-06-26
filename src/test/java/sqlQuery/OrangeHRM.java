@@ -73,25 +73,15 @@ public class OrangeHRM extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void Employee_01_Add_Employee() {
-        pimPage = dashboardPage.clickOnSidePanelLink("PIM");
-
         synchronized (ID_GENERATION_LOCK) {
+            pimPage = dashboardPage.clickOnSidePanelLink("PIM");
             pimPage.clickOnTopBarLink("Add Employee");
             addEmployeePage = PageGenerator.getAddEmployeePage(driver);
 
-            addEmployeePage.sendKeysToFirstNameTextbox(empInfo.getFirstName());
-            addEmployeePage.sendKeysToMiddleNameTextbox(empInfo.getMiddleName());
-            addEmployeePage.sendKeysToLastNameTextbox(empInfo.getLastName());
-            addEmployeePage.switchOnCreateLoginDetails();
-            addEmployeePage.selectStatusEnabledRadio();
-
             String id = addEmployeePage.getValueOfEmployeeIdTextbox();
-            String userName = (empInfo.getFirstName() + "." + empInfo.getLastName()).toLowerCase() + "." + id;
             empInfo.setEmployeeId(id);
-            addEmployeePage.sendKeysToEmployeeUsernameTextbox(userName);
-            addEmployeePage.sendKeysToEmployeePasswordTextbox(empInfo.getPassword());
-            addEmployeePage.sendKeysToEmployeeConfirmPasswordTextbox(empInfo.getPassword());
 
+            addEmployeePage.inputEmployeeInformationIntoFields(empInfo);
             addEmployeePage.clickOnAddEmployeeSaveButton();
             Assert.assertEquals(addEmployeePage.getToastMessage(), "Successfully Saved");
             addEmployeePage.waitForLoading(); // loading spinner while saving information
@@ -129,30 +119,17 @@ public class OrangeHRM extends BaseTest {
         profilePicturePage.clickOnTabsLink("Personal Details");
         personalDetailsPage = PageGenerator.getPersonalDetailsPage(driver);
 
-        personalDetailsPage.sendKeysToDriverLicenseNumberTextbox(empInfo.getDriverLicense());
-        personalDetailsPage.sendKeysToLicenseExpiryDateTextbox(empInfo.getLicenseExpiryDate());
-        personalDetailsPage.selectOptionInNationalityDropdown(empInfo.getNationality());
-        personalDetailsPage.selectOptionInMaritalStatusDropdown(empInfo.getMaritalStatus());
-        personalDetailsPage.sendKeysToDateOfBirthTextbox(empInfo.getDateOfBirth());
-        personalDetailsPage.selectGenderRadio(empInfo.getGender());
+        personalDetailsPage.inputEmployeeAdditionalInformationIntoFields(empInfo);
         personalDetailsPage.clickOnPersonalDetailsSaveButton();
         Assert.assertEquals(addEmployeePage.getToastMessage(), "Successfully Updated");
         addEmployeePage.waitForLoading();
 
-        Assert.assertEquals(personalDetailsPage.getValueOfFirstNameTextbox(), empInfo.getFirstName());
-        Assert.assertEquals(personalDetailsPage.getValueOfMiddleNameTextbox(), empInfo.getMiddleName());
-        Assert.assertEquals(personalDetailsPage.getValueOfLastNameTextbox(), empInfo.getLastName());
-        Assert.assertEquals(personalDetailsPage.getValueOfEmployeeIdTextbox(), empInfo.getEmployeeId());
-        Assert.assertEquals(personalDetailsPage.getValueOfDriverLicenseNumberTextbox(), empInfo.getDriverLicense());
-        Assert.assertEquals(personalDetailsPage.getValueOfLicenseExpiryDateTextbox(), empInfo.getLicenseExpiryDate());
-        Assert.assertEquals(personalDetailsPage.getSelectedOptionInNationalityDropdown(), empInfo.getNationality());
-        Assert.assertEquals(personalDetailsPage.getSelectedOptionInMaritalStatusDropdown(), empInfo.getMaritalStatus());
-        Assert.assertEquals(personalDetailsPage.getValueOfDateOfBirthTextbox(), empInfo.getDateOfBirth());
-        Assert.assertTrue(personalDetailsPage.isGenderRadioSelected(empInfo.getGender()));
-
-        String employeeID = personalDetailsPage.getValueOfEmployeeIdTextbox();
         var uiData = personalDetailsPage.getEmployeeInformationFromUI();
-        Assert.assertEquals(personalDetailsPage.getEmployeeInformationFromDatabase(sql, employeeID), uiData);
+        var testData = personalDetailsPage.getEmployeeInformationFromTestData(empInfo);
+        var sqlData = personalDetailsPage.getEmployeeInformationFromDatabase(sql,
+                personalDetailsPage.getValueOfEmployeeIdTextbox());
+        Assert.assertEquals(uiData, testData);
+        Assert.assertEquals(sqlData, uiData);
 
         DataGenerator data = DataGenerator.create();
         String newFirstName = data.getFirstname();

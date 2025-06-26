@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import pageObjects.orangehrm.PimPO;
+import testData.EmployeeInfo;
 import utilities.SQLUtils;
 
 import java.time.LocalDate;
@@ -87,6 +88,16 @@ public class PersonalDetailsPO extends PimPO {
         }
     }
 
+    @Step("Input Employee Additional Information into fields")
+    public void inputEmployeeAdditionalInformationIntoFields(EmployeeInfo empInfo) {
+        sendKeysToDriverLicenseNumberTextbox(empInfo.getDriverLicense());
+        sendKeysToLicenseExpiryDateTextbox(empInfo.getLicenseExpiryDate());
+        selectOptionInNationalityDropdown(empInfo.getNationality());
+        selectOptionInMaritalStatusDropdown(empInfo.getMaritalStatus());
+        sendKeysToDateOfBirthTextbox(empInfo.getDateOfBirth());
+        selectGenderRadio(empInfo.getGender());
+    }
+
     @Step("Click on Save button (Personal Details)")
     public void clickOnPersonalDetailsSaveButton() {
         clickOnElement(getClickableElement(driver, PERSONAL_DETAILS_SAVE_BUTTON));
@@ -137,33 +148,32 @@ public class PersonalDetailsPO extends PimPO {
     public Map<String, Object> getEmployeeInformationFromUI() {
         Map<String, Object> result = new LinkedHashMap<>();
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        result.put("employee_id", getValueOfEmployeeIdTextbox());
         result.put("emp_firstname", getValueOfFirstNameTextbox());
         result.put("emp_lastname", getValueOfLastNameTextbox());
+        result.put("emp_middle_name", getValueOfMiddleNameTextbox());
         result.put("emp_dri_lice_num", getValueOfDriverLicenseNumberTextbox());
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         result.put("emp_dri_lice_exp_date", LocalDate.parse(getValueOfLicenseExpiryDateTextbox(), formatter));
-
-        int nationCode = 0;
-        switch (getSelectedOptionInNationalityDropdown()) {
-            case "American" -> nationCode = 4;
-            case "Australian" -> nationCode = 10;
-            case "British" -> nationCode = 27;
-        }
-        result.put("nation_code", nationCode);
-
+        result.put("nation_code", convertNationalityToNumber(getSelectedOptionInNationalityDropdown()));
         result.put("emp_marital_status", getSelectedOptionInMaritalStatusDropdown());
         result.put("emp_birthday", LocalDate.parse(getValueOfDateOfBirthTextbox(), formatter));
-
-        int genderNumber = 0;
-        if (isGenderRadioSelected("Male") && !isGenderRadioSelected("Female")) { // TODO: allure report meaningless log
-            genderNumber = 1;
-        } else if (!isGenderRadioSelected("Male") && isGenderRadioSelected("Female")) {
-            genderNumber = 2;
-        }
-        result.put("emp_gender", genderNumber);
+        result.put("emp_gender", convertGenderToNumber());
 
         return result;
+    }
+
+    @Step("Get selected option in Gender radio button")
+    private int convertGenderToNumber() {
+        int genderNumber = 0;
+        boolean maleSelected = isElementSelected(getElement(driver, DYNAMIC_GENDER_RADIO, "Male"));
+        boolean femaleSelected = isElementSelected(getElement(driver, DYNAMIC_GENDER_RADIO, "Female"));
+        if (maleSelected && !femaleSelected) {
+            genderNumber = 1;
+        } else if (!maleSelected && femaleSelected) {
+            genderNumber = 2;
+        }
+        return genderNumber;
     }
 
 }
