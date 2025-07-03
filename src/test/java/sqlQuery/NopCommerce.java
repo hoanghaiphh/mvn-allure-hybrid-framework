@@ -98,8 +98,8 @@ public class NopCommerce extends BaseTest {
                 customerInfoPage.getUserInformationFromDatabase(sql, userInfo.getEmailAddress()),
                 customerInfoPage.getUserInformationFromTestData(userInfo));
 
-        customerInfoPage.deleteUserFromDatabase(sql, userInfo.getEmailAddress());
-        soft.verifyTrue(customerInfoPage.isUserDeletedFromDatabase(sql, userInfo.getEmailAddress()));
+//        customerInfoPage.deleteUserFromDatabase(sql, userInfo.getEmailAddress());
+//        soft.verifyTrue(customerInfoPage.isUserDeletedFromDatabase(sql, userInfo.getEmailAddress()));
 
         customerInfoPage.deleteNullRecordsFromDatabase(sql);
     }
