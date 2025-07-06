@@ -5,12 +5,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import pageObjects.orangehrm.PimPO;
 import testData.EmployeeInfo;
-import utilities.SQLUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import static pageUIs.orangehrm.PIM.EmployeeList.PersonalDetailsPUI.*;
@@ -135,13 +133,13 @@ public class PersonalDetailsPO extends PimPO {
     @Step("Input value into Firstname textbox: {0}")
     public void sendKeysToFirstNameTextbox(String firstName) {
         WebElement element = getVisibleElement(driver, FIRST_NAME_TEXTBOX);
-        clearThenSendKeysToTextbox(element, firstName);
+        clearTextboxByKeysPressThenSendKeys(element, firstName);
     }
 
     @Step("Input value into Lastname textbox: {0}")
     public void sendKeysToLastNameTextbox(String lastName) {
         WebElement element = getVisibleElement(driver, LAST_NAME_TEXTBOX);
-        clearThenSendKeysToTextbox(element, lastName);
+        clearTextboxByKeysPressThenSendKeys(element, lastName);
     }
 
     @Step("Get Employee Information from UI")

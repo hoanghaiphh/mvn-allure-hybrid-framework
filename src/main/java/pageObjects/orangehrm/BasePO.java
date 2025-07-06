@@ -1,6 +1,7 @@
 package pageObjects.orangehrm;
 
 import commons.BasePage;
+import commons.GlobalConstants;
 import io.qameta.allure.Step;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -15,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import static pageUIs.orangehrm.BasePUI.*;
-import static pageUIs.orangehrm.PIM.EmployeeList.PersonalDetailsPUI.DYNAMIC_GENDER_RADIO;
-import static pageUIs.orangehrm.PIM.EmployeeList.PersonalDetailsPUI.NATIONALITY_DROPDOWN_PARENT;
 
 public class BasePO extends BasePage {
     private WebDriver driver;
@@ -31,8 +30,12 @@ public class BasePO extends BasePage {
         }
     }
 
-    public void clearThenSendKeysToTextbox(WebElement textbox, String keysToSend) {
-        sendKeysToElement(textbox, Keys.chord(Keys.CONTROL, "a", Keys.BACK_SPACE));
+    public void clearTextboxByKeysPressThenSendKeys(WebElement textbox, String keysToSend) {
+        if (GlobalConstants.OS_NAME.toUpperCase().contains("MAC")) {
+            sendKeysToElement(textbox, Keys.chord(Keys.COMMAND, "a", Keys.BACK_SPACE));
+        } else {
+            sendKeysToElement(textbox, Keys.chord(Keys.CONTROL, "a", Keys.BACK_SPACE));
+        }
         sendKeysToElement(textbox, keysToSend);
     }
 
