@@ -20,7 +20,7 @@ public class SQLUtils implements AutoCloseable {
         // Class.forName("com.mysql.cj.jdbc.Driver");
         connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
         connection.setAutoCommit(true);
-        LOG.info("Opened SQL connection: {}", connection);
+        LOG.info("Thread ID {}: {} was opened.", Thread.currentThread().threadId(), connection);
     }
 
     private SQLUtils(PropertiesConfig environmentProperties) throws SQLException {
@@ -31,14 +31,14 @@ public class SQLUtils implements AutoCloseable {
                 environmentProperties.getPropertyValue("db.Username"),
                 environmentProperties.getPropertyValue("db.Password"));
         connection.setAutoCommit(true);
-        LOG.info("Opened SQL connection: {}", connection);
+        LOG.info("Thread ID {}: {} was opened.", Thread.currentThread().threadId(), connection);
     }
 
     @Override
     public void close() throws SQLException {
         if (connection != null && !connection.isClosed()) {
             connection.close();
-            LOG.info("Closed SQL connection: {}", connection);
+            LOG.info("Thread ID {}: {} was closed.", Thread.currentThread().threadId(), connection);
         }
     }
 

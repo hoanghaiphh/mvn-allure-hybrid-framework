@@ -75,6 +75,8 @@ public class BaseTest {
         }
 
         driverThreadLocal.set(driver);
+        log.info("Thread ID {} (Priority {}): {} was initialized.",
+                Thread.currentThread().threadId(), Thread.currentThread().getPriority(), driver.toString());
         return driverThreadLocal.get();
     }
 
@@ -114,7 +116,7 @@ public class BaseTest {
                 sqlInstance.close();
             } catch (SQLException e) {
                 log.error("Error closing SQL connection for thread {}: {}",
-                        Thread.currentThread().getName(), e.getMessage(), e);
+                        Thread.currentThread().threadId(), e.getMessage(), e);
             } finally {
                 sqlThreadLocal.remove();
             }
@@ -125,7 +127,7 @@ public class BaseTest {
             String driverInstanceName = driver.toString();
             driver.manage().deleteAllCookies();
             driver.quit();
-            log.info("{} was quited.", driverInstanceName);
+            log.info("Thread ID {}: {} was quited.", Thread.currentThread().threadId(), driverInstanceName);
             driverThreadLocal.remove();
         }
     }

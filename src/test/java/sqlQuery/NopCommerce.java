@@ -9,11 +9,11 @@ import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import pageObjects.nopcommerce.HomePO;
-import pageObjects.nopcommerce.LoginPO;
-import pageObjects.nopcommerce.PageGenerator;
-import pageObjects.nopcommerce.RegisterPO;
-import pageObjects.nopcommerce.myAccount.CustomerInfoPO;
+import pageObjects.nopcommerceRefactored.HomePO;
+import pageObjects.nopcommerceRefactored.LoginPO;
+import pageObjects.nopcommerceRefactored.PageGenerator;
+import pageObjects.nopcommerceRefactored.RegisterPO;
+import pageObjects.nopcommerceRefactored.myAccount.CustomerInfoPO;
 import reportConfigs.SoftVerification;
 import testData.UserInfoPOJO;
 import utilities.DataGenerator;
@@ -54,7 +54,7 @@ public class NopCommerce extends BaseTest {
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());
 
-        homePage = PageGenerator.getHomePage(driver);
+        homePage = PageGenerator.getPage(HomePO.class, driver);
     }
 
     @Description("User_01_Register")
