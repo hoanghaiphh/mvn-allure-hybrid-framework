@@ -4,7 +4,7 @@ import factoryPlatform.*;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.*;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
@@ -26,14 +26,14 @@ import java.util.Date;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-public class BaseTest {
+public class BaseTestRefactored {
 
     @Getter
     private static ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
 
     private static ThreadLocal<SQLUtils> sqlThreadLocal = new ThreadLocal<>();
 
-    protected WebDriver initDriver(String platform, String browserName, String... args) {
+    protected void initDriver(String platform, String browserName, String... args) {
         EnumList.Platform platformList = EnumList.Platform.valueOf(platform.toUpperCase());
 
         WebDriver driver = null;
@@ -78,19 +78,19 @@ public class BaseTest {
         driverThreadLocal.set(driver);
         log.info("Thread ID {} (Priority {}): {} was initialized.",
                 Thread.currentThread().threadId(), Thread.currentThread().getPriority(), driver.toString());
-        return driverThreadLocal.get();
     }
 
-    protected void configBrowserAndOpenUrl(WebDriver driver, String url) {
+    protected void configBrowserAndOpenUrl(String url) {
+        WebDriver driver = driverThreadLocal.get();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT));
         driver.get(url);
     }
 
-    protected <T extends BasePageRefactored> T getPage(Class<T> pageClass, WebDriver driver) {
+    protected <T extends BasePageRefactored> T getPage(Class<T> pageClass) {
         try {
             Constructor<T> constructor = pageClass.getConstructor(WebDriver.class);
-            return constructor.newInstance(driver);
+            return constructor.newInstance(driverThreadLocal.get());
         } catch (Exception e) {
             throw new RuntimeException("Could not init Page Object class: " + pageClass.getSimpleName(), e);
         }
@@ -161,7 +161,7 @@ public class BaseTest {
 
     protected final Logger log;
 
-    protected BaseTest() {
+    protected BaseTestRefactored() {
         log = LogManager.getLogger(getClass());
     }
 

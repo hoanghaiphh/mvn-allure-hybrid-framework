@@ -1,17 +1,15 @@
 package sqlQuery;
 
-import commons.BaseTest;
+import commons.BaseTestRefactored;
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
-import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.nopcommerceRefactored.HomePO;
 import pageObjects.nopcommerceRefactored.LoginPO;
-import pageObjects.nopcommerceRefactored.PageGenerator;
 import pageObjects.nopcommerceRefactored.RegisterPO;
 import pageObjects.nopcommerceRefactored.myAccount.CustomerInfoPO;
 import reportConfigs.SoftVerification;
@@ -21,14 +19,13 @@ import utilities.PropertiesConfig;
 import utilities.SQLUtils;
 
 @Feature("User")
-public class NopCommerce extends BaseTest {
+public class NopCommerce extends BaseTestRefactored {
     private CustomerInfoPO customerInfoPage;
     private HomePO homePage;
     private RegisterPO registerPage;
     private LoginPO loginPage;
 
     private PropertiesConfig env;
-    private WebDriver driver;
     private SQLUtils sql;
     private SoftVerification soft;
 
@@ -38,8 +35,8 @@ public class NopCommerce extends BaseTest {
     @BeforeClass
     public void beforeClass(String platform, String browserName) {
         env = PropertiesConfig.getEnvironmentProperties();
-        driver = initDriver(platform, browserName);
-        configBrowserAndOpenUrl(driver, env.getPropertyValue("app.Url"));
+        initDriver(platform, browserName);
+        configBrowserAndOpenUrl(env.getPropertyValue("app.Url"));
         sql = initSQLConnection(env);
         soft = SoftVerification.getSoftVerification();
 
@@ -54,16 +51,19 @@ public class NopCommerce extends BaseTest {
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());
 
-        homePage = PageGenerator.getPage(HomePO.class, driver);
+        homePage = getPage(HomePO.class);
     }
 
     @Description("User_01_Register")
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void User_01_Register() {
-        registerPage = (RegisterPO) homePage.clickOnHeaderLink("Register");
+        homePage.clickOnHeaderLink("Register");
+        registerPage = getPage(RegisterPO.class);
+
         registerPage.addUserInfo(userInfo);
         registerPage.clickOnRegisterButton();
+
         soft.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
     }
 
@@ -71,11 +71,15 @@ public class NopCommerce extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @Test
     public void User_02_Login() {
-        homePage = (HomePO) registerPage.clickOnHeaderLink("Log out");
+        registerPage.clickOnHeaderLink("Log out");
+        homePage = getPage(HomePO.class);
 
-        loginPage = (LoginPO) homePage.clickOnHeaderLink("Log in");
+        homePage.clickOnHeaderLink("Log in");
+        loginPage = getPage(LoginPO.class);
 
-        homePage = loginPage.loginToSystem(userInfo);
+        loginPage.loginToSystem(userInfo);
+        homePage = getPage(HomePO.class);
+
         soft.verifyTrue(homePage.isMyAccountLinkDisplayed());
     }
 
@@ -83,7 +87,9 @@ public class NopCommerce extends BaseTest {
     @Severity(SeverityLevel.MINOR)
     @Test
     public void User_03_MyAccount() {
-        customerInfoPage = (CustomerInfoPO) homePage.clickOnHeaderLink("My account");
+        homePage.clickOnHeaderLink("My account");
+        customerInfoPage = getPage(CustomerInfoPO.class);
+
         soft.verifyTrue(customerInfoPage.isGenderMaleSelected());
         soft.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getFirstName());
         soft.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
