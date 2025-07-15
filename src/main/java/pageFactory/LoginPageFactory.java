@@ -42,4 +42,14 @@ public class LoginPageFactory extends BasePageFactory {
         return new HomePageFactory(driver);
     }
 
+    // Java Reflection
+    public HomePageFactory loginJavaReflection(UserInfoPOJO userInfo) {
+        handleElement("emailTextbox", "clear");
+        handleElement("emailTextbox", "sendKeys", userInfo.getEmailAddress());
+        handleElement("passwordTextbox", "clear");
+        handleElement("passwordTextbox", "sendKeys", userInfo.getPassword());
+        handleElement("loginButton", "click");
+        return new HomePageFactory(driver);
+    }
+
 }

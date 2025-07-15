@@ -65,7 +65,8 @@ public class Page_Factory extends BaseTest {
     public void User_02_Login() {
         homePage = registerPage.clickOnLogoutLink();
         loginPage = homePage.clickOnLoginLink();
-        homePage = loginPage.loginToSystem(userInfo);
+//        homePage = loginPage.loginToSystem(userInfo);
+        homePage = loginPage.loginJavaReflection(userInfo); // Java Reflection
 
         soft.verifyTrue(homePage.isMyAccountLinkDisplayed());
     }
