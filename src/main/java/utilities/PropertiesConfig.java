@@ -1,11 +1,15 @@
 package utilities;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public class PropertiesConfig {
 
     private final Properties properties;
+    private static volatile PropertiesConfig instance;
 
     private PropertiesConfig(String environment) {
         String str = "environments/env-%s.properties";
@@ -14,17 +18,25 @@ public class PropertiesConfig {
         try (InputStream input = getClass().getClassLoader().getResourceAsStream(propertyFile)) {
             if (input == null) throw new RuntimeException("Configuration properties not found at " + propertyFile);
 
-            properties = new Properties();
-            properties.load(input);
-
-        } catch (Exception e) {
+            try (InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
+                properties = new Properties();
+                properties.load(reader);
+            }
+        } catch (IOException e) {
             throw new RuntimeException("Error while loading properties from " + propertyFile, e);
         }
     }
 
     public static PropertiesConfig getEnvironmentProperties() {
-        String systemEnv = System.getProperty("env", "local").toLowerCase();
-        return new PropertiesConfig(systemEnv);
+        if (instance == null) {
+            synchronized (PropertiesConfig.class) {
+                if (instance == null) {
+                    String systemEnv = System.getProperty("env", "local").toLowerCase();
+                    instance = new PropertiesConfig(systemEnv);
+                }
+            }
+        }
+        return instance;
     }
 
     public String getPropertyValue(String key) {
