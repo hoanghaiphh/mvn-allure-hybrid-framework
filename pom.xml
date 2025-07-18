@@ -16,6 +16,8 @@
 
         <aspectj.version>1.9.23</aspectj.version>
         <testSuites.dir>src/test/resources/testSuites/</testSuites.dir>
+
+        <env>default</env>
     </properties>
 
     <dependencies>
@@ -129,6 +131,9 @@
                                 <value>io.qameta.allure.testng.AllureTestNg</value>
                             </property>
                         </properties>
+                        <systemPropertyVariables>
+                            <env>${env}</env>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
             </plugins>
@@ -155,6 +160,32 @@
                         <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
                     </properties>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-allure-environment-and-categories</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/allure-results</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/test/resources</directory> <includes>
+                                    <include>environment.properties</include>
+                                </includes>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -196,6 +227,9 @@
 
         <profile>
             <id>sql-query-nopcommerce</id>
+            <properties>
+                <env>local-nopcommerce</env>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -205,9 +239,6 @@
                             <suiteXmlFiles>
                                 <suiteXmlFile>${testSuites.dir}sqlQuery_NopCommerce.xml</suiteXmlFile>
                             </suiteXmlFiles>
-                            <systemPropertyVariables>
-                                <env>local-nopcommerce</env>
-                            </systemPropertyVariables>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -216,6 +247,9 @@
 
         <profile>
             <id>sql-query-orangehrm</id>
+            <properties>
+                <env>local-orangehrm</env>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -225,9 +259,6 @@
                             <suiteXmlFiles>
                                 <suiteXmlFile>${testSuites.dir}sqlQuery_OrangeHRM.xml</suiteXmlFile>
                             </suiteXmlFiles>
-                            <systemPropertyVariables>
-                                <env>local-orangehrm</env>
-                            </systemPropertyVariables>
                         </configuration>
                     </plugin>
                 </plugins>
