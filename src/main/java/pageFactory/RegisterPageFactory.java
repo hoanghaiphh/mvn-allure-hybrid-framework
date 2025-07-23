@@ -8,10 +8,9 @@ import org.openqa.selenium.support.PageFactory;
 import testData.UserInfoPOJO;
 
 public class RegisterPageFactory extends BasePageFactory {
-    private WebDriver driver;
 
     public RegisterPageFactory(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
         PageFactory.initElements(driver, this);
     }
 
@@ -56,45 +55,45 @@ public class RegisterPageFactory extends BasePageFactory {
     private WebElement logoutLink;
 
     public void selectGenderMaleRadio() {
-        waitForElementClickable(driver, genderMaleRadio);
+        waitForElementClickable(genderMaleRadio);
         selectCheckboxOrRadio(genderMaleRadio);
     }
 
     public void sendKeyToFirstnameTextbox(String firstName) {
-        waitForElementVisible(driver, firstNameTextbox).sendKeys(firstName);
+        waitForElementVisible(firstNameTextbox).sendKeys(firstName);
     }
 
     public void sendKeyToLastnameTextbox(String lastName) {
-        waitForElementVisible(driver, lastNameTextbox).sendKeys(lastName);
+        waitForElementVisible(lastNameTextbox).sendKeys(lastName);
     }
 
     public void sendKeyToEmailTextbox(String emailAddress) {
-        waitForElementVisible(driver, emailTextbox).sendKeys(emailAddress);
+        waitForElementVisible(emailTextbox).sendKeys(emailAddress);
     }
 
     public void sendKeyToCompanyTextbox(String companyName) {
-        waitForElementVisible(driver, companyTextbox).sendKeys(companyName);
+        waitForElementVisible(companyTextbox).sendKeys(companyName);
     }
 
     public void sendKeyToPasswordTextbox(String password) {
-        waitForElementVisible(driver, passwordTextbox).sendKeys(password);
+        waitForElementVisible(passwordTextbox).sendKeys(password);
     }
 
     public void sendKeyToConfirmPasswordTextbox(String password) {
-        waitForElementVisible(driver, confirmPasswordTextbox).sendKeys(password);
+        waitForElementVisible(confirmPasswordTextbox).sendKeys(password);
     }
 
     public void clickOnRegisterButton() {
-        waitForElementClickable(driver, registerButton).click();
+        waitForElementClickable(registerButton).click();
     }
 
     public String getRegisterSuccessMessage() {
-        return waitForElementVisible(driver, registerSuccessMsg).getText();
+        return waitForElementVisible(registerSuccessMsg).getText();
     }
 
     public HomePageFactory clickOnLogoutLink() {
-        waitForElementClickable(driver, logoutLink).click();
-        return new HomePageFactory(driver);
+        waitForElementClickable(logoutLink).click();
+        return getPage(HomePageFactory.class);
     }
 
     public void registerUser(UserInfoPOJO userInfo) {

@@ -6,7 +6,6 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
-import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
@@ -25,28 +24,26 @@ public class Page_Factory extends BaseTest {
     private RegisterPageFactory registerPage;
     private LoginPageFactory loginPage;
 
-    private WebDriver driver;
     private UserInfoPOJO userInfo;
-    private SoftVerification soft;
+    private static final SoftVerification VERIFY = SoftVerification.getSoftVerification();
 
     @Parameters({"platform", "browserName"})
     @BeforeClass
     public void beforeClass(String platform, String browserName) {
-        driver = initDriver(platform, browserName);
-        configBrowserAndOpenUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
-        homePage = new HomePageFactory(driver);
+        initDriver(platform, browserName);
+        configBrowserAndOpenUrl(GlobalConstants.NOPCOMMERCE_LOCAL);
+        homePage = getPage(HomePageFactory.class);
 
         userInfo = UserInfoPOJO.getUserInfo();
-        DataGenerator faker = DataGenerator.create("vi");
-        String firstName = faker.getFirstname();
-        String lastName = faker.getLastname();
+        DataGenerator fakerVi = DataGenerator.create("vi");
+        String firstName = fakerVi.getFirstname();
+        String lastName = fakerVi.getLastname();
         userInfo.setFirstName(firstName);
         userInfo.setLastName(lastName);
         userInfo.setEmailAddress(getRandomEmailByCurrentState(firstName + lastName));
-        userInfo.setPassword(faker.getPassword());
-        userInfo.setCompanyName(faker.getCompanyName());
-
-        soft = SoftVerification.getSoftVerification();
+        DataGenerator fakerDefault = DataGenerator.create();
+        userInfo.setCompanyName(fakerDefault.getCompanyName());
+        userInfo.setPassword(fakerDefault.getPassword());
     }
 
     @Description("User_01_Register")
@@ -56,7 +53,7 @@ public class Page_Factory extends BaseTest {
         registerPage = homePage.clickOnRegisterLink();
         registerPage.registerUser(userInfo);
 
-        soft.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
+        VERIFY.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
     }
 
     @Description("User_02_Login")
@@ -68,7 +65,7 @@ public class Page_Factory extends BaseTest {
 //        homePage = loginPage.loginToSystem(userInfo);
         homePage = loginPage.loginJavaReflection(userInfo); // Java Reflection
 
-        soft.verifyTrue(homePage.isMyAccountLinkDisplayed());
+        VERIFY.verifyTrue(homePage.isMyAccountLinkDisplayed());
     }
 
     @Description("User_03_MyAccount")
@@ -77,9 +74,9 @@ public class Page_Factory extends BaseTest {
     public void User_03_MyAccount() {
         customerInfoPage = homePage.clickOnMyAccountLink();
 
-        soft.verifyTrue(customerInfoPage.isGenderMaleSelected());
-        soft.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getFirstName());
-        soft.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
-        soft.verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.getCompanyName());
+        VERIFY.verifyTrue(customerInfoPage.isGenderMaleSelected());
+        VERIFY.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getFirstName());
+        VERIFY.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
+        VERIFY.verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.getCompanyName());
     }
 }

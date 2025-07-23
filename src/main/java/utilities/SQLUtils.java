@@ -1,7 +1,7 @@
 package utilities;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import commons.BaseTest;
+import lombok.Getter;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -9,9 +9,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SQLUtils implements AutoCloseable {
+public class SQLUtils extends BaseTest implements AutoCloseable {
 
-    private static final Logger LOG = LogManager.getLogger(SQLUtils.class);
+    @Getter
+    private static volatile SQLUtils instance;
 
     private final Connection connection;
 
@@ -20,7 +21,7 @@ public class SQLUtils implements AutoCloseable {
         // Class.forName("com.mysql.cj.jdbc.Driver");
         connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
         connection.setAutoCommit(true);
-        LOG.info("Thread ID {}: {} was opened.", Thread.currentThread().threadId(), connection);
+        log.info("{} OPENED.", connection);
     }
 
     private SQLUtils(PropertiesConfig environmentProperties) throws SQLException {
@@ -31,31 +32,49 @@ public class SQLUtils implements AutoCloseable {
                 environmentProperties.getPropertyValue("db.Username"),
                 environmentProperties.getPropertyValue("db.Password"));
         connection.setAutoCommit(true);
-        LOG.info("Thread ID {}: {} was opened.", Thread.currentThread().threadId(), connection);
+        log.info("{} OPENED.",  connection);
     }
 
     @Override
-    public void close() throws SQLException {
-        if (connection != null && !connection.isClosed()) {
-            connection.close();
-            LOG.info("Thread ID {}: {} was closed.", Thread.currentThread().threadId(), connection);
+    public void close() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                log.info("{} CLOSED.", connection);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("SQL Connection close error: " + e.getMessage(), e);
         }
     }
 
     public static SQLUtils getSQLConnection(String dbUrl, String dbUsername, String dbPassword) {
-        try {
-            return new SQLUtils(dbUrl, dbUsername, dbPassword);
-        } catch (SQLException e) {
-            throw new RuntimeException("Database access error occurred: " + e.getMessage(), e);
+        if (instance == null) {
+            synchronized (SQLUtils.class) {
+                if (instance == null) {
+                    try {
+                        instance = new SQLUtils(dbUrl, dbUsername, dbPassword);
+                    } catch (SQLException e) {
+                        throw new RuntimeException("Database access error: " + e.getMessage(), e);
+                    }
+                }
+            }
         }
+        return instance;
     }
 
     public static SQLUtils getSQLConnection(PropertiesConfig environmentProperties) {
-        try {
-            return new SQLUtils(environmentProperties);
-        } catch (SQLException e) {
-            throw new RuntimeException("Database access error occurred: " + e.getMessage(), e);
+        if (instance == null) {
+            synchronized (SQLUtils.class) {
+                if (instance == null) {
+                    try {
+                        instance = new SQLUtils(environmentProperties);
+                    } catch (SQLException e) {
+                        throw new RuntimeException("Database access error: " + e.getMessage(), e);
+                    }
+                }
+            }
         }
+        return instance;
     }
 
     public List<Map<String, Object>> executeSELECTQuery(String sqlQuery, Object... params) {

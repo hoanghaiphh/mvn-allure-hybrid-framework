@@ -1,7 +1,6 @@
 package multipleEnvironment;
 
 import commons.BaseTest;
-import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
@@ -9,15 +8,13 @@ import utilities.PropertiesConfig;
 
 public class Properties_Java extends BaseTest {
 
-    private PropertiesConfig env;
-    private WebDriver driver;
+    private static final PropertiesConfig ENV = PropertiesConfig.getEnvironmentProperties();
 
     @Parameters({"platform", "browserName"})
     @BeforeClass
     public void beforeClass(String platform, String browserName) {
-        env = PropertiesConfig.getEnvironmentProperties();
-        driver = initDriver(platform, browserName);
-        configBrowserAndOpenUrl(driver, env.getPropertyValue("app.Url"));
+        initDriver(platform, browserName);
+        configBrowserAndOpenUrl(ENV.getPropertyValue("app.Url"));
     }
 
     @Test

@@ -18,15 +18,14 @@ import java.util.Map;
 import static pageUIs.orangehrm.BasePUI.*;
 
 public class BasePO extends BasePage {
-    private WebDriver driver;
 
     public BasePO(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
     }
 
     public void waitForLoading() {
-        if (isElementDisplayed(driver, LOADING_SPINNER)) {
-            waitForListElementsInvisible(driver, LOADING_SPINNER);
+        if (isElementDisplayed(LOADING_SPINNER)) {
+            waitForListElementsInvisible(LOADING_SPINNER);
         }
     }
 
@@ -40,15 +39,14 @@ public class BasePO extends BasePage {
     }
 
     @Step("Click on Side Panel link: {0}")
-    public PimPO clickOnSidePanelLink(String linkText) {
-        clickOnElement(getClickableElement(driver, DYNAMIC_SIDEPANEL_LINK, linkText));
+    public void clickOnSidePanelLink(String linkText) {
+        clickOnElement(getClickableElement(DYNAMIC_SIDEPANEL_LINK, linkText));
         waitForLoading();
-        return PageGenerator.getPIMPage(driver);
     }
 
     @Step("Get Toast Message")
     public String getToastMessage() {
-        return getElementText(getVisibleElement(driver, TOAST_MESSAGE));
+        return getElementText(getVisibleElement(TOAST_MESSAGE));
     }
 
     @Step("Get Employee Information from DATABASE")

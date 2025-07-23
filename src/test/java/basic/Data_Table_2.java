@@ -2,23 +2,21 @@ package basic;
 
 import commons.BaseTest;
 import commons.GlobalConstants;
-import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.jQuery.DataTable2PO;
-import pageObjects.jQuery.PageGenerator;
 
 public class Data_Table_2 extends BaseTest {
-    private WebDriver driver;
+
     private DataTable2PO dataTable;
 
     @Parameters({"platform", "browserName"})
     @BeforeClass
     public void beforeClass(String platform, String browserName) {
-        driver = initDriver(platform, browserName);
-        configBrowserAndOpenUrl(driver, GlobalConstants.JQUERY_DATA_TABLE_2);
-        dataTable = PageGenerator.getDataTable2Page(driver);
+        initDriver(platform, browserName);
+        configBrowserAndOpenUrl(GlobalConstants.JQUERY_DATA_TABLE_2);
+        dataTable = getPage(DataTable2PO.class);
     }
 
     @Test

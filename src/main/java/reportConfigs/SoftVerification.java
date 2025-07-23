@@ -10,8 +10,17 @@ import org.testng.Reporter;
 
 public class SoftVerification extends BaseTest {
 
+    private static volatile SoftVerification instance;
+
     public static SoftVerification getSoftVerification() {
-        return new SoftVerification();
+        if (instance == null) {
+            synchronized (SoftVerification.class) {
+                if (instance == null) {
+                    instance = new SoftVerification();
+                }
+            }
+        }
+        return instance;
     }
 
     public boolean verifyTrue(boolean condition) {
@@ -67,7 +76,7 @@ public class SoftVerification extends BaseTest {
 
     @Attachment(value = "verification failure screenshot", type = "image/png")
     private byte[] allureAttachScreenshot() {
-        return ((TakesScreenshot) getDriverThreadLocal().get()).getScreenshotAs(OutputType.BYTES);
+        return ((TakesScreenshot) driverThreadLocal.get()).getScreenshotAs(OutputType.BYTES);
     }
 
 }

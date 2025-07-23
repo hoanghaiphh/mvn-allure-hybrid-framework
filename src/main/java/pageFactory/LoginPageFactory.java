@@ -7,10 +7,9 @@ import org.openqa.selenium.support.PageFactory;
 import testData.UserInfoPOJO;
 
 public class LoginPageFactory extends BasePageFactory {
-    private WebDriver driver;
 
     public LoginPageFactory(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
         PageFactory.initElements(driver, this);
     }
 
@@ -24,22 +23,22 @@ public class LoginPageFactory extends BasePageFactory {
     private WebElement loginButton;
 
     public void sendKeyToEmailTextbox(String emailAddress) {
-        waitForElementVisible(driver, emailTextbox).sendKeys(emailAddress);
+        waitForElementVisible(emailTextbox).sendKeys(emailAddress);
     }
 
     public void sendKeyToPasswordTextbox(String password) {
-        waitForElementVisible(driver, passwordTextbox).sendKeys(password);
+        waitForElementVisible(passwordTextbox).sendKeys(password);
     }
 
     public void clickOnLoginButton() {
-        waitForElementClickable(driver, loginButton).click();
+        waitForElementClickable(loginButton).click();
     }
 
     public HomePageFactory loginToSystem(UserInfoPOJO userInfo) {
         sendKeyToEmailTextbox(userInfo.getEmailAddress());
         sendKeyToPasswordTextbox(userInfo.getPassword());
         clickOnLoginButton();
-        return new HomePageFactory(driver);
+        return getPage(HomePageFactory.class);
     }
 
     // Java Reflection
@@ -49,7 +48,7 @@ public class LoginPageFactory extends BasePageFactory {
         handleElement("passwordTextbox", "clear");
         handleElement("passwordTextbox", "sendKeys", userInfo.getPassword());
         handleElement("loginButton", "click");
-        return new HomePageFactory(driver);
+        return getPage(HomePageFactory.class);
     }
 
 }

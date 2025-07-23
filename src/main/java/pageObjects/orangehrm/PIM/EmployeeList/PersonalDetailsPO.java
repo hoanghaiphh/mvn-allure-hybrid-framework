@@ -14,50 +14,48 @@ import java.util.Map;
 import static pageUIs.orangehrm.PIM.EmployeeList.PersonalDetailsPUI.*;
 
 public class PersonalDetailsPO extends PimPO {
-    private WebDriver driver;
 
     public PersonalDetailsPO(WebDriver driver) {
         super(driver);
-        this.driver = driver;
     }
 
     @Step("Get value of Firstname textbox")
     public String getValueOfFirstNameTextbox() {
-        return getElementPropertyValue(getVisibleElement(driver, FIRST_NAME_TEXTBOX), "value");
+        return getElementPropertyValue(getVisibleElement(FIRST_NAME_TEXTBOX), "value");
     }
 
     @Step("Get value of MiddleName textbox")
     public String getValueOfMiddleNameTextbox() {
-        return getElementPropertyValue(getVisibleElement(driver, MIDDLE_NAME_TEXTBOX), "value");
+        return getElementPropertyValue(getVisibleElement(MIDDLE_NAME_TEXTBOX), "value");
     }
 
     @Step("Get value of Lastname textbox")
     public String getValueOfLastNameTextbox() {
-        return getElementPropertyValue(getVisibleElement(driver, LAST_NAME_TEXTBOX), "value");
+        return getElementPropertyValue(getVisibleElement(LAST_NAME_TEXTBOX), "value");
     }
 
     @Step("Get value of Employee ID textbox")
     public String getValueOfEmployeeIdTextbox() {
-        return getElementPropertyValue(getVisibleElement(driver, EMPLOYEE_ID_TEXTBOX), "value");
+        return getElementPropertyValue(getVisibleElement(EMPLOYEE_ID_TEXTBOX), "value");
     }
 
     @Step("Input value into Driver License Number textbox: {0}")
     public void sendKeysToDriverLicenseNumberTextbox(String driverLicense) {
-        WebElement element = getVisibleElement(driver, DRIVER_LICENSE_NUMBER_TEXTBOX);
+        WebElement element = getVisibleElement(DRIVER_LICENSE_NUMBER_TEXTBOX);
         clearElementText(element);
         sendKeysToElement(element, driverLicense);
     }
 
     @Step("Input value into License Expiry Date textbox: {0}")
     public void sendKeysToLicenseExpiryDateTextbox(String licenseExpiryDate) {
-        WebElement element = getVisibleElement(driver, LICENSE_EXPIRY_DATE_TEXTBOX);
+        WebElement element = getVisibleElement(LICENSE_EXPIRY_DATE_TEXTBOX);
         clearElementText(element);
         sendKeysToElement(element, licenseExpiryDate);
     }
 
     @Step("Select option in Nationality dropdown list: {0}")
     public void selectOptionInNationalityDropdown(String nationality) {
-        selectOptionInCustomDropdown(driver,
+        selectOptionInCustomDropdown(
                 NATIONALITY_DROPDOWN_PARENT,
                 NATIONALITY_DROPDOWN_OPTIONS,
                 nationality);
@@ -65,7 +63,7 @@ public class PersonalDetailsPO extends PimPO {
 
     @Step("Select option in Marital Status dropdown list: {0}")
     public void selectOptionInMaritalStatusDropdown(String maritalStatus) {
-        selectOptionInCustomDropdown(driver,
+        selectOptionInCustomDropdown(
                 MARITAL_STATUS_DROPDOWN_PARENT,
                 MARITAL_STATUS_DROPDOWN_OPTIONS,
                 maritalStatus);
@@ -73,16 +71,16 @@ public class PersonalDetailsPO extends PimPO {
 
     @Step("Input value into Date Of Birth textbox: {0}")
     public void sendKeysToDateOfBirthTextbox(String dateOfBirth) {
-        WebElement element = getVisibleElement(driver, DATE_OF_BIRTH_TEXTBOX);
+        WebElement element = getVisibleElement(DATE_OF_BIRTH_TEXTBOX);
         clearElementText(element);
         sendKeysToElement(element, dateOfBirth);
     }
 
     @Step("Click on {0} Gender radio button")
     public void selectGenderRadio(String gender) {
-        WebElement element = getElement(driver, DYNAMIC_GENDER_RADIO, gender);
+        WebElement element = getElement(DYNAMIC_GENDER_RADIO, gender);
         if (!isElementSelected(element)) {
-            clickOnElementByJS(driver, element);
+            clickOnElementByJS(element);
         }
     }
 
@@ -98,47 +96,47 @@ public class PersonalDetailsPO extends PimPO {
 
     @Step("Click on Save button (Personal Details)")
     public void clickOnPersonalDetailsSaveButton() {
-        clickOnElement(getClickableElement(driver, PERSONAL_DETAILS_SAVE_BUTTON));
+        clickOnElement(getClickableElement(PERSONAL_DETAILS_SAVE_BUTTON));
     }
 
     @Step("Get value of Driver License Number textbox")
     public String getValueOfDriverLicenseNumberTextbox() {
-        return getElementPropertyValue(getVisibleElement(driver, DRIVER_LICENSE_NUMBER_TEXTBOX), "value");
+        return getElementPropertyValue(getVisibleElement(DRIVER_LICENSE_NUMBER_TEXTBOX), "value");
     }
 
     @Step("Get value of License Expiry Date textbox")
     public String getValueOfLicenseExpiryDateTextbox() {
-        return getElementPropertyValue(getVisibleElement(driver, LICENSE_EXPIRY_DATE_TEXTBOX), "value");
+        return getElementPropertyValue(getVisibleElement(LICENSE_EXPIRY_DATE_TEXTBOX), "value");
     }
 
     @Step("Get selected option in Nationality dropdown list")
     public String getSelectedOptionInNationalityDropdown() {
-        return getElementText(getVisibleElement(driver, NATIONALITY_DROPDOWN_PARENT));
+        return getElementText(getVisibleElement(NATIONALITY_DROPDOWN_PARENT));
     }
     @Step("Get selected option in Marital Status dropdown list")
     public String getSelectedOptionInMaritalStatusDropdown() {
-        return getElementText(getVisibleElement(driver, MARITAL_STATUS_DROPDOWN_PARENT));
+        return getElementText(getVisibleElement(MARITAL_STATUS_DROPDOWN_PARENT));
     }
 
     @Step("Get value of Date Of Birth textbox")
     public String getValueOfDateOfBirthTextbox() {
-        return getElementPropertyValue(getVisibleElement(driver, DATE_OF_BIRTH_TEXTBOX), "value");
+        return getElementPropertyValue(getVisibleElement(DATE_OF_BIRTH_TEXTBOX), "value");
     }
 
     @Step("Is {0} Gender radio button selected")
     public boolean isGenderRadioSelected(String gender) {
-        return isElementSelected(getElement(driver, DYNAMIC_GENDER_RADIO, gender));
+        return isElementSelected(getElement(DYNAMIC_GENDER_RADIO, gender));
     }
 
     @Step("Input value into Firstname textbox: {0}")
     public void sendKeysToFirstNameTextbox(String firstName) {
-        WebElement element = getVisibleElement(driver, FIRST_NAME_TEXTBOX);
+        WebElement element = getVisibleElement(FIRST_NAME_TEXTBOX);
         clearTextboxByKeysPressThenSendKeys(element, firstName);
     }
 
     @Step("Input value into Lastname textbox: {0}")
     public void sendKeysToLastNameTextbox(String lastName) {
-        WebElement element = getVisibleElement(driver, LAST_NAME_TEXTBOX);
+        WebElement element = getVisibleElement(LAST_NAME_TEXTBOX);
         clearTextboxByKeysPressThenSendKeys(element, lastName);
     }
 
@@ -164,8 +162,8 @@ public class PersonalDetailsPO extends PimPO {
     @Step("Get selected option in Gender radio button")
     private int convertGenderToNumber() {
         int genderNumber = 0;
-        boolean maleSelected = isElementSelected(getElement(driver, DYNAMIC_GENDER_RADIO, "Male"));
-        boolean femaleSelected = isElementSelected(getElement(driver, DYNAMIC_GENDER_RADIO, "Female"));
+        boolean maleSelected = isElementSelected(getElement(DYNAMIC_GENDER_RADIO, "Male"));
+        boolean femaleSelected = isElementSelected(getElement(DYNAMIC_GENDER_RADIO, "Female"));
         if (maleSelected && !femaleSelected) {
             genderNumber = 1;
         } else if (!maleSelected && femaleSelected) {

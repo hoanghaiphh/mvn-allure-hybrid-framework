@@ -2,24 +2,22 @@ package basic;
 
 import commons.BaseTest;
 import commons.GlobalConstants;
-import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import pageObjects.jQuery.PageGenerator;
 import pageObjects.jQuery.UploadFilesPO;
 
 public class Upload_Files extends BaseTest {
-    private WebDriver driver;
+
     private UploadFilesPO uploadFiles;
 
     @Parameters({"platform", "browserName"})
     @BeforeClass
     public void beforeClass(String platform, String browserName) {
-        driver = initDriver(platform, browserName);
-        configBrowserAndOpenUrl(driver, GlobalConstants.JQUERY_FILE_UPLOAD);
-        uploadFiles = PageGenerator.getUploadFilesPage(driver);
+        initDriver(platform, browserName);
+        configBrowserAndOpenUrl(GlobalConstants.JQUERY_FILE_UPLOAD);
+        uploadFiles = getPage(UploadFilesPO.class);
     }
 
     @Test

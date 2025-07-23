@@ -10,46 +10,44 @@ import java.util.Map;
 import static pageUIs.nopcommerce.RegisterPUI.*;
 
 public class RegisterPO extends BasePageObject {
-    private WebDriver driver;
 
     public RegisterPO(WebDriver driver) {
         super(driver);
-        this.driver = driver;
     }
 
     @Step("Select Gender Male radio button")
     public void clickOnGenderMaleRadio() {
-        selectCheckboxOrRadio(getClickableElement(driver, GENDER_MALE_RADIO));
+        selectCheckboxOrRadio(getClickableElement(GENDER_MALE_RADIO));
     }
 
     @Step("Input value into Firstname textbox: {0}")
     public void sendKeyToFirstnameTextbox(String firstName) {
-        sendKeysToElement(getVisibleElement(driver, FIRST_NAME_TEXTBOX), firstName);
+        sendKeysToElement(getVisibleElement(FIRST_NAME_TEXTBOX), firstName);
     }
 
     @Step("Input value into Lastname textbox: {0}")
     public void sendKeyToLastnameTextbox(String lastName) {
-        sendKeysToElement(getVisibleElement(driver, LAST_NAME_TEXTBOX), lastName);
+        sendKeysToElement(getVisibleElement(LAST_NAME_TEXTBOX), lastName);
     }
 
     @Step("Input value into Email textbox: {0}")
     public void sendKeyToEmailTextbox(String emailAddress) {
-        sendKeysToElement(getVisibleElement(driver, EMAIL_TEXTBOX), emailAddress);
+        sendKeysToElement(getVisibleElement(EMAIL_TEXTBOX), emailAddress);
     }
 
     @Step("Input value into Company textbox: {0}")
     public void sendKeyToCompanyTextbox(String companyName) {
-        sendKeysToElement(getVisibleElement(driver, COMPANY_TEXTBOX), companyName);
+        sendKeysToElement(getVisibleElement(COMPANY_TEXTBOX), companyName);
     }
 
     @Step("Input value into Password textbox: {0}")
     public void sendKeyToPasswordTextbox(String password) {
-        sendKeysToElement(getVisibleElement(driver, PASSWORD_TEXTBOX), password);
+        sendKeysToElement(getVisibleElement(PASSWORD_TEXTBOX), password);
     }
 
     @Step("Input value into Confirm Password textbox: {0}")
     public void sendKeyToConfirmPasswordTextbox(String password) {
-        sendKeysToElement(getVisibleElement(driver, CONFIRM_PASSWORD_TEXTBOX), password);
+        sendKeysToElement(getVisibleElement(CONFIRM_PASSWORD_TEXTBOX), password);
     }
 
     public void addUserInfo(UserInfoPOJO userInfo) {
@@ -84,12 +82,12 @@ public class RegisterPO extends BasePageObject {
 
     @Step("Click on Register button")
     public void clickOnRegisterButton() {
-        clickOnElement(getClickableElement(driver, REGISTER_BUTTON));
+        clickOnElement(getClickableElement(REGISTER_BUTTON));
     }
 
     @Step("Get Register success message")
     public String getRegisterSuccessMessage() {
-        return getElementText(getVisibleElement(driver, REGISTER_SUCCESS_MESSAGE));
+        return getElementText(getVisibleElement(REGISTER_SUCCESS_MESSAGE));
     }
 
     // Pattern Object

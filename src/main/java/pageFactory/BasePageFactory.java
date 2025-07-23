@@ -6,21 +6,35 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.time.Duration;
 
 public class BasePageFactory extends BasePage {
 
-    public WebElement waitForElementVisible(WebDriver driver, WebElement element) {
+    protected BasePageFactory(WebDriver driver) {
+        super(driver);
+    }
+
+    protected <T extends BasePage> T getPage(Class<T> pageClass) {
+        try {
+            Constructor<T> constructor = pageClass.getConstructor(WebDriver.class);
+            return constructor.newInstance(driver);
+        } catch (Exception e) {
+            throw new RuntimeException("Could not init Page Object class: " + pageClass.getSimpleName(), e);
+        }
+    }
+
+    protected WebElement waitForElementVisible(WebElement element) {
         return new WebDriverWait(driver, Duration.ofSeconds(15)).until(ExpectedConditions.visibilityOf(element));
     }
 
-    public WebElement waitForElementClickable(WebDriver driver, WebElement element) {
+    protected WebElement waitForElementClickable(WebElement element) {
         return new WebDriverWait(driver, Duration.ofSeconds(15)).until(ExpectedConditions.elementToBeClickable(element));
     }
 
     // Java Reflection
-    public void handleElement(String elementName, String action, String... value) {
+    protected void handleElement(String elementName, String action, String... value) {
         WebElement element;
         try {
             Field field = this.getClass().getDeclaredField(elementName);

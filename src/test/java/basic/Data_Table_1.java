@@ -2,24 +2,22 @@ package basic;
 
 import commons.BaseTest;
 import commons.GlobalConstants;
-import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.jQuery.DataTable1PO;
-import pageObjects.jQuery.PageGenerator;
 
 public class Data_Table_1 extends BaseTest {
-    private WebDriver driver;
+
     private DataTable1PO dataTable;
 
     @Parameters({"platform", "browserName"})
     @BeforeClass
     public void beforeClass(String platform, String browserName) {
-        driver = initDriver(platform, browserName);
-        configBrowserAndOpenUrl(driver, GlobalConstants.JQUERY_DATA_TABLE_1);
-        dataTable = PageGenerator.getDataTable1Page(driver);
+        initDriver(platform, browserName);
+        configBrowserAndOpenUrl(GlobalConstants.JQUERY_DATA_TABLE_1);
+        dataTable = getPage(DataTable1PO.class);
     }
 
     @Test
@@ -74,7 +72,7 @@ public class Data_Table_1 extends BaseTest {
 
     @Test
     public void TC_04_Get_All_Value_Of_Row_Or_Column() {
-        dataTable.refreshCurrentPage(driver);
+        dataTable.refreshCurrentPage();
 
         dataTable.getAllValueOfColumnName("Country");
         dataTable.getAllValueOfRowNumber("3");

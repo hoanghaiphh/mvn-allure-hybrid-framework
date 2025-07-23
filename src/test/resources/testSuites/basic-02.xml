@@ -16,9 +16,6 @@
             <class name="basic.Data_Table_2"/>
             <class name="basic.Upload_Files"/>
             <class name="basic.Sort_Data"/>
-            <class name="basic.Page_Factory"/>
-            <class name="basic.Pattern_Object"/>
-            <class name="basic.Jira"/>
         </classes>
     </test>
 
@@ -29,9 +26,6 @@
             <class name="basic.Data_Table_2"/>
             <class name="basic.Upload_Files"/>
             <class name="basic.Sort_Data"/>
-            <class name="basic.Page_Factory"/>
-            <class name="basic.Pattern_Object"/>
-            <class name="basic.Jira"/>
         </classes>
     </test>
 
@@ -42,9 +36,6 @@
             <class name="basic.Data_Table_2"/>
             <class name="basic.Upload_Files"/>
             <class name="basic.Sort_Data"/>
-            <class name="basic.Page_Factory"/>
-            <class name="basic.Pattern_Object"/>
-            <class name="basic.Jira"/>
         </classes>
     </test>
 

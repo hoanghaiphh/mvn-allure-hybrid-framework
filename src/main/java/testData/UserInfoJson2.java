@@ -12,7 +12,7 @@ public class UserInfoJson2 {
     public static List<User> getUserInfo() {
         try (InputStream inputStream = UserInfoJson2.class.getClassLoader()
                 .getResourceAsStream("testData/testDataUserInfo2.json")) {
-            if (inputStream == null) throw new RuntimeException("Không tìm thấy file!");
+            if (inputStream == null) throw new RuntimeException("File not found!");
 
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

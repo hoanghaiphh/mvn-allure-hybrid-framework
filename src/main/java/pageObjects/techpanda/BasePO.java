@@ -8,21 +8,20 @@ import org.openqa.selenium.WebDriver;
 import static pageUIs.techpanda.BasePUI.*;
 
 public class BasePO extends BasePage {
-    private WebDriver driver;
 
     public BasePO(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
     }
 
     public void sendRequestAnyway() {
         String driverInstance = driver.toString().toUpperCase();
         if (driverInstance.contains("CHROME") || driverInstance.contains("EDGE")) {
-            clickOnElement(getClickableElement(driver, SEND_ANYWAY_BUTTON));
+            clickOnElement(getClickableElement(SEND_ANYWAY_BUTTON));
         } else if (driverInstance.contains("FIREFOX")) {
-            acceptAlert(getPresentAlert(driver));
+            acceptAlert(getPresentAlert());
         } else if (driverInstance.contains("SAFARI")) {
-            pressKey(driver, Keys.TAB);
-            pressKey(driver, Keys.ENTER);
+            pressKey(Keys.TAB);
+            pressKey(Keys.ENTER);
         }
     }
 
@@ -30,8 +29,8 @@ public class BasePO extends BasePage {
     public boolean headerWelcomeMsgContains(String expectedMsg) {
         String driverInstance = driver.toString().toUpperCase();
         if (!driverInstance.contains("SAFARI")) expectedMsg = expectedMsg.toUpperCase();
-        waitForElementTextToBe(driver, HEADER_WELCOME_MSG, expectedMsg);
-        return getElementText(getVisibleElement(driver, HEADER_WELCOME_MSG)).contains(expectedMsg);
+        waitForElementTextToBe(HEADER_WELCOME_MSG, expectedMsg);
+        return getElementText(getVisibleElement(HEADER_WELCOME_MSG)).contains(expectedMsg);
     }
 
 }

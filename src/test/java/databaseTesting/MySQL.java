@@ -1,4 +1,4 @@
-package sqlQuery;
+package databaseTesting;
 
 import commons.BaseTest;
 import io.qameta.allure.Description;
@@ -6,7 +6,6 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
@@ -15,7 +14,6 @@ import pageObjects.orangehrm.DashboardPO;
 import pageObjects.orangehrm.LoginPO;
 import pageObjects.orangehrm.PIM.AddEmployeePO;
 import pageObjects.orangehrm.PIM.EmployeeList.*;
-import pageObjects.orangehrm.PageGenerator;
 import pageObjects.orangehrm.PimPO;
 import testData.EmployeeInfo;
 import utilities.DataGenerator;
@@ -24,7 +22,7 @@ import utilities.SQLUtils;
 import utilities.PropertiesConfig;
 
 @Feature("PIM.Employee")
-public class OrangeHRM extends BaseTest {
+public class MySQL extends BaseTest {
     private LoginPO loginPage;
     private DashboardPO dashboardPage;
     private PimPO pimPage;
@@ -32,22 +30,13 @@ public class OrangeHRM extends BaseTest {
     private PersonalDetailsPO personalDetailsPage;
     private ProfilePicturePO profilePicturePage;
 
-    private PropertiesConfig env;
-    private WebDriver driver;
-    private SQLUtils sql;
-
     private EmployeeInfo empInfo;
-
+    private static final PropertiesConfig ENV = PropertiesConfig.getEnvironmentProperties();
     private static final Object ID_GENERATION_LOCK = new Object();
 
     @Parameters({"platform", "browserName"})
     @BeforeClass
     public void beforeClass(String platform, String browserName) {
-        env = PropertiesConfig.getEnvironmentProperties();
-        driver = initDriver(platform, browserName);
-        configBrowserAndOpenUrl(driver, env.getPropertyValue("app.Url"));
-        sql = initSQLConnection(env);
-
         empInfo = EmployeeInfo.getEmployeeInfo();
         DataGenerator data = DataGenerator.create();
         empInfo.setFirstName(data.getFirstname());
@@ -63,10 +52,14 @@ public class OrangeHRM extends BaseTest {
         empInfo.setProfilePicture(
                 FileUtils.getFileAbsolutePath("uploadFiles", "profilePicture1.jpg"));
 
-        loginPage = PageGenerator.getLoginPage(driver);
-        loginPage.sendKeysToUsernameTextbox(env.getPropertyValue("app.Username"));
-        loginPage.sendKeysToPasswordTextbox(env.getPropertyValue("app.Password"));
-        dashboardPage = loginPage.clickOnLoginButton();
+        initDriver(platform, browserName);
+        configBrowserAndOpenUrl(ENV.getPropertyValue("app.Url"));
+        loginPage = getPage(LoginPO.class);
+
+        loginPage.sendKeysToUsernameTextbox(ENV.getPropertyValue("app.Username"));
+        loginPage.sendKeysToPasswordTextbox(ENV.getPropertyValue("app.Password"));
+        loginPage.clickOnLoginButton();
+        dashboardPage = getPage(DashboardPO.class);
     }
 
     @Description("Employee_01_Add_Employee")
@@ -74,9 +67,11 @@ public class OrangeHRM extends BaseTest {
     @Test
     public void Employee_01_Add_Employee() {
         synchronized (ID_GENERATION_LOCK) {
-            pimPage = dashboardPage.clickOnSidePanelLink("PIM");
+            dashboardPage.clickOnSidePanelLink("PIM");
+            pimPage = getPage(PimPO.class);
+
             pimPage.clickOnTopBarLink("Add Employee");
-            addEmployeePage = PageGenerator.getAddEmployeePage(driver);
+            addEmployeePage = getPage(AddEmployeePO.class);
 
             String id = addEmployeePage.getValueOfEmployeeIdTextbox();
             empInfo.setEmployeeId(id);
@@ -87,7 +82,7 @@ public class OrangeHRM extends BaseTest {
             addEmployeePage.waitForLoading(); // loading spinner while saving information
         }
 
-        personalDetailsPage = PageGenerator.getPersonalDetailsPage(driver);
+        personalDetailsPage = getPage(PersonalDetailsPO.class);
         personalDetailsPage.waitForLoading(); // loading spinner while loading Personal Details page components
         String employeeName = empInfo.getFirstName() + " " + empInfo.getLastName();
         Assert.assertEquals(personalDetailsPage.getEmployeeName(), employeeName);
@@ -98,7 +93,7 @@ public class OrangeHRM extends BaseTest {
     @Test
     public void Employee_02_Change_Profile_Picture() {
         personalDetailsPage.clickOnProfilePictureImage();
-        profilePicturePage = PageGenerator.getProfilePicturePage(driver);
+        profilePicturePage = getPage(ProfilePicturePO.class);
         profilePicturePage.waitForLoading();
 
         Dimension oldDimension = profilePicturePage.getNaturalDimensionOfProfilePicture();
@@ -117,7 +112,7 @@ public class OrangeHRM extends BaseTest {
     @Test
     public void Employee_03_Personal_Details() {
         profilePicturePage.clickOnTabsLink("Personal Details");
-        personalDetailsPage = PageGenerator.getPersonalDetailsPage(driver);
+        personalDetailsPage = getPage(PersonalDetailsPO.class);
 
         personalDetailsPage.inputEmployeeAdditionalInformationIntoFields(empInfo);
         personalDetailsPage.clickOnPersonalDetailsSaveButton();
@@ -126,6 +121,7 @@ public class OrangeHRM extends BaseTest {
 
         var uiData = personalDetailsPage.getEmployeeInformationFromUI();
         var testData = personalDetailsPage.getEmployeeInformationFromTestData(empInfo);
+        SQLUtils sql = SQLUtils.getSQLConnection(ENV);
         var sqlData = personalDetailsPage.getEmployeeInformationFromDatabase(sql,
                 personalDetailsPage.getValueOfEmployeeIdTextbox());
         Assert.assertEquals(uiData, testData);
@@ -146,7 +142,7 @@ public class OrangeHRM extends BaseTest {
         Assert.assertEquals(personalDetailsPage.getValueOfFirstNameTextbox(), empInfo.getFirstName());
         Assert.assertEquals(personalDetailsPage.getValueOfLastNameTextbox(), empInfo.getLastName());
 
-        personalDetailsPage.refreshCurrentPage(driver);
+        personalDetailsPage.refreshCurrentPage();
         personalDetailsPage.waitForLoading();
 
         String newEmployeeName = newFirstName + " " + newLastName;

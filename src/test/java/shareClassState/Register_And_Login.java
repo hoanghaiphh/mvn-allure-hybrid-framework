@@ -5,13 +5,10 @@ import commons.GlobalConstants;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
-import lombok.Getter;
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import pageObjects.nopcommerce.PageGenerator;
 import pageObjects.nopcommerce.HomePO;
 import pageObjects.nopcommerce.LoginPO;
 import pageObjects.nopcommerce.RegisterPO;
@@ -26,19 +23,17 @@ public class Register_And_Login extends BaseTest {
     private RegisterPO registerPage;
     private LoginPO loginPage;
 
-    private WebDriver driver;
-    private SoftVerification soft;
-    @Getter
-    private static ThreadLocal<UserInfoPOJO> userInfoThreadLocal = new ThreadLocal<>();
-    @Getter
-    private static ThreadLocal<Set<Cookie>> cookiesThreadLocal = new ThreadLocal<>();
+    private static final SoftVerification VERIFY = SoftVerification.getSoftVerification();
+
+    static ThreadLocal<UserInfoPOJO> userInfoThreadLocal = new ThreadLocal<>();
+    static ThreadLocal<Set<Cookie>> cookiesThreadLocal = new ThreadLocal<>();
 
     @Parameters({"platform", "browserName"})
     @BeforeClass
     public void beforeClass(String platform, String browserName) {
-        driver = initDriver(platform, browserName);
-        configBrowserAndOpenUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
-        homePage = PageGenerator.getHomePage(driver);
+        initDriver(platform, browserName);
+        configBrowserAndOpenUrl(GlobalConstants.NOPCOMMERCE_LOCAL);
+        homePage = getPage(HomePO.class);
 
         UserInfoPOJO userInfo = UserInfoPOJO.getUserInfo();
         DataGenerator fakerVi = DataGenerator.create("vi");
@@ -50,33 +45,37 @@ public class Register_And_Login extends BaseTest {
         DataGenerator fakerDefault = DataGenerator.create();
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());
-
         userInfoThreadLocal.set(userInfo);
-
-        soft = SoftVerification.getSoftVerification();
     }
 
     @Description("User_01_Register")
     @Severity(SeverityLevel.CRITICAL)
     @Test
     public void User_01_Register() {
-        registerPage = (RegisterPO) homePage.clickOnHeaderLink("Register");
+        homePage.clickOnHeaderLink("Register");
+        registerPage = getPage(RegisterPO.class);
+
         registerPage.addUserInfo(userInfoThreadLocal.get());
         registerPage.clickOnRegisterButton();
-        soft.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
 
-        homePage = (HomePO) registerPage.clickOnHeaderLink("Log out");
+        VERIFY.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
     }
 
     @Description("User_02_Login")
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void User_02_Login() {
-        loginPage = (LoginPO) homePage.clickOnHeaderLink("Log in");
+        registerPage.clickOnHeaderLink("Log out");
+        homePage = getPage(HomePO.class);
 
-        homePage = loginPage.loginToSystem(userInfoThreadLocal.get());
-        soft.verifyTrue(homePage.isMyAccountLinkDisplayed());
+        homePage.clickOnHeaderLink("Log in");
+        loginPage = getPage(LoginPO.class);
 
-        cookiesThreadLocal.set(homePage.getCookies(driver));
+        loginPage.loginToSystem(userInfoThreadLocal.get());
+        homePage = getPage(HomePO.class);
+
+        VERIFY.verifyTrue(homePage.isMyAccountLinkDisplayed());
+
+        cookiesThreadLocal.set(homePage.getCookies());
     }
 }

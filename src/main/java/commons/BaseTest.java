@@ -1,15 +1,13 @@
 package commons;
 
 import factoryPlatform.*;
-import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.*;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
-import utilities.PropertiesConfig;
 import utilities.SQLUtils;
 
 import java.lang.reflect.Constructor;
@@ -17,7 +15,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -28,12 +25,9 @@ import java.util.regex.Pattern;
 
 public class BaseTest {
 
-    @Getter
-    private static ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
+    protected static ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
 
-    private static ThreadLocal<SQLUtils> sqlThreadLocal = new ThreadLocal<>();
-
-    protected WebDriver initDriver(String platform, String browserName, String... args) {
+    protected void initDriver(String platform, String browserName, String... args) {
         EnumList.Platform platformList = EnumList.Platform.valueOf(platform.toUpperCase());
 
         WebDriver driver = null;
@@ -78,60 +72,43 @@ public class BaseTest {
         driverThreadLocal.set(driver);
         log.info("Thread ID {} (Priority {}): {} was initialized.",
                 Thread.currentThread().threadId(), Thread.currentThread().getPriority(), driver.toString());
-        return driverThreadLocal.get();
     }
 
-    protected void configBrowserAndOpenUrl(WebDriver driver, String url) {
+    protected void configBrowserAndOpenUrl(String url) {
+        WebDriver driver = driverThreadLocal.get();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(GlobalConstants.LONG_TIMEOUT));
         driver.get(url);
     }
 
-    protected <T extends BasePageRefactored> T getPage(Class<T> pageClass, WebDriver driver) {
+    protected <T extends BasePage> T getPage(Class<T> pageClass) {
         try {
             Constructor<T> constructor = pageClass.getConstructor(WebDriver.class);
-            return constructor.newInstance(driver);
+            return constructor.newInstance(driverThreadLocal.get());
         } catch (Exception e) {
             throw new RuntimeException("Could not init Page Object class: " + pageClass.getSimpleName(), e);
         }
     }
 
-    protected SQLUtils initSQLConnection(PropertiesConfig env) {
-        if (sqlThreadLocal.get() == null) {
-            sqlThreadLocal.set(SQLUtils.getSQLConnection(env));
-        }
-        return sqlThreadLocal.get();
-    }
-
     @BeforeSuite
     protected void clearReports() {
+        Path folderPath = Paths.get(GlobalConstants.ALLURE_RESULTS_FOLDER_PATH);
         try {
-            Path folderPath = Paths.get(GlobalConstants.ALLURE_RESULTS_FOLDER_PATH);
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath, entry ->
-                    Files.isRegularFile(entry) && !entry.getFileName().toString().equals("environment.properties"))) {
-                for (Path entry : stream) {
-                    Files.delete(entry);
+            if (Files.exists(folderPath)) {
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(folderPath, entry ->
+                        Files.isRegularFile(entry) && !entry.getFileName().toString().equals("environment.properties"))) {
+                    for (Path entry : stream) {
+                        Files.delete(entry);
+                    }
                 }
             }
         } catch (Exception e) {
-            log.error("An error occurred while clearing the report", e);
+            log.error("An error occurred while clearing the Allure report directory '{}'", folderPath, e);
         }
     }
 
     @AfterClass(alwaysRun = true)
     protected void afterClass() {
-        SQLUtils sqlInstance = sqlThreadLocal.get();
-        if (sqlInstance != null) {
-            try {
-                sqlInstance.close();
-            } catch (SQLException e) {
-                log.error("Error closing SQL connection for thread {}: {}",
-                        Thread.currentThread().threadId(), e.getMessage(), e);
-            } finally {
-                sqlThreadLocal.remove();
-            }
-        }
-
         WebDriver driver = driverThreadLocal.get();
         if (driver != null) {
             String driverInstanceName = driver.toString();
@@ -143,7 +120,12 @@ public class BaseTest {
     }
 
     @AfterSuite
-    protected void killAllDrivers() {
+    protected void afterSuite() {
+        SQLUtils sqlInstance = SQLUtils.getInstance();
+        if (sqlInstance != null) {
+            sqlInstance.close();
+        }
+
         String[] browserDrivers = {"chromedriver", "geckodriver", "msedgedriver", "safaridriver"};
         for (String browserDriver : browserDrivers) {
             String cmd = GlobalConstants.OS_NAME.contains("Window") ?

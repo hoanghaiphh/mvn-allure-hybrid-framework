@@ -6,11 +6,9 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
-import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import pageObjects.nopcommerce.PageGenerator;
 import pageObjects.nopcommerce.HomePO;
 import pageObjects.nopcommerce.LoginPO;
 import pageObjects.nopcommerce.RegisterPO;
@@ -27,58 +25,59 @@ public class Excel_File extends BaseTest {
     private RegisterPO registerPage;
     private LoginPO loginPage;
 
-    private WebDriver driver;
-    private SoftVerification soft;
     private Map<String, String> userInfo;
+    private static final SoftVerification VERIFY = SoftVerification.getSoftVerification();
 
     @Parameters({"platform", "browserName"})
     @BeforeClass
     public void beforeClass(String platform, String browserName) {
-        driver = initDriver(platform, browserName);
-        configBrowserAndOpenUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
-        homePage = PageGenerator.getHomePage(driver);
-
-        soft = SoftVerification.getSoftVerification();
-
         userInfo = ExcelConfig.getRowData("testDataUserInfo.xlsx", "Sheet1", 1);
+
+        initDriver(platform, browserName);
+        configBrowserAndOpenUrl(GlobalConstants.NOPCOMMERCE_LOCAL);
+        homePage = getPage(HomePO.class);
     }
 
     @Description("User_01_Register")
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void User_01_Register() {
-        registerPage = (RegisterPO) homePage.clickOnHeaderLink("Register");
+        homePage.clickOnHeaderLink("Register");
+        registerPage = getPage(RegisterPO.class);
 
         registerPage.addUserInfo(userInfo);
-
         registerPage.clickOnRegisterButton();
 
-        soft.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
+        VERIFY.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
     }
 
     @Description("User_02_Login")
     @Severity(SeverityLevel.CRITICAL)
     @Test
     public void User_02_Login() {
-        homePage = (HomePO) registerPage.clickOnHeaderLink("Log out");
+        registerPage.clickOnHeaderLink("Log out");
+        homePage = getPage(HomePO.class);
 
-        loginPage = (LoginPO) homePage.clickOnHeaderLink("Log in");
+        homePage.clickOnHeaderLink("Log in");
+        loginPage = getPage(LoginPO.class);
 
-        homePage = loginPage.loginToSystem(userInfo);
+        loginPage.loginToSystem(userInfo);
+        homePage = getPage(HomePO.class);
 
-        soft.verifyTrue(homePage.isMyAccountLinkDisplayed());
+        VERIFY.verifyTrue(homePage.isMyAccountLinkDisplayed());
     }
 
     @Description("User_03_MyAccount")
     @Severity(SeverityLevel.MINOR)
     @Test
     public void User_03_MyAccount() {
-        customerInfoPage = (CustomerInfoPO) homePage.clickOnHeaderLink("My account");
+        homePage.clickOnHeaderLink("My account");
+        customerInfoPage = getPage(CustomerInfoPO.class);
 
-        soft.verifyTrue(customerInfoPage.isGenderMaleSelected());
-        soft.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.get("firstName"));
-        soft.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.get("lastName"));
-        soft.verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.get("company"));
+        VERIFY.verifyTrue(customerInfoPage.isGenderMaleSelected());
+        VERIFY.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.get("firstName"));
+        VERIFY.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.get("lastName"));
+        VERIFY.verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.get("company"));
     }
 
 }

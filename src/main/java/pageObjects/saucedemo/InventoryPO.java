@@ -15,28 +15,27 @@ import java.util.List;
 import static pageUIs.saucedemo.InventoryPUI.*;
 
 public class InventoryPO extends BasePage {
-    private WebDriver driver;
 
     public InventoryPO(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
     }
 
     @Step("Select criteria for sorting: {0}")
     public void selectSortingCriteria(String criteria) {
-        selectOptionInDefaultDropdown(getClickableElement(driver, SORT_DROPDOWN), criteria);
+        selectOptionInDefaultDropdown(getClickableElement(SORT_DROPDOWN), criteria);
         sleepThread(1);
     }
 
     @Step("Verify that products was sorted by criteria: {0}")
     public boolean isProductsSortedByCriteria(String criteria) {
-        List<String> productNamesUIOrder = getVisibleListElements(driver, PRODUCT_NAME)
+        List<String> productNamesUIOrder = getVisibleListElements(PRODUCT_NAME)
                 .stream()
                 .map(WebElement::getText)
                 .toList();
         List<String> productNamesAsc = new ArrayList<>(productNamesUIOrder);
         Collections.sort(productNamesAsc);
 
-        List<Float> productPricesUIOrder = getVisibleListElements(driver, PRODUCT_PRICE)
+        List<Float> productPricesUIOrder = getVisibleListElements(PRODUCT_PRICE)
                 .stream()
                 .map(n -> Float.valueOf(n.getText().replace("$", "")))
                 .toList();
@@ -54,14 +53,14 @@ public class InventoryPO extends BasePage {
 
     @Step("Sort books by Publication Date")
     public void sortBooksByPublicationDate() {
-        waitForListElementsInvisible(driver, LOADING_SPINNER);
-        selectOptionInCustomDropdown(driver, SORT_DROPDOWN_PARENT, SORT_DROPDOWN_CHILD, "Publication Date");
-        waitForListElementsInvisible(driver, LOADING_SPINNER);
+        waitForListElementsInvisible(LOADING_SPINNER);
+        selectOptionInCustomDropdown(SORT_DROPDOWN_PARENT, SORT_DROPDOWN_CHILD, "Publication Date");
+        waitForListElementsInvisible(LOADING_SPINNER);
     }
 
     @Step("Verify that books was sorted by Publication Date")
     public boolean isBookSortedByPublicationDate() {
-        List<Date> publicationDatesUIOrder = getVisibleListElements(driver, BOOK_PUBLICATION_DATE)
+        List<Date> publicationDatesUIOrder = getVisibleListElements(BOOK_PUBLICATION_DATE)
                 .stream()
                 .map(n -> {
                     try {

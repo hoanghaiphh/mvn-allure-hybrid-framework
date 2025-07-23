@@ -7,9 +7,7 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import jiraConfig.JiraCreateIssue;
-import org.openqa.selenium.WebDriver;
 import org.testng.annotations.*;
-import pageObjects.nopcommerce.PageGenerator;
 import pageObjects.nopcommerce.HomePO;
 import pageObjects.nopcommerce.LoginPO;
 import pageObjects.nopcommerce.RegisterPO;
@@ -26,19 +24,17 @@ public class Jira extends BaseTest {
     private RegisterPO registerPage;
     private LoginPO loginPage;
 
-    private WebDriver driver;
     private UserInfoPOJO userInfo;
-    private SoftVerification soft;
+    private static final SoftVerification VERIFY = SoftVerification.getSoftVerification();
 
     @Parameters({"platform", "browserName"})
     @BeforeClass
     public void beforeClass(String platform, String browserName) {
-        driver = initDriver(platform, browserName);
-        configBrowserAndOpenUrl(driver, GlobalConstants.NOPCOMMERCE_LOCAL);
-        homePage = PageGenerator.getHomePage(driver);
+        initDriver(platform, browserName);
+        configBrowserAndOpenUrl(GlobalConstants.NOPCOMMERCE_LOCAL);
+        homePage = getPage(HomePO.class);
 
         userInfo = UserInfoPOJO.getUserInfo();
-
         DataGenerator fakerVi = DataGenerator.create("vi");
         String firstName = fakerVi.getFirstname();
         String lastName = fakerVi.getLastname();
@@ -48,8 +44,6 @@ public class Jira extends BaseTest {
         DataGenerator fakerDefault = DataGenerator.create();
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());
-
-        soft = SoftVerification.getSoftVerification();
     }
 
     @JiraCreateIssue(isCreateIssue = true)
@@ -57,11 +51,13 @@ public class Jira extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @Test
     public void User_01_Register() {
-        registerPage = (RegisterPO) homePage.clickOnHeaderLink("Register");
+        homePage.clickOnHeaderLink("Register");
+        registerPage = getPage(RegisterPO.class);
+
         registerPage.addUserInfo(userInfo);
         registerPage.clickOnRegisterButton();
 
-        soft.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed..."); // failed
+        VERIFY.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed..."); // failed
     }
 
     @JiraCreateIssue(isCreateIssue = true)
@@ -69,11 +65,16 @@ public class Jira extends BaseTest {
     @Severity(SeverityLevel.NORMAL)
     @Test
     public void User_02_Login() {
-        homePage = (HomePO) registerPage.clickOnHeaderLink("Log out");
-        loginPage = (LoginPO) homePage.clickOnHeaderLink("Log in");
-        homePage = loginPage.loginToSystem(userInfo);
+        registerPage.clickOnHeaderLink("Log out");
+        homePage = getPage(HomePO.class);
 
-        soft.verifyFalse(homePage.isMyAccountLinkDisplayed()); // failed
+        homePage.clickOnHeaderLink("Log in");
+        loginPage = getPage(LoginPO.class);
+
+        loginPage.loginToSystem(userInfo);
+        homePage = getPage(HomePO.class);
+
+        VERIFY.verifyFalse(homePage.isMyAccountLinkDisplayed()); // failed
     }
 
     @JiraCreateIssue(isCreateIssue = true)
@@ -81,12 +82,13 @@ public class Jira extends BaseTest {
     @Severity(SeverityLevel.MINOR)
     @Test
     public void User_03_MyAccount() {
-        customerInfoPage = (CustomerInfoPO) homePage.clickOnHeaderLink("My account");
+        homePage.clickOnHeaderLink("My account");
+        customerInfoPage = getPage(CustomerInfoPO.class);
 
-        soft.verifyTrue(customerInfoPage.isGenderMaleSelected());
-        soft.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), "userInfo.getFirstName()"); // failed
-        soft.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
-        soft.verifyEquals(customerInfoPage.getValueInCompanyTextbox(), "userInfo.getCompanyName()"); // failed
+        VERIFY.verifyTrue(customerInfoPage.isGenderMaleSelected());
+        VERIFY.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), "userInfo.getFirstName()"); // failed
+        VERIFY.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
+        VERIFY.verifyEquals(customerInfoPage.getValueInCompanyTextbox(), "userInfo.getCompanyName()"); // failed
     }
 
 }

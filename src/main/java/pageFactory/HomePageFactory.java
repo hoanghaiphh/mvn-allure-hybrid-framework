@@ -6,10 +6,9 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 public class HomePageFactory extends BasePageFactory {
-    private WebDriver driver;
 
     public HomePageFactory(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
         PageFactory.initElements(driver, this);
     }
 
@@ -23,8 +22,8 @@ public class HomePageFactory extends BasePageFactory {
     private WebElement loginLink;
 
     public RegisterPageFactory clickOnRegisterLink() {
-        waitForElementClickable(driver, registerLink).click();
-        return new RegisterPageFactory(driver);
+        waitForElementClickable(registerLink).click();
+        return getPage(RegisterPageFactory.class);
     }
 
     public boolean isMyAccountLinkDisplayed() {
@@ -32,13 +31,13 @@ public class HomePageFactory extends BasePageFactory {
     }
 
     public CustomerInfoPageFactory clickOnMyAccountLink() {
-        waitForElementClickable(driver, myAccountLink).click();
-        return new CustomerInfoPageFactory(driver);
+        waitForElementClickable(myAccountLink).click();
+        return getPage(CustomerInfoPageFactory.class);
     }
 
     public LoginPageFactory clickOnLoginLink() {
-        waitForElementClickable(driver, loginLink).click();
-        return new LoginPageFactory(driver);
+        waitForElementClickable(loginLink).click();
+        return getPage(LoginPageFactory.class);
     }
 
 }

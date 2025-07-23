@@ -19,7 +19,7 @@ public class UserInfoPOJO {
         if (isValidEmail(emailAddress)) {
             this.emailAddress = emailAddress;
         } else {
-            throw new IllegalArgumentException("Địa chỉ email không hợp lệ");
+            throw new IllegalArgumentException("Email address is not valid.");
         }
     }
 

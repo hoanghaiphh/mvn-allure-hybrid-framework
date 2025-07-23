@@ -2,7 +2,6 @@ package pageObjects.nopcommerce;
 
 import commons.BasePage;
 import org.openqa.selenium.WebElement;
-import pageObjects.nopcommerce.myAccount.CustomerInfoPO;
 import io.qameta.allure.Step;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
@@ -17,91 +16,79 @@ import java.util.Set;
 import static pageUIs.nopcommerce.BasePageUI.*;
 
 public class BasePageObject extends BasePage {
-    private WebDriver driver;
 
     public BasePageObject(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
     }
 
-    public RegisterPO clickOnRegisterLink() {
-        clickOnElement(getClickableElement(driver, REGISTER_LINK));
-        return PageGenerator.getRegisterPage(driver);
+    public void clickOnRegisterLink() {
+        clickOnElement(getClickableElement(REGISTER_LINK));
     }
 
     @Step("Verify that My Account link was displayed in header")
     public boolean isMyAccountLinkDisplayed() {
-        return isElementDisplayed(driver, MY_ACCOUNT_LINK);
+        return isElementDisplayed(MY_ACCOUNT_LINK);
     }
 
-    public CustomerInfoPO clickOnMyAccountLink() {
-        clickOnElement(getClickableElement(driver, MY_ACCOUNT_LINK));
-        return PageGenerator.getCustomerInfoPage(driver);
+    public void clickOnMyAccountLink() {
+        clickOnElement(getClickableElement(MY_ACCOUNT_LINK));
     }
 
-    public LoginPO clickOnLoginLink() {
-        clickOnElement(getClickableElement(driver, LOGIN_LINK));
-        return PageGenerator.getLoginPage(driver);
+    public void clickOnLoginLink() {
+        clickOnElement(getClickableElement(LOGIN_LINK));
     }
 
-    public HomePO clickOnLogoutLink() {
-        clickOnElement(getClickableElement(driver, LOGOUT_LINK));
-        return PageGenerator.getHomePage(driver);
+    public void clickOnLogoutLink() {
+        clickOnElement(getClickableElement(LOGOUT_LINK));
     }
 
     @Step("Click on {0} link in header")
-    public BasePageObject clickOnHeaderLink(String pageName) {
-        clickOnElement(getClickableElement(driver, DYNAMIC_HEADER_LINK_TEXT, pageName));
-        return switch (pageName) {
-            case ("Register") -> PageGenerator.getRegisterPage(driver);
-            case ("My account") -> PageGenerator.getCustomerInfoPage(driver);
-            case ("Log in") -> PageGenerator.getLoginPage(driver);
-            case ("Log out") -> PageGenerator.getHomePage(driver);
-            default -> throw new RuntimeException("Page name is not valid !!!");
-        };
+    public void clickOnHeaderLink(String pageName) {
+        clickOnElement(getClickableElement(DYNAMIC_HEADER_LINK_TEXT, pageName));
     }
 
     // Pattern Object
 
     @Step("Input value to {0} textbox: {1}")
     public void sendKeysToTextboxByID(String textboxID, String keyToSend) {
-        WebElement element = getVisibleElement(driver, DYNAMIC_TEXTBOX_ID, textboxID);
+        WebElement element = getVisibleElement(DYNAMIC_TEXTBOX_ID, textboxID);
         clearElementText(element);
         sendKeysToElement(element, keyToSend);
     }
 
     @Step("Get value in {0} textbox")
     public String getValueInTextboxByID(String textboxID) {
-        return getElementAttributeValue(getVisibleElement(driver, DYNAMIC_TEXTBOX_ID, textboxID), "value");
+        return getElementAttributeValue(getVisibleElement(DYNAMIC_TEXTBOX_ID, textboxID), "value");
     }
 
     @Step("Click on {0} button")
     public void clickOnButtonByText(String buttonText) {
-        clickOnElement(getClickableElement(driver, DYNAMIC_BUTTON_TEXT, buttonText));
+        clickOnElement(getClickableElement(DYNAMIC_BUTTON_TEXT, buttonText));
     }
 
     @Step("Select {0}")
     public void selectCheckboxOrRadioByID(String id) {
-        selectCheckboxOrRadio(getClickableElement(driver, DYNAMIC_CHECKBOX_RADIO_ID, id));
+        selectCheckboxOrRadio(getClickableElement(DYNAMIC_CHECKBOX_RADIO_ID, id));
     }
 
     @Step("{0} selected")
     public boolean isCheckboxOrRadioByIDSelected(String id) {
-        return isElementSelected(getVisibleElement(driver, DYNAMIC_CHECKBOX_RADIO_ID, id));
+        return isElementSelected(getVisibleElement(DYNAMIC_CHECKBOX_RADIO_ID, id));
     }
 
     @Step("Click on {0} link in header")
     public void clickOnHeaderLinkByText(String headerLinkText) {
-        clickOnElement(getClickableElement(driver, DYNAMIC_HEADER_LINK_TEXT, headerLinkText));
+        clickOnElement(getClickableElement(DYNAMIC_HEADER_LINK_TEXT, headerLinkText));
     }
 
     @Step("{0} link displayed in header")
     public boolean isHeaderLinkByTextDisplayed(String headerLinkText) {
-        return isElementDisplayed(driver, DYNAMIC_HEADER_LINK_TEXT, headerLinkText);
+        return isElementDisplayed(DYNAMIC_HEADER_LINK_TEXT, headerLinkText);
     }
 
     public void loginByCookies(Set<Cookie> cookies) {
-        setCookies(driver, cookies);
-        refreshCurrentPage(driver);
+        setCookies(cookies);
+        refreshCurrentPage();
     }
 
     @Step("Get User Information from test data")

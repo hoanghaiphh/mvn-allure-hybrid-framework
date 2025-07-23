@@ -1,6 +1,6 @@
-package sqlQuery;
+package databaseTesting;
 
-import commons.BaseTestRefactored;
+import commons.BaseTest;
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
@@ -8,10 +8,10 @@ import io.qameta.allure.SeverityLevel;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import pageObjects.nopcommerceRefactored.HomePO;
-import pageObjects.nopcommerceRefactored.LoginPO;
-import pageObjects.nopcommerceRefactored.RegisterPO;
-import pageObjects.nopcommerceRefactored.myAccount.CustomerInfoPO;
+import pageObjects.nopcommerce.HomePO;
+import pageObjects.nopcommerce.LoginPO;
+import pageObjects.nopcommerce.RegisterPO;
+import pageObjects.nopcommerce.myAccount.CustomerInfoPO;
 import reportConfigs.SoftVerification;
 import testData.UserInfoPOJO;
 import utilities.DataGenerator;
@@ -19,26 +19,22 @@ import utilities.PropertiesConfig;
 import utilities.SQLUtils;
 
 @Feature("User")
-public class NopCommerce extends BaseTestRefactored {
+public class SQLServer extends BaseTest {
     private CustomerInfoPO customerInfoPage;
     private HomePO homePage;
     private RegisterPO registerPage;
     private LoginPO loginPage;
 
-    private PropertiesConfig env;
-    private SQLUtils sql;
-    private SoftVerification soft;
-
     private UserInfoPOJO userInfo;
+    private static final PropertiesConfig ENV = PropertiesConfig.getEnvironmentProperties();
+    private static final SoftVerification VERIFY = SoftVerification.getSoftVerification();
 
     @Parameters({"platform", "browserName"})
     @BeforeClass
     public void beforeClass(String platform, String browserName) {
-        env = PropertiesConfig.getEnvironmentProperties();
         initDriver(platform, browserName);
-        configBrowserAndOpenUrl(env.getPropertyValue("app.Url"));
-        sql = initSQLConnection(env);
-        soft = SoftVerification.getSoftVerification();
+        configBrowserAndOpenUrl(ENV.getPropertyValue("app.Url"));
+        homePage = getPage(HomePO.class);
 
         userInfo = UserInfoPOJO.getUserInfo();
         DataGenerator fakerVi = DataGenerator.create("vi");
@@ -50,8 +46,6 @@ public class NopCommerce extends BaseTestRefactored {
         DataGenerator fakerDefault = DataGenerator.create();
         userInfo.setCompanyName(fakerDefault.getCompanyName());
         userInfo.setPassword(fakerDefault.getPassword());
-
-        homePage = getPage(HomePO.class);
     }
 
     @Description("User_01_Register")
@@ -64,7 +58,7 @@ public class NopCommerce extends BaseTestRefactored {
         registerPage.addUserInfo(userInfo);
         registerPage.clickOnRegisterButton();
 
-        soft.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
+        VERIFY.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
     }
 
     @Description("User_02_Login")
@@ -80,7 +74,7 @@ public class NopCommerce extends BaseTestRefactored {
         loginPage.loginToSystem(userInfo);
         homePage = getPage(HomePO.class);
 
-        soft.verifyTrue(homePage.isMyAccountLinkDisplayed());
+        VERIFY.verifyTrue(homePage.isMyAccountLinkDisplayed());
     }
 
     @Description("User_03_MyAccount")
@@ -90,22 +84,21 @@ public class NopCommerce extends BaseTestRefactored {
         homePage.clickOnHeaderLink("My account");
         customerInfoPage = getPage(CustomerInfoPO.class);
 
-        soft.verifyTrue(customerInfoPage.isGenderMaleSelected());
-        soft.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getFirstName());
-        soft.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
-        soft.verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.getCompanyName());
+        VERIFY.verifyTrue(customerInfoPage.isGenderMaleSelected());
+        VERIFY.verifyEquals(customerInfoPage.getValueInFirstnameTextbox(), userInfo.getFirstName());
+        VERIFY.verifyEquals(customerInfoPage.getValueInLastnameTextbox(), userInfo.getLastName());
+        VERIFY.verifyEquals(customerInfoPage.getValueInCompanyTextbox(), userInfo.getCompanyName());
     }
 
     @Description("User_04_Database_Verification")
     @Severity(SeverityLevel.CRITICAL)
     @Test
     public void User_04_Database_Verification() {
-        soft.verifyEquals(
+        SQLUtils sql = SQLUtils.getSQLConnection(ENV);
+
+        VERIFY.verifyEquals(
                 customerInfoPage.getUserInformationFromDatabase(sql, userInfo.getEmailAddress()),
                 customerInfoPage.getUserInformationFromTestData(userInfo));
-
-//        customerInfoPage.deleteUserFromDatabase(sql, userInfo.getEmailAddress());
-//        soft.verifyTrue(customerInfoPage.isUserDeletedFromDatabase(sql, userInfo.getEmailAddress()));
 
         customerInfoPage.deleteNullRecordsFromDatabase(sql);
     }

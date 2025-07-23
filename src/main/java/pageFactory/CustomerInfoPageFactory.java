@@ -6,10 +6,9 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 public class CustomerInfoPageFactory extends BasePageFactory {
-    private WebDriver driver;
 
     public CustomerInfoPageFactory(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
         PageFactory.initElements(driver, this);
     }
 
@@ -30,15 +29,15 @@ public class CustomerInfoPageFactory extends BasePageFactory {
     }
 
     public String getValueInFirstnameTextbox() {
-        return waitForElementVisible(driver, firstNameTextbox).getDomAttribute("value");
+        return waitForElementVisible(firstNameTextbox).getDomAttribute("value");
     }
 
     public String getValueInLastnameTextbox() {
-        return waitForElementVisible(driver, lastNameTextbox).getDomAttribute("value");
+        return waitForElementVisible(lastNameTextbox).getDomAttribute("value");
     }
 
     public String getValueInCompanyTextbox() {
-        return waitForElementVisible(driver, companyTextbox).getDomAttribute("value");
+        return waitForElementVisible(companyTextbox).getDomAttribute("value");
     }
 
 }

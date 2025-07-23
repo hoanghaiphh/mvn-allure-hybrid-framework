@@ -3,14 +3,12 @@ package cloudTesting;
 import commons.BaseTest;
 import commons.GlobalConstants;
 import io.qameta.allure.Description;
-import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import pageObjects.techpanda.HomePO;
 import pageObjects.techpanda.LoginPO;
-import pageObjects.techpanda.PageGenerator;
 import pageObjects.techpanda.RegisterPO;
 import pageObjects.techpanda.myAccount.AccountDashboardPO;
 import pageObjects.techpanda.myAccount.AccountInfoPO;
@@ -24,15 +22,14 @@ public class SauceLabs extends BaseTest {
     private AccountDashboardPO accountDashboardPage;
     private AccountInfoPO accountInfoPage;
 
-    private WebDriver driver;
     private UserInfoPOJO userInfo;
 
     @Parameters({"platform", "browserName", "browserVersion", "osName"})
     @BeforeClass
     public void beforeClass(String platform, String browserName, String browserVersion, String osName) {
-        driver = initDriver(platform, browserName, browserVersion, osName);
-        configBrowserAndOpenUrl(driver, GlobalConstants.TECHPANDA);
-        homePage = PageGenerator.getHomePage(driver);
+        initDriver(platform, browserName, browserVersion, osName);
+        configBrowserAndOpenUrl(GlobalConstants.TECHPANDA);
+        homePage = getPage(HomePO.class);
 
         userInfo = UserInfoPOJO.getUserInfo();
         DataGenerator faker = DataGenerator.create("vi");
@@ -48,8 +45,11 @@ public class SauceLabs extends BaseTest {
     @Description("TC_01 Register")
     @Test
     public void TC_01_Register() {
-        registerPage = homePage.openRegisterPage();
-        accountDashboardPage = registerPage.registerAccountWithInfo(userInfo);
+        homePage.openRegisterPage();
+        registerPage = getPage(RegisterPO.class);
+
+        registerPage.registerAccountWithInfo(userInfo);
+        accountDashboardPage = getPage(AccountDashboardPO.class);
 
         Assert.assertEquals(accountDashboardPage.getRegistrationSuccessMsg(),
                 "Thank you for registering with Main Website Store.");
@@ -58,10 +58,14 @@ public class SauceLabs extends BaseTest {
     @Description("TC_02 Login")
     @Test
     public void TC_02_Login() {
-        homePage = accountDashboardPage.logoutFromSystem();
+        accountDashboardPage.logoutFromSystem();
+        homePage = getPage(HomePO.class);
 
-        loginPage = homePage.openLoginPage();
-        accountDashboardPage = loginPage.loginToSystemWithInfo(userInfo);
+        homePage.openLoginPage();
+        loginPage = getPage(LoginPO.class);
+
+        loginPage.loginToSystemWithInfo(userInfo);
+        accountDashboardPage = getPage(AccountDashboardPO.class);
 
         String fullName = userInfo.getFirstName() + " " + userInfo.getLastName();
         Assert.assertTrue(accountDashboardPage.headerWelcomeMsgContains(fullName));
@@ -75,7 +79,8 @@ public class SauceLabs extends BaseTest {
     @Description("TC_03 Account Information")
     @Test
     public void TC_03_Account_Information() {
-        accountInfoPage = accountDashboardPage.switchToAccountInfoPage();
+        accountDashboardPage.switchToAccountInfoPage();
+        accountInfoPage = getPage(AccountInfoPO.class);
 
         Assert.assertEquals(accountInfoPage.getAccountFirstname(), userInfo.getFirstName());
         Assert.assertEquals(accountInfoPage.getAccountLastname(), userInfo.getLastName());
