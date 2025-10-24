@@ -1,8 +1,8 @@
 package testData;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.InputStream;
 import java.util.List;
@@ -14,10 +14,11 @@ public class UserInfoJson1 {
                 .getResourceAsStream("testData/testDataUserInfo1.json")) {
             if (inputStream == null) throw new RuntimeException("File not found!");
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            JsonMapper jsonMapper = JsonMapper.builder()
+                    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                    .build();
 
-            return objectMapper.readValue(inputStream, UserInfoJson1.class);
+            return jsonMapper.readValue(inputStream, UserInfoJson1.class);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
