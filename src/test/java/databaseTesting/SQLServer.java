@@ -15,6 +15,7 @@ import pageObjects.nopcommerce.myAccount.CustomerInfoPO;
 import reportConfigs.SoftVerification;
 import testData.UserInfoPOJO;
 import utilities.DataGenerator;
+import utilities.JsonWriter;
 import utilities.PropertiesConfig;
 import utilities.SQLUtils;
 
@@ -59,6 +60,8 @@ public class SQLServer extends BaseTest {
         registerPage.clickOnRegisterButton();
 
         VERIFY.verifyEquals(registerPage.getRegisterSuccessMessage(), "Your registration completed");
+
+        JsonWriter.saveLoginInfo(userInfo.getEmailAddress(), userInfo.getPassword());
     }
 
     @Description("User_02_Login")
